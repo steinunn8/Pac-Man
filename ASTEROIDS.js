@@ -41,10 +41,19 @@ var g_ctx = g_canvas.getContext("2d");
 // ====================
 // CREATE INITIAL SHIPS
 // ====================
-
-function createInitialShips() {
+function createInitialShips(){
 
     entityManager.generateShip({
+        cx : 200,
+        cy : 200
+    });
+    
+}
+//Will become:
+
+function createPacMan() {
+
+    entityManager.generatePacMan({
         cx : 200,
         cy : 200
     });

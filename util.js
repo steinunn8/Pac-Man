@@ -101,6 +101,16 @@ fillBox: function (ctx, x, y, w, h, style) {
     ctx.fillStyle = style;
     ctx.fillRect(x, y, w, h);
     ctx.fillStyle = oldStyle;
+},
+
+
+//EXTRAS WITH NO HOME
+drawYellowCircle: function (ctx, x, y, radius){
+    ctx.beginPath();
+    ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
+    ctx.fillStyle = 'yellow';
+    ctx.fill();
 }
+
 
 };
