@@ -47,8 +47,6 @@ PacMan.prototype.KEY_RIGHT  = 'D'.charCodeAt(0);
 
 // Initial, inheritable, default values
 PacMan.prototype.rotation = 0;
-PacMan.prototype.velX = 0;
-PacMan.prototype.velY = 0;
 //TODO: FIX
 
 // HACKED-IN AUDIO (no preloading)
@@ -65,8 +63,6 @@ PacMan.prototype.reset = function () {
 
 PacMan.prototype.halt = function () {
     //TODO: Maybe an array for directions??
-    this.velX = 0;
-    this.velY = 0;
 };
 
 //When PacMan dies we warp him to his original place
@@ -78,10 +74,12 @@ PacMan.prototype.warp = function (ctx){
 PacMan.prototype.update = function (du) {
     
     // TODO: Unregister and check for death
+    spatialManager.unregister(this);
     
     // TODO: Warp if isColliding, otherwise Register
 
-    // TODO: If going through "tunnel", handle 
+    // TODO: If going through "tunnel", handle
+    spatialManager.register(this); 
 
 };
 
