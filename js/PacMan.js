@@ -67,14 +67,6 @@ PacMan.prototype.warp = function (ctx){
     this.reset();
 };
 
-PacMan.prototype.wrapPosition = function() {
-    if (this.column >= g_maze.nColumns) { this.column -= g_maze.nColumns; }
-    else if (this.column < 0) { this.column += g_maze.nColumns; }
-
-    if (this.row >= g_maze.nRows) { this.row -= g_maze.nRows; }
-    else if (this.row < 0) { this.row += g_maze.nRows; }
-};
-
 // Time to next is the remaining proportion of the distance traveled
 // to next cell
 PacMan.prototype.timeToNext = 1;
@@ -93,7 +85,7 @@ PacMan.prototype.getNextPos = function(direction) {
         column += 1;
     }
 
-    return {row: row, column: column};
+    return util.wrapPosition(row, column);
 };
 
 PacMan.prototype.update = function (du) {
@@ -133,7 +125,6 @@ PacMan.prototype.update = function (du) {
         } else {
             // we can move!!
             this.setPos(nextPos.row, nextPos.column);
-            this.wrapPosition();
         }
 
         // Make the distance to next cell positive again
@@ -150,6 +141,23 @@ PacMan.prototype.update = function (du) {
 };
 
 PacMan.prototype.render = function (ctx) {
+    var rotation = 0;
+    var boxDim = consts.BOX_DIMENSION;
     var pos = util.getCoordsFromBox(this.row, this.column);
-    this.sprite.drawCentredAt(ctx, pos.xPos, pos.yPos, this.rotation);
+
+    var dir = this.direction;
+    if (dir === "up") {
+        pos.yPos += (this.timeToNext)*boxDim*2;
+        rotation = 3*Math.PI/4;
+    } else if (dir === "down") {
+        pos.yPos -= (this.timeToNext)*boxDim*2;
+        rotation = 1*Math.PI/4;
+    } else if (dir === "left") {
+        pos.xPos += (this.timeToNext)*boxDim*2;
+        rotation = 2*Math.PI/4;
+    } else if (dir === "right") {
+        pos.xPos -= (this.timeToNext)*boxDim*2;
+    }
+    
+    this.sprite.drawCentredAt(ctx, pos.xPos, pos.yPos, rotation);
 };

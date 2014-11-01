@@ -20,7 +20,7 @@ function createPacMan() {
         sprite: g_sprites.pacMan,
         column: 14,
         row: 21,
-        speed: 0.10,
+        speed: 0.20,
         rotation: 0
     });
 }

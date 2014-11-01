@@ -8,7 +8,6 @@
 
 var util = {
 
-
     // RANGES
     // ======
 
@@ -35,6 +34,17 @@ var util = {
         if (value < lowBound) { return false; }
         if (value > highBound) { return false; }
         return true;
+    },
+
+    wrapPosition: function(row, column) {
+        var pos = {row: row, column: column};
+        if (column >= g_maze.nColumns) { pos.column -= g_maze.nColumns; }
+        else if (column < 0) { pos.column += g_maze.nColumns; }
+
+        if (row >= g_maze.nRows) { pos.row -= g_maze.nRows; }
+        else if (row < 0) { pos.row += g_maze.nRows; }
+
+        return pos;
     },
 
 
