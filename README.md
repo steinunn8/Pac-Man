@@ -13,6 +13,19 @@ Entity-manager
   * Fruit
   * (Score)
 
+Pac-Man / Ghosts
+----------------
+
+Always have the direction of
+
+* Up
+* Down
+* Left
+* Right
+* Stop
+
+Move by a speed of cells per du.
+
 Maze
 ----
 

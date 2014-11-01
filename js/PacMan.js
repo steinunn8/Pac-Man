@@ -46,7 +46,7 @@ PacMan.prototype.KEY_LEFT   = 'A'.charCodeAt(0);
 PacMan.prototype.KEY_RIGHT  = 'D'.charCodeAt(0);
 
 // Initial, inheritable, default values
-PacMan.prototype.rotation = 0;
+PacMan.prototype.direction = 0;
 //TODO: FIX
 
 // HACKED-IN AUDIO (no preloading)
@@ -61,17 +61,60 @@ PacMan.prototype.reset = function () {
     this.halt();
 };
 
-PacMan.prototype.halt = function () {
-    //TODO: Maybe an array for directions??
-};
-
 //When PacMan dies we warp him to his original place
 PacMan.prototype.warp = function (ctx){
     //TODO: Move to original place with animation
     this.reset();
 };
 
+PacMan.prototype.wrapPosition = function() {
+    if (this.column >= g_maze.nColumns) { this.column -= g_maze.nColumns; }
+    else if (this.column < 0) { this.column += g_maze.nColumns; }
+    
+    if (this.row >= g_maze.nRows) { this.row -= g_maze.nRows; }
+    else if (this.row < 0) { this.row += g_maze.nRows; }
+};
+
+// Time to next is the remaining proportion of the distance traveled
+// to next cell
+PacMan.prototype.timeToNext = 1;
 PacMan.prototype.update = function (du) {
+    
+    if (keys[this.KEY_UP]) {
+        this.nextDirection = "up";
+    }
+    if (keys[this.KEY_DOWN]) {
+        this.nextDirection = "down";
+    }
+    if (keys[this.KEY_LEFT]) {
+        this.nextDirection = "left";
+    }
+    if (keys[this.KEY_RIGHT]) {
+        this.nextDirection = "right";
+    }
+
+    this.timeToNext -= this.speed;
+    if (this.timeToNext <= 0) {
+
+        var dir = this.nextDirection;
+
+        if (dir === "up") {
+            this.row -= 1;
+        } else if (dir === "down") {
+            this.row += 1;
+        } else if (dir === "left") {
+            this.column -= 1;
+        } else if (dir === "right") {
+            this.column += 1;
+        }
+
+        this.wrapPosition();
+
+        this.direction = this.nextDirection;
+        
+        // Make it positive again
+        this.timeToNext += 1;
+    }
     
     // TODO: Unregister and check for death
     spatialManager.unregister(this);

@@ -16,6 +16,9 @@ function Maze(descr) {
         this[property] = descr[property];
     }
     this.aGrid = this._getDefaultMazeArray();
+    this.nRows = this.aGrid.length;
+    this.nColumns = this.aGrid[0].length;
+
     this._generateWall();
 };
 
@@ -33,12 +36,11 @@ Maze.prototype.directions = {
 Maze.prototype._generateWall = function() {
     // TODO gera render wall byggt a neighboring cells
     this.aRenderingWall = [];
-    var self = this;
-    for(var i = 0; i < this.aGrid.length; i++) {
+    for(var i = 0; i < this.nRows; i++) {
         this.aRenderingWall.push([]);
-        for(var j = 0; j < this.aGrid[i].length; j++) {
-            var gildi = self._getRenderValue(i, j);
-            this.aRenderingWall[i].push(gildi);
+        for(var j = 0; j < this.nColumns; j++) {
+            var value = this._getRenderValue(i, j);
+            this.aRenderingWall[i].push(value);
         }
     }
 };
