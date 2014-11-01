@@ -103,6 +103,10 @@ fillBox: function (ctx, x, y, w, h, style) {
     ctx.fillStyle = oldStyle;
 },
 
+fillCenteredSquare: function (ctx, x, y, halfSquareDimension, style) {
+    this.fillBox(ctx, x - halfSquareDimension, y - halfSquareDimension, halfSquareDimension*2, halfSquareDimension*2, style);
+},
+
 
 //EXTRAS WITH NO HOME
 drawYellowCircle: function (ctx, x, y, radius){

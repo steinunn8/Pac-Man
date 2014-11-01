@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // =========
 // Pac-Man
 // =========
@@ -20,9 +21,16 @@ function createPacMan() {
     entityManager.generatePacMan({
         cx : 200,
         cy : 200
-    });
-    
+    });    
 }
+
+var g_maze;
+
+function createMaze() {
+    g_maze = new Maze({});
+}
+createMaze();
+// TODO lata spatial manager vita af tilvist maze
 
 // =============
 // GATHER INPUTS
@@ -90,7 +98,8 @@ function processDiagnostics() {
 // GAME-SPECIFIC RENDERING
 
 function renderSimulation(ctx) {
-
+    
+    g_maze.render(ctx);
     entityManager.render(ctx);
 
     if (g_renderSpatialDebug) spatialManager.render(ctx);

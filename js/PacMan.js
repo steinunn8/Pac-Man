@@ -85,11 +85,8 @@ PacMan.prototype.warp = function (ctx){
 PacMan.prototype.update = function (du) {
     
     // TODO: Unregister and check for death
-
-
     
     // TODO: Warp if isColliding, otherwise Register
-
 
     // TODO: If going through "tunnel", handle 
 
