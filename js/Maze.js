@@ -38,13 +38,8 @@ Maze.prototype.render = function(ctx) {
     for(var i = 0; i < this.aRenderingWall.length; i++) {
         for(var j = 0; j < this.aRenderingWall[i].length; j++) {
             var renderValue = this.aRenderingWall[i][j];
-            if(renderValue == 1) {
-                var pos = util.getCoordsFromBox(i, j);
-                util.fillCenteredSquare(ctx, pos.xPos, pos.yPos, consts.SCALING*consts.BOX_DIMENSION/2, "blue");
-            } else if(renderValue) {
-                var pos = util.getCoordsFromBox(i, j);
-                util.fillCircle(ctx, pos.xPos, pos.yPos, consts.SCALING*consts.BOX_DIMENSION/8, "yellow");
-            }
+            var pos = util.getCoordsFromBox(i, j);
+            this._drawPart(ctx, renderValue, pos.xPos, pos.yPos);
         }
     }
 };
@@ -52,8 +47,19 @@ Maze.prototype.render = function(ctx) {
 Maze.prototype._getRenderValue = function(row, column) {
     if(this.aGrid[row][column] == -1) return 1;
     if(this.aGrid[row][column] == 1) return 2;
+    if(this.aGrid[row][column] == 2) return 3;
     return 0;
 };
+
+Maze.prototype._drawPart = function(ctx, renderValue, x, y) {
+    if(renderValue == 1) {
+        util.fillCenteredSquare(ctx, x, y, consts.SCALING*consts.BOX_DIMENSION/2, "blue");
+    } else if(renderValue == 2) {
+        util.fillCircle(ctx, x, y, consts.SCALING*consts.BOX_DIMENSION/8, "yellow");
+    } else if(renderValue == 3) {
+        util.fillCircle(ctx, x, y, consts.SCALING*consts.BOX_DIMENSION/2.5, "yellow");
+    }
+}
 
 Maze.prototype._getDefaultMazeArray = function() {
     return [
@@ -63,6 +69,7 @@ Maze.prototype._getDefaultMazeArray = function() {
             [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],
             [-1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,-1,-1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,-1],
             [-1, 1,-1,-1,-1,-1, 1,-1,-1,-1,-1,-1, 1,-1,-1, 1,-1,-1,-1,-1,-1, 1,-1,-1,-1,-1, 1,-1],
+            [-1, 2,-1,-1,-1,-1, 1,-1,-1,-1,-1,-1, 1,-1,-1, 1,-1,-1,-1,-1,-1, 1,-1,-1,-1,-1, 2,-1],
             [-1, 1,-1,-1,-1,-1, 1,-1,-1,-1,-1,-1, 1,-1,-1, 1,-1,-1,-1,-1,-1, 1,-1,-1,-1,-1, 1,-1],
             [-1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,-1],
             [-1, 1,-1,-1,-1,-1, 1,-1,-1, 1,-1,-1,-1,-1,-1,-1,-1,-1, 1,-1,-1, 1,-1,-1,-1,-1, 1,-1],
@@ -71,7 +78,7 @@ Maze.prototype._getDefaultMazeArray = function() {
             [-1,-1,-1,-1,-1,-1, 1,-1,-1,-1,-1,-1, 0,-1,-1, 0,-1,-1,-1,-1,-1, 1,-1,-1,-1,-1,-1,-1],
             [ 0, 0, 0, 0, 0,-1, 1,-1,-1,-1,-1,-1, 0,-1,-1, 0,-1,-1,-1,-1,-1, 1,-1, 0, 0, 0, 0, 0],
             [ 0, 0, 0, 0, 0,-1, 1,-1,-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1,-1, 1,-1, 0, 0, 0, 0, 0],
-            [ 0, 0, 0, 0, 0,-1, 1,-1,-1, 0,-1,-1,-1, 0, 0,-1,-1,-1, 0,-1,-1, 1,-1, 0, 0, 0, 0, 0],
+            [ 0, 0, 0, 0, 0,-1, 1,-1,-1, 0,-1,-1,-1,-2,-2,-1,-1,-1, 0,-1,-1, 1,-1, 0, 0, 0, 0, 0],
             [-1,-1,-1,-1,-1,-1, 1,-1,-1, 0,-1, 0, 0, 0, 0, 0, 0,-1, 0,-1,-1, 1,-1,-1,-1,-1,-1,-1],
             
             [ 0, 0, 0, 0, 0, 0, 1, 0, 0, 0,-1, 0, 0, 0, 0, 0, 0,-1, 0, 0, 0, 1, 0, 0, 0, 0, 0,- 0],
@@ -85,9 +92,9 @@ Maze.prototype._getDefaultMazeArray = function() {
             [-1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,-1,-1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,-1],
             [-1, 1,-1,-1,-1,-1, 1,-1,-1,-1,-1,-1, 1,-1,-1, 1,-1,-1,-1,-1,-1, 1,-1,-1,-1,-1, 1,-1],
             [-1, 1,-1,-1,-1,-1, 1,-1,-1,-1,-1,-1, 1,-1,-1, 1,-1,-1,-1,-1,-1, 1,-1,-1,-1,-1, 1,-1],
-            [-1, 1, 1, 1,-1,-1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,-1,-1, 1, 1, 1,-1],
-            [-1,-1,-1, 1,-1,-1, 1,-1,-1, 1, 1,-1,-1,-1,-1,-1,-1, 1, 1,-1,-1, 1,-1,-1, 1,-1,-1,-1],
-            [-1,-1,-1, 1,-1,-1, 1,-1,-1, 1, 1,-1,-1,-1,-1,-1,-1, 1, 1,-1,-1, 1,-1,-1, 1,-1,-1,-1],
+            [-1, 2, 1, 1,-1,-1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,-1,-1, 1, 1, 2,-1],
+            [-1,-1,-1, 1,-1,-1, 1,-1,-1, 1,-1,-1,-1,-1,-1,-1,-1,-1, 1,-1,-1, 1,-1,-1, 1,-1,-1,-1],
+            [-1,-1,-1, 1,-1,-1, 1,-1,-1, 1,-1,-1,-1,-1,-1,-1,-1,-1, 1,-1,-1, 1,-1,-1, 1,-1,-1,-1],
             [-1, 1, 1, 1, 1, 1, 1,-1,-1, 1, 1, 1, 1,-1,-1, 1, 1, 1, 1,-1,-1, 1, 1, 1, 1, 1, 1,-1],
             [-1, 1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1, 1,-1,-1, 1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1, 1,-1],
             [-1, 1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1, 1,-1,-1, 1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1, 1,-1],

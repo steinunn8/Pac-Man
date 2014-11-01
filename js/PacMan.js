@@ -47,6 +47,7 @@ PacMan.prototype.KEY_RIGHT  = 'D'.charCodeAt(0);
 
 // Initial, inheritable, default values
 PacMan.prototype.direction = 0;
+//TODO: FIX
 
 // HACKED-IN AUDIO (no preloading)
 //TODO: Change audio
@@ -116,10 +117,12 @@ PacMan.prototype.update = function (du) {
     }
     
     // TODO: Unregister and check for death
+    spatialManager.unregister(this);
     
     // TODO: Warp if isColliding, otherwise Register
 
-    // TODO: If going through "tunnel", handle 
+    // TODO: If going through "tunnel", handle
+    spatialManager.register(this); 
 
 };
 
