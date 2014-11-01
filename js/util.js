@@ -90,10 +90,16 @@ strokeCircle: function (ctx, x, y, r) {
     ctx.stroke();
 },
 
-fillCircle: function (ctx, x, y, r) {
+fillCircle: function (ctx, x, y, r, style) {
+    if(style === undefined) {
+        style = ctx.fillStyle;
+    }
+    var oldStyle = ctx.fillStyle;
+    ctx.fillStyle = style;
     ctx.beginPath();
     ctx.arc(x, y, r, 0, Math.PI * 2);
     ctx.fill();
+    ctx.fillStyle = oldStyle;
 },
 
 fillBox: function (ctx, x, y, w, h, style) {
@@ -114,6 +120,13 @@ drawYellowCircle: function (ctx, x, y, radius){
     ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
     ctx.fillStyle = 'yellow';
     ctx.fill();
+},
+
+getCoordsFromBox: function(row, column) {
+    var dimension = consts.BOX_DIMENSION * consts.SCALING;
+    var xPos = column * dimension + dimension / 2;
+    var yPos = row * dimension + dimension / 2;
+    return {xPos: xPos, yPos: yPos};
 }
 
 
