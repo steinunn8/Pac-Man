@@ -113,6 +113,48 @@ var util = {
         this.fillBox(ctx, x - halfSquareDimension, y - halfSquareDimension, halfSquareDimension*2, halfSquareDimension*2, style);
     },
 
+    drawLine: function(ctx, x, y, rotation, style) {
+        if(rotation === undefined) rotation = 0;
+        if(style === undefined) style = ctx.strokeStyle;
+        ctx.save();
+
+        ctx.translate(x, y);
+        ctx.rotate(rotation);
+
+        var oldStyle = ctx.strokeStyle;
+        ctx.strokeStyle = style;
+        ctx.beginPath();
+        var xOffset = 0.1 * consts.BOX_DIMENSION * consts.SCALING;
+        var yOffset = 0.5 * consts.BOX_DIMENSION * consts.SCALING;
+        ctx.moveTo(xOffset, -yOffset);
+        ctx.lineTo(xOffset, yOffset);
+        ctx.stroke();
+
+        ctx.fillStyle = oldStyle;
+        ctx.restore();
+    },
+
+    drawCurve: function(ctx, x, y, rotation, style) {
+        if(rotation === undefined) rotation = 0;
+        if(style === undefined) style = ctx.strokeStyle;
+        ctx.save();
+
+        ctx.translate(x, y);
+        ctx.rotate(rotation);
+
+        var oldStyle = ctx.strokeStyle;
+        ctx.strokeStyle = style;
+        ctx.beginPath();
+        var offset = 0.1 * consts.BOX_DIMENSION * consts.SCALING;
+        var centerOffset = 0.5 * consts.BOX_DIMENSION * consts.SCALING;
+        ctx.moveTo(offset, centerOffset);
+        ctx.lineTo(centerOffset, offset);
+        ctx.stroke();
+
+        ctx.fillStyle = oldStyle;
+        ctx.restore();
+    },
+
 
     //EXTRAS WITH NO HOME
 
