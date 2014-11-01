@@ -80,7 +80,7 @@ PacMan.prototype.halt = function () {
 PacMan.prototype.warp = function (ctx){
     //TODO: Move to original place with animation
     this.reset();
-}
+};
 
 PacMan.prototype.update = function (du) {
     
