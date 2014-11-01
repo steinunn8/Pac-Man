@@ -115,12 +115,6 @@ var util = {
 
 
     //EXTRAS WITH NO HOME
-    drawYellowCircle: function (ctx, x, y, radius){
-        ctx.beginPath();
-        ctx.arc(x, y, radius, 0, 2 * Math.PI, false);
-        ctx.fillStyle = 'yellow';
-        ctx.fill();
-    },
 
     getCoordsFromBox: function(row, column) {
         var dimension = consts.BOX_DIMENSION * consts.SCALING;

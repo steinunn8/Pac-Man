@@ -46,19 +46,6 @@ Entity.prototype.setup = function (descr) {
     this._isDeadNow = false;
 };
 
-Entity.prototype.setPos = function (cx, cy) {
-    this.cx = cx;
-    this.cy = cy;
-};
-
-Entity.prototype.getPos = function () {
-    return {posX : this.cx, posY : this.cy};
-};
-
-Entity.prototype.getRadius = function () {
-    return 0;
-};
-
 Entity.prototype.getSpatialID = function () {
     return this._spatialID;
 };
