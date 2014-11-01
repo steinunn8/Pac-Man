@@ -25,10 +25,10 @@ haven't adopted it here.
 
 var main = {
     
-    // "Frame Time" is a (potentially high-precision) frame-clock for animations
+    // "Frame Time" is a (potentially high-precision) frame-clock for
+    // animations
     _frameTime_ms : null,
-    _frameTimeDelta_ms : null,
-
+    _frameTimeDelta_ms : null
 };
 
 // Perform one iteration of the mainloop
@@ -90,7 +90,8 @@ window.requestAnimationFrame =
     window.mozRequestAnimationFrame ||     // Firefox
     window.webkitRequestAnimationFrame;    // Safari
 
-// This needs to be a "global" function, for the "window" APIs to callback to
+// This needs to be a "global" function, for the "window" APIs to
+// callback to
 function mainIterFrame(frameTime) {
     main.iter(frameTime);
 }
@@ -120,14 +121,8 @@ main._debugRender = function (ctx) {
 
 main.init = function () {
     
-    // Grabbing focus is good, but it sometimes screws up jsfiddle,
-    // so it's a risky option during "development"
-    //
-    //window.focus(true);
+    window.focus(true);
 
-    // We'll be working on a black background here,
-    // so let's use a fillStyle which works against that...
-    //
     g_ctx.fillStyle = "white";
 
     this._requestNextIteration();
