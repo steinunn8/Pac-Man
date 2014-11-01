@@ -16,11 +16,12 @@ var g_ctx = g_canvas.getContext("2d");
 */
 
 function createPacMan() {
-
     entityManager.generatePacMan({
-        cx : 200,
-        cy : 200
-    });    
+        sprite: g_sprites.pacMan,
+        column: 14,
+        row: 18,
+        rotation: 0
+    });
 }
 
 var g_maze;
@@ -54,9 +55,9 @@ function gatherInputs() {
 // GAME-SPECIFIC UPDATE LOGIC
 
 function updateSimulation(du) {
-    
+
     processDiagnostics();
-    
+
     entityManager.update(du);
 
     // Prevent perpetual firing!
@@ -95,7 +96,7 @@ function processDiagnostics() {
 // GAME-SPECIFIC RENDERING
 
 function renderSimulation(ctx) {
-    
+
     g_maze.render(ctx);
     entityManager.render(ctx);
 
@@ -133,6 +134,7 @@ function preloadDone() {
 //    g_sprites.specialCapsule;
 
     entityManager.init();
+    createPacMan();
 
     main.init();
 

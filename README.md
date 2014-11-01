@@ -22,7 +22,8 @@ walls around each cell.
 ### Cell coding ###
 
 Code | Meaning 
-----:| ------- 
+----:| -------
+-2   | Impenetrable by Pac-Man / penetrable by Ghosts
 -1   | Impenetrable
  0   | Empty
  1   | Capsule

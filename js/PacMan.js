@@ -33,8 +33,8 @@ PacMan.prototype = new Entity();
 
 PacMan.prototype.rememberResets = function () {
     // Remember my reset positions
-    this.reset_cx = this.cx;
-    this.reset_cy = this.cy;
+    this.reset_row = this.row;
+    this.reset_column = this.column;
     this.reset_rotation = this.rotation;
 };
 
@@ -47,24 +47,15 @@ PacMan.prototype.KEY_RIGHT  = 'D'.charCodeAt(0);
 
 // Initial, inheritable, default values
 PacMan.prototype.rotation = 0;
-PacMan.prototype.cx = 200;
-PacMan.prototype.cy = 200;
-PacMan.prototype.velX = 0;
-PacMan.prototype.velY = 0;
 //TODO: FIX
-PacMan.prototype.radius = 20;
 
 // HACKED-IN AUDIO (no preloading)
 //TODO: Change audio
 PacMan.prototype.eatSound = new Audio("sounds/shipWarp.ogg");
 PacMan.prototype.warpSound = new Audio("sounds/shipWarp.ogg");
 
-PacMan.prototype.getRadius = function () {
-    return this.radius;
-};
-
 PacMan.prototype.reset = function () {
-    this.setPos(this.reset_cx, this.reset_cy);
+    this.setPos(this.reset_row, this.reset_column);
     this.rotation = this.reset_rotation;
     
     this.halt();
@@ -72,8 +63,6 @@ PacMan.prototype.reset = function () {
 
 PacMan.prototype.halt = function () {
     //TODO: Maybe an array for directions??
-    this.velX = 0;
-    this.velY = 0;
 };
 
 //When PacMan dies we warp him to his original place
@@ -85,13 +74,16 @@ PacMan.prototype.warp = function (ctx){
 PacMan.prototype.update = function (du) {
     
     // TODO: Unregister and check for death
+    spatialManager.unregister(this);
     
     // TODO: Warp if isColliding, otherwise Register
 
-    // TODO: If going through "tunnel", handle 
+    // TODO: If going through "tunnel", handle
+    spatialManager.register(this); 
 
 };
 
 PacMan.prototype.render = function (ctx) {
-    this.sprite.drawCentredAt(ctx, this.cx, this.cy, this.rotation);
+    var pos = util.getCoordsFromBox(this.row, this.column);
+    this.sprite.drawCentredAt(ctx, pos.xPos, pos.yPos, this.rotation);
 };
