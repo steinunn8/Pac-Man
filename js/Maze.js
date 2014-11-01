@@ -86,9 +86,9 @@ Maze.prototype._drawPart = function(ctx, renderValue, x, y) {
     } else if(renderValue == this.directions.BOTTOM_LEFT) {
         util.drawCurve(ctx, x, y, -Math.PI/2, "blue");
     } else if(renderValue == 1) {
-        util.fillCircle(ctx, x, y, consts.SCALING*consts.BOX_DIMENSION/8, "yellow");
+        util.fillCircle(ctx, x, y, consts.SCALING*consts.BOX_DIMENSION/8, "#FBB382");
     } else if(renderValue == 2) {
-        util.fillCircle(ctx, x, y, consts.SCALING*consts.BOX_DIMENSION/2.5, "yellow");
+        util.fillCircle(ctx, x, y, consts.SCALING*consts.BOX_DIMENSION/2.5, "#FBB382");
     } else if(renderValue == 5) {
         util.fillCenteredSquare(ctx, x, y, consts.SCALING*consts.BOX_DIMENSION/2, "green");
     }

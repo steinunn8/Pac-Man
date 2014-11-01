@@ -140,6 +140,8 @@ function preloadDone() {
     main.init();
 
     createMaze();
+    g_canvas.width = g_maze.nColumns*consts.BOX_DIMENSION*2;
+    g_canvas.height = g_maze.nRows*consts.BOX_DIMENSION*2;
     // TODO lata spatial manager vita af tilvist maze
 }
 

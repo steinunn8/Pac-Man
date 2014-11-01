@@ -140,24 +140,81 @@ PacMan.prototype.update = function (du) {
     spatialManager.register(this);
 };
 
+PacMan.prototype._mouthOpenProp = 0.1;
+PacMan.prototype._mouthSpeed = 0.02;
+PacMan.prototype._mouthOpening = false;
+PacMan.prototype.drawCentredAt = function(ctx, cx, cy, rotation) {
+    var boxDim = consts.BOX_DIMENSION;
+    var startMouth = this._mouthOpenProp*2*Math.PI,
+        endMouth = (1-this._mouthOpenProp)*2*Math.PI,
+        r = consts.SCALING*boxDim/1.5;
+
+    var draw = function(cx, cy) {
+        ctx.save();
+
+        ctx.fillStyle = "#EBFC00";
+        ctx.translate(cx, cy);
+        ctx.rotate(rotation);
+        
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.arc(0, 0, r, startMouth, endMouth);
+        ctx.lineTo(0, 0);
+        ctx.fill();
+    
+        ctx.restore();
+  
+    };
+
+    draw(cx, cy);
+    draw(cx + 2*boxDim*g_maze.nColumns, cy);
+    draw(cx - 2*boxDim*g_maze.nColumns, cy);
+    draw(cx, cy + 2*boxDim*g_maze.nRows);
+    draw(cx, cy - 2*boxDim*g_maze.nRows);
+};
+
 PacMan.prototype.render = function (ctx) {
     var rotation = 0;
     var boxDim = consts.BOX_DIMENSION;
     var pos = util.getCoordsFromBox(this.row, this.column);
 
     var dir = this.direction;
+    var going = this.nextDirection;
     if (dir === "up") {
         pos.yPos += (this.timeToNext)*boxDim*2;
-        rotation = 3*Math.PI/4;
+        rotation = 3*Math.PI/2;
     } else if (dir === "down") {
         pos.yPos -= (this.timeToNext)*boxDim*2;
-        rotation = 1*Math.PI/4;
+        rotation = 1*Math.PI/2;
     } else if (dir === "left") {
         pos.xPos += (this.timeToNext)*boxDim*2;
-        rotation = 2*Math.PI/4;
+        rotation = 2*Math.PI/2;
     } else if (dir === "right") {
         pos.xPos -= (this.timeToNext)*boxDim*2;
     }
-    
-    this.sprite.drawCentredAt(ctx, pos.xPos, pos.yPos, rotation);
+
+    if (!dir) {
+        if (going === "up") {
+            rotation = 3*Math.PI/2;
+        } else if (going === "down") {
+            rotation = 1*Math.PI/2;
+        } else if (going === "left") {
+            rotation = 2*Math.PI/2;
+        }
+    }
+
+    this.drawCentredAt(ctx, pos.xPos, pos.yPos, rotation);
+    if (this.direction) {
+        if (this._mouthOpenProp > 0.1) {
+            this._mouthOpening = false;
+        } else if (this._mouthOpenProp <= 0) {
+            this._mouthOpening = true;
+        }
+        if (this._mouthOpening) {
+            this._mouthOpenProp += this._mouthSpeed;
+        } else {
+            this._mouthOpenProp -= this._mouthSpeed;
+        }
+    }
+    // this.sprite.drawCentredAt(ctx, pos.xPos, pos.yPos, rotation);
 };
