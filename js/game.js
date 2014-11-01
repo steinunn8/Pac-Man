@@ -24,6 +24,21 @@ function createPacMan() {
     
 }
 
+var g_maze;
+
+function createMaze() {
+    g_maze = new Maze({
+        aGrid = [[1,1,1,1,1],
+                 [1,0,0,0,1],
+                 [1,0,0,0,1],
+                 [1,0,0,0,1],
+                 [1,1,1,1,1]
+                ];
+    });
+}
+// TODO lata spatial manager vita af tilvist maze
+
+
 // =============
 // GATHER INPUTS
 // =============
