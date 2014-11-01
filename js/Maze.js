@@ -16,37 +16,40 @@ function Maze(descr) {
         this[property] = descr[property];
     }
     this._generateWall();
-}
+};
 
 Maze.prototype._generateWall = function() {
     // TODO gera render wall byggt a neighboring cells
     this.aRenderingWall = [];
+    var self = this;
     for(var i = 0; i < this.aGrid.length; i++) {
         this.aRenderingWall.push([]);
         for(var j = 0; j < this.aGrid[i].length; j++) {
-            this.aRenderingWall[i].push(this._getRenderValue(i, j));
+            var gildi = self._getRenderValue(i, j);
+            this.aRenderingWall[i].push(gildi);
         }
     }
-}
+};
 
-Maze.property.render = function() {
+Maze.prototype.render = function(ctx) {
     for(var i = 0; i < this.aRenderingWall.length; i++) {
         for(var j = 0; j < this.aRenderingWall[i].length; j++) {
             if(this.aRenderingWall[i][j] == 1) {
-                var pos = _getCoordsFromBox(i, j);
-                util.fillCenteredSquare(g_ctx, pos.xPos, pos.yPos, const.BOX_DIMENSION/2, "blue");
+                var pos = this._getCoordsFromBox(i, j);
+                util.fillCenteredSquare(ctx, pos.xPos, pos.yPos, consts.SCALING*consts.BOX_DIMENSION/2, "blue");
             }
         }
     }
-}
+};
 
 Maze.prototype._getRenderValue = function(row, column) {
     if(this.aGrid[row][column] == -1) return 1;
     return 0;
-}
+};
 
 Maze.prototype._getCoordsFromBox = function(row, column) {
-    var xPos = column * const.BOX_DIMENSION + const.BOX_DIMENSION / 2;
-    var yPos = row * const.BOX_DIMENSION + const.BOX_DIMENSION / 2;
+    var dimension = consts.BOX_DIMENSION * consts.SCALING;
+    var xPos = column * dimension + dimension / 2;
+    var yPos = row * dimension + dimension / 2;
     return {xPos: xPos, yPos: yPos};
-}
+};

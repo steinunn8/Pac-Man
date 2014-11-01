@@ -28,14 +28,15 @@ var g_maze;
 
 function createMaze() {
     g_maze = new Maze({
-        aGrid: [[1,1,1,1,1],
-                 [1,0,0,0,1],
-                 [1,0,0,0,1],
-                 [1,0,0,0,1],
-                 [1,1,1,1,1]
+        aGrid: [ [-1,-1,-1,-1,-1],
+                 [-1, 0, 0, 0,-1],
+                 [-1, 0, 0, 0,-1],
+                 [-1, 0, 0, 0,-1],
+                 [-1,-1,-1,-1,-1]
                 ]
     });
 }
+createMaze();
 // TODO lata spatial manager vita af tilvist maze
 
 // =============
@@ -104,7 +105,7 @@ function processDiagnostics() {
 // GAME-SPECIFIC RENDERING
 
 function renderSimulation(ctx) {
-
+    g_maze.render(ctx);
     entityManager.render(ctx);
 
     if (g_renderSpatialDebug) spatialManager.render(ctx);

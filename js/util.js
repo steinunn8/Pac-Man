@@ -104,7 +104,7 @@ fillBox: function (ctx, x, y, w, h, style) {
 },
 
 fillCenteredSquare: function (ctx, x, y, halfSquareDimension, style) {
-    this.fillBox(x - halfSquareDimension, y - halfSquareDimension, halfSquareDimension*2, halfSquareDimension*2);
+    this.fillBox(ctx, x - halfSquareDimension, y - halfSquareDimension, halfSquareDimension*2, halfSquareDimension*2, style);
 },
 
 
