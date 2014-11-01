@@ -46,10 +46,7 @@ PacMan.prototype.KEY_LEFT   = 'A'.charCodeAt(0);
 PacMan.prototype.KEY_RIGHT  = 'D'.charCodeAt(0);
 
 // Initial, inheritable, default values
-PacMan.prototype.rotation = 0;
-PacMan.prototype.velX = 0;
-PacMan.prototype.velY = 0;
-//TODO: FIX
+PacMan.prototype.direction = 0;
 
 // HACKED-IN AUDIO (no preloading)
 //TODO: Change audio
@@ -63,19 +60,50 @@ PacMan.prototype.reset = function () {
     this.halt();
 };
 
-PacMan.prototype.halt = function () {
-    //TODO: Maybe an array for directions??
-    this.velX = 0;
-    this.velY = 0;
-};
-
 //When PacMan dies we warp him to his original place
 PacMan.prototype.warp = function (ctx){
     //TODO: Move to original place with animation
     this.reset();
 };
 
+// Time to next is the remaining proportion of the distance traveled
+// to next cell
+PacMan.prototype.timeToNext = 1;
 PacMan.prototype.update = function (du) {
+    
+    if (keys[this.KEY_UP]) {
+        this.nextDirection = "up";
+    }
+    if (keys[this.KEY_DOWN]) {
+        this.nextDirection = "down";
+    }
+    if (keys[this.KEY_LEFT]) {
+        this.nextDirection = "left";
+    }
+    if (keys[this.KEY_RIGHT]) {
+        this.nextDirection = "right";
+    }
+
+    this.timeToNext -= this.speed;
+    if (this.timeToNext <= 0) {
+
+        var dir = this.nextDirection;
+
+        if (dir === "up") {
+            this.row -= 1;
+        } else if (dir === "down") {
+            this.row += 1;
+        } else if (dir === "left") {
+            this.column -= 1;
+        } else if (dir === "right") {
+            this.column += 1;
+        }
+
+        this.direction = this.nextDirection;
+        
+        // Make it positive again
+        this.timeToNext += 1;
+    }
     
     // TODO: Unregister and check for death
     
@@ -87,6 +115,5 @@ PacMan.prototype.update = function (du) {
 
 PacMan.prototype.render = function (ctx) {
     var pos = util.getCoordsFromBox(this.row, this.column);
-    console.log(pos);
     this.sprite.drawCentredAt(ctx, pos.xPos, pos.yPos, this.rotation);
 };
