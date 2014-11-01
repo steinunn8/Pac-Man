@@ -35,7 +35,7 @@ PacMan.prototype.rememberResets = function () {
     // Remember my reset positions
     this.reset_row = this.row;
     this.reset_column = this.column;
-    this.reset_rotation = this.rotation;
+    this.reset_direction = this.direction;
 };
 
 
@@ -56,7 +56,7 @@ PacMan.prototype.warpSound = new Audio("sounds/shipWarp.ogg");
 
 PacMan.prototype.reset = function () {
     this.setPos(this.reset_row, this.reset_column);
-    this.rotation = this.reset_rotation;
+    this.direction = this.reset_direction;
     
     this.halt();
 };

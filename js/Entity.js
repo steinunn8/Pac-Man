@@ -46,6 +46,11 @@ Entity.prototype.setup = function (descr) {
     this._isDeadNow = false;
 };
 
+Entity.prototype.setPos = function(row, column) {
+    this.row = row;
+    this.column = column;
+};
+
 Entity.prototype.getSpatialID = function () {
     return this._spatialID;
 };
