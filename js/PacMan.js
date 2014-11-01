@@ -66,6 +66,14 @@ PacMan.prototype.warp = function (ctx){
     this.reset();
 };
 
+PacMan.prototype.wrapPosition = function() {
+    if (this.column >= g_maze.nColumns) { this.column -= g_maze.nColumns; }
+    else if (this.column < 0) { this.column += g_maze.nColumns; }
+    
+    if (this.row >= g_maze.nRows) { this.row -= g_maze.nRows; }
+    else if (this.row < 0) { this.row += g_maze.nRows; }
+};
+
 // Time to next is the remaining proportion of the distance traveled
 // to next cell
 PacMan.prototype.timeToNext = 1;
@@ -98,6 +106,8 @@ PacMan.prototype.update = function (du) {
         } else if (dir === "right") {
             this.column += 1;
         }
+
+        this.wrapPosition();
 
         this.direction = this.nextDirection;
         
