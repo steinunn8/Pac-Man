@@ -46,6 +46,10 @@ Entity.prototype.setup = function (descr) {
     this._isDeadNow = false;
 };
 
+Entity.prototype.getPos = function() {
+    return { row: this.row, column: this.column };
+};
+
 Entity.prototype.setPos = function(row, column) {
     this.row = row;
     this.column = column;

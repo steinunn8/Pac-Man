@@ -97,6 +97,7 @@ PacMan.prototype.update = function (du) {
     if (this.timeToNext <= 0) {
 
         var dir = this.nextDirection;
+        var oldPos = this.getPos();
 
         if (dir === "up") {
             this.row -= 1;
@@ -108,11 +109,17 @@ PacMan.prototype.update = function (du) {
             this.column += 1;
         }
 
-        this.wrapPosition();
-
-        this.direction = this.nextDirection;
+        if (g_maze.aGrid[this.row][this.column] < 0) {
+            // Not allowed to go there, revert to old position
+            this.setPos(oldPos.row, oldPos.column);
+            // and stop
+            this.direction = 0;
+        } else {
+            this.wrapPosition();
+            this.direction = this.nextDirection;
+        }
         
-        // Make it positive again
+        // Make the distance to next cell positive again
         this.timeToNext += 1;
     }
     
