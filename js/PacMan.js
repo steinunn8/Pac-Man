@@ -81,16 +81,24 @@ PacMan.prototype.timeToNext = 1;
 PacMan.prototype.update = function (du) {
     
     if (keys[this.KEY_UP]) {
-        this.nextDirection = "up";
+        if (g_maze.penetrable(this.row-1, this.column)) {
+            this.nextDirection = "up";
+        }
     }
     if (keys[this.KEY_DOWN]) {
-        this.nextDirection = "down";
+        if (g_maze.penetrable(this.row+1, this.column)) {
+            this.nextDirection = "down";
+        }
     }
     if (keys[this.KEY_LEFT]) {
-        this.nextDirection = "left";
+        if (g_maze.penetrable(this.row, this.column-1)) {
+            this.nextDirection = "left";
+        }
     }
     if (keys[this.KEY_RIGHT]) {
-        this.nextDirection = "right";
+        if (g_maze.penetrable(this.row, this.column+1)) {
+            this.nextDirection = "right";
+        }
     }
 
     this.timeToNext -= this.speed;
@@ -113,7 +121,7 @@ PacMan.prototype.update = function (du) {
             // Not allowed to go there, revert to old position
             this.setPos(oldPos.row, oldPos.column);
             // and stop
-            this.direction = 0;
+            this.nextDirection = this.direction;
         } else {
             this.wrapPosition();
             this.direction = this.nextDirection;
@@ -130,7 +138,6 @@ PacMan.prototype.update = function (du) {
 
     // TODO: If going through "tunnel", handle
     spatialManager.register(this); 
-
 };
 
 PacMan.prototype.render = function (ctx) {

@@ -22,6 +22,10 @@ function Maze(descr) {
     this._generateWall();
 };
 
+Maze.prototype.penetrable = function(row, column) {
+    return this.aGrid[row][column] >= 0;
+};
+
 Maze.prototype.directions = {
     RIGHT: -1,
     LEFT: -2,

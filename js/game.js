@@ -125,7 +125,7 @@ var g_sprites = {};
 function preloadDone() {
     g_sprites.pacMan  = new Sprite(g_images.sprites,
                                    268, 162,
-                                   16, 16);
+                                   16, 16, 1);
     g_sprites.wall  = new Sprite(g_images.sprites,
                                    270, 164,
                                    8, 8);
