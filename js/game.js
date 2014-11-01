@@ -106,7 +106,7 @@ var g_images = {};
 function requestPreloads() {
 
     var requiredImages = {
-        pacman   : "sprite.png"
+        pacMan   : "sprite.png"
     };
 
     imagesPreload(requiredImages, g_images, preloadDone);
@@ -115,7 +115,9 @@ function requestPreloads() {
 var g_sprites = {};
 
 function preloadDone() {
-    g_sprites.pacman  = new Sprite(g_images.pacman);
+    g_sprites.pacMan  = new Sprite(g_images.pacMan,
+                                   268, 162,
+                                   16, 16);
 
     entityManager.init();
 

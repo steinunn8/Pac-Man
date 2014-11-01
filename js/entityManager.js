@@ -27,11 +27,16 @@ var entityManager = {
 
     // "PRIVATE" DATA
 
+    _pacMans : [],
     _ghosts   : [],
     _maze     : [],
     
 
     // "PRIVATE" METHODS
+
+    _generatePacMan: function(descr) {
+        this._pacMans.push(new PacMan(descr));
+    },
 
     _generateGhosts: function() {
         // TODO
@@ -54,20 +59,22 @@ var entityManager = {
     // i.e. thing which need `this` to be defined.
     //
     deferredSetup : function () {
-        this._categories = [this._ghosts, this._maze];
+        this._categories = [this._maze, this._ghosts, this._pacMans];
     },
 
     init: function() {
+        this._generatePacMan({
+            sprite: g_sprites.pacMan,
+            cx: g_canvas.width/2,
+            cy: g_canvas.height/2,
+            rotation: 0
+        });
         this._generateGhosts();
         //this._generatePacman();
     },
 
     generateGhost : function(descr) {
         //    this._ghosts.push(new Ghost(descr));
-    },
-
-    generatePacman : function(descr) {
-        //    this._ships.push(new Ship(descr));
     },
 
     update: function(du) {
@@ -111,7 +118,7 @@ var entityManager = {
         }
     }
 
-}
+};
 
 // Some deferred setup which needs the object to have been created first
 entityManager.deferredSetup();

@@ -96,5 +96,5 @@ PacMan.prototype.update = function (du) {
 };
 
 PacMan.prototype.render = function (ctx) {
-    util.drawYellowCircle(ctx, this.cx, this.cy, this.radius);
+    this.sprite.drawCentredAt(ctx, this.cx, this.cy, this.rotation);
 };
