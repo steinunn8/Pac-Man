@@ -38,7 +38,6 @@ function createMaze() {
 }
 // TODO lata spatial manager vita af tilvist maze
 
-
 // =============
 // GATHER INPUTS
 // =============
@@ -70,7 +69,6 @@ function updateSimulation(du) {
     entityManager.update(du);
 
     // Prevent perpetual firing!
-    eatKey(Ship.prototype.KEY_FIRE);
 }
 
 // GAME-SPECIFIC DIAGNOSTICS
@@ -122,7 +120,7 @@ var g_images = {};
 function requestPreloads() {
 
     var requiredImages = {
-        pacman   : "https://notendur.hi.is/~pk/308G/images/ship.png",
+        pacman   : "sprite.png"
     };
 
     imagesPreload(requiredImages, g_images, preloadDone);
