@@ -28,8 +28,6 @@ var g_maze;
 function createMaze() {
     g_maze = new Maze({});
 }
-createMaze();
-// TODO lata spatial manager vita af tilvist maze
 
 // =============
 // GATHER INPUTS
@@ -114,7 +112,7 @@ var g_images = {};
 function requestPreloads() {
 
     var requiredImages = {
-        pacMan   : "sprite.png"
+        sprites   : "sprite.png"
     };
 
     imagesPreload(requiredImages, g_images, preloadDone);
@@ -123,13 +121,23 @@ function requestPreloads() {
 var g_sprites = {};
 
 function preloadDone() {
-    g_sprites.pacMan  = new Sprite(g_images.pacMan,
+    g_sprites.pacMan  = new Sprite(g_images.sprites,
                                    268, 162,
                                    16, 16);
+    g_sprites.wall  = new Sprite(g_images.sprites,
+                                   270, 164,
+                                   8, 8);
+    g_sprites.capsule = new Sprite(g_images.sprites,
+                                   293, 79,
+                                   4, 4);
+//    g_sprites.specialCapsule;
 
     entityManager.init();
 
     main.init();
+
+    createMaze();
+    // TODO lata spatial manager vita af tilvist maze
 }
 
 // Kick it off
