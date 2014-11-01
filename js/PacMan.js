@@ -7,9 +7,9 @@
 /* jshint browser: true, devel: true, globalstrict: true */
 
 /*
-0        1         2         3         4         5         6         7         8
-12345678901234567890123456789012345678901234567890123456789012345678901234567890
-*/
+ 0        1         2         3         4         5         6         7         8
+ 12345678901234567890123456789012345678901234567890123456789012345678901234567890
+ */
 
 
 // A generic contructor which accepts an arbitrary descriptor object
@@ -19,11 +19,11 @@ function PacMan(descr) {
     this.setup(descr);
 
     this.rememberResets();
-    
+
     // Default sprite, if not otherwise specified
     //TODO: Sprites
     //this.sprite = this.sprite || g_sprites.ship;
-    
+
     // Set normal drawing scale, and warp state off
     this._scale = 1;
     this._isWarping = false;
@@ -57,7 +57,7 @@ PacMan.prototype.warpSound = new Audio("sounds/shipWarp.ogg");
 PacMan.prototype.reset = function () {
     this.setPos(this.reset_row, this.reset_column);
     this.direction = this.reset_direction;
-    
+
     this.halt();
 };
 
@@ -70,7 +70,7 @@ PacMan.prototype.warp = function (ctx){
 PacMan.prototype.wrapPosition = function() {
     if (this.column >= g_maze.nColumns) { this.column -= g_maze.nColumns; }
     else if (this.column < 0) { this.column += g_maze.nColumns; }
-    
+
     if (this.row >= g_maze.nRows) { this.row -= g_maze.nRows; }
     else if (this.row < 0) { this.row += g_maze.nRows; }
 };
@@ -78,66 +78,75 @@ PacMan.prototype.wrapPosition = function() {
 // Time to next is the remaining proportion of the distance traveled
 // to next cell
 PacMan.prototype.timeToNext = 1;
-PacMan.prototype.update = function (du) {
+
+PacMan.prototype.getNextPos = function(direction) {
+    var row = this.row,
+        column = this.column;
     
+    if (direction === "up") {
+        row -= 1;
+    } else if (direction === "down") {
+        row += 1;
+    } else if (direction === "left") {
+        column -= 1;
+    } else if (direction === "right") {
+        column += 1;
+    }
+
+    return {row: row, column: column};
+};
+
+PacMan.prototype.update = function (du) {
     if (keys[this.KEY_UP]) {
-        if (g_maze.penetrable(this.row-1, this.column)) {
-            this.nextDirection = "up";
-        }
+        this.nextDirection = "up";
     }
     if (keys[this.KEY_DOWN]) {
-        if (g_maze.penetrable(this.row+1, this.column)) {
-            this.nextDirection = "down";
-        }
+        this.nextDirection = "down";
     }
     if (keys[this.KEY_LEFT]) {
-        if (g_maze.penetrable(this.row, this.column-1)) {
-            this.nextDirection = "left";
-        }
+        this.nextDirection = "left";
     }
     if (keys[this.KEY_RIGHT]) {
-        if (g_maze.penetrable(this.row, this.column+1)) {
-            this.nextDirection = "right";
-        }
+        this.nextDirection = "right";
     }
 
     this.timeToNext -= this.speed;
     if (this.timeToNext <= 0) {
 
-        var dir = this.nextDirection;
         var oldPos = this.getPos();
 
-        if (dir === "up") {
-            this.row -= 1;
-        } else if (dir === "down") {
-            this.row += 1;
-        } else if (dir === "left") {
-            this.column -= 1;
-        } else if (dir === "right") {
-            this.column += 1;
-        }
+        // First try the the key pressed
+        var nextPos = this.getNextPos(this.nextDirection);
 
-        if (g_maze.aGrid[this.row][this.column] < 0) {
-            // Not allowed to go there, revert to old position
-            this.setPos(oldPos.row, oldPos.column);
-            // and stop
-            this.nextDirection = this.direction;
+        if (!g_maze.penetrable(nextPos.row, nextPos.column)) {
+            // Not allowed to go there, Try the old direction
+            nextPos = this.getNextPos(this.direction);
         } else {
-            this.wrapPosition();
+            // We can move into the new direction. For now just make
+            // that our future direction, and move later.
             this.direction = this.nextDirection;
         }
         
+        if (!g_maze.penetrable(nextPos.row, nextPos.column)) {
+            // Still not allowed, so just stop
+            this.direction = 0;
+        } else {
+            // we can move!!
+            this.setPos(nextPos.row, nextPos.column);
+            this.wrapPosition();
+        }
+
         // Make the distance to next cell positive again
         this.timeToNext += 1;
     }
-    
+
     // TODO: Unregister and check for death
     spatialManager.unregister(this);
-    
+
     // TODO: Warp if isColliding, otherwise Register
 
     // TODO: If going through "tunnel", handle
-    spatialManager.register(this); 
+    spatialManager.register(this);
 };
 
 PacMan.prototype.render = function (ctx) {
