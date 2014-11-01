@@ -27,14 +27,7 @@ function createPacMan() {
 var g_maze;
 
 function createMaze() {
-    g_maze = new Maze({
-        aGrid: [ [-1,-1,-1,-1,-1],
-                 [-1, 0, 0, 0,-1],
-                 [-1, 0, 0, 0,-1],
-                 [-1, 0, 0, 0,-1],
-                 [-1,-1,-1,-1,-1]
-                ]
-    });
+    g_maze = new Maze({});
 }
 createMaze();
 // TODO lata spatial manager vita af tilvist maze

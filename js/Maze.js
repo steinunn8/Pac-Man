@@ -15,6 +15,7 @@ function Maze(descr) {
     for (var property in descr) {
         this[property] = descr[property];
     }
+    this.aGrid = this._getDefaultMazeArray();
     this._generateWall();
 };
 
