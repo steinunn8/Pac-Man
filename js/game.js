@@ -19,8 +19,8 @@ function createPacMan() {
     entityManager.generatePacMan({
         sprite: g_sprites.pacMan,
         column: 14,
-        row: 21,
-        speed: 0.20,
+        row: 20,
+        speed: 0.33,
         rotation: 0
     });
 }
