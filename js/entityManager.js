@@ -65,8 +65,8 @@ var entityManager = {
 
     generatePacMan : function(descr) {
         this._pacMans.push(new PacMan(descr));
-        //Testing sounds
-        this._pacMans[0].introSound.play();
+        //Testing sounds, uncomment for PacMan-party 
+        //this._pacMans[0].introSound.play();
     },
 
     update: function(du) {

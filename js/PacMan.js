@@ -50,6 +50,7 @@ PacMan.prototype.score = 0;
 //TODO: Change audio
 PacMan.prototype.eatSound = new Audio("sounds/pacman_chomp.wav");
 PacMan.prototype.warpSound = new Audio("sounds/pacman_death.wav");
+//TODO: Move to better place!
 PacMan.prototype.introSound = new Audio("sounds/pacman_beginning.wav");
 
 PacMan.prototype.reset = function () {
