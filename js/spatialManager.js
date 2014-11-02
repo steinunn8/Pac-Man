@@ -32,22 +32,17 @@ var spatialManager = {
     // PUBLIC METHODS
 
     getNewSpatialID : function() {
-
-        // TODO: YOUR STUFF HERE!
         return this._nextSpatialID++;
-        
     },
 
     register: function(entity) {
         // var pos = entity.getPos();
         var spatialID = entity.getSpatialID();
-        
         this._entities[spatialID] = entity;
     },
 
     unregister: function(entity) {
         var spatialID = entity.getSpatialID();
-
         delete this._entities[spatialID];
     },
 

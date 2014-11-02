@@ -26,6 +26,14 @@ Maze.prototype.penetrable = function(row, column) {
     return this.aGrid[row][column] >= 0;
 };
 
+Maze.prototype.isCapsule = function(row, column){
+    return this.aGrid[row][column] == 1;
+}
+
+Maze.prototype.isSpecialCapsule = function(row, column){
+    return this.aGrid[row][column] == 2;
+}
+
 Maze.prototype.directions = {
     RIGHT: -1,
     LEFT: -2,
@@ -200,7 +208,7 @@ Maze.prototype._drawPart = function(ctx, renderValue, x, y, isDouble) {
 
 Maze.prototype._adjecentCount = function(row, column) {
     var count = 0;
-    var hlidar = {right: false, down: false, left: false, up: false};
+    var sides = {right: false, down: false, left: false, up: false};
     var offset = 0;
 
     if(this.aGrid[row][column] == this.DOUBLE_WALL) {
@@ -209,31 +217,31 @@ Maze.prototype._adjecentCount = function(row, column) {
 
     if(row > 0 && this.aGrid[row-1][column] > -1) {
         count++;
-        hlidar.up = true;
+        sides.up = true;
     }
     if(row < this.aGrid.length-1 && this.aGrid[row+1][column] > -1) {
         count++;
-        hlidar.down = true;
+        sides.down = true;
     }
     if(column > 0 && this.aGrid[row][column-1] > -1) {
         count++;
-        hlidar.left = true;
+        sides.left = true;
     }
     if(column < this.aGrid[0].length-1 && this.aGrid[row][column+1] > -1) {
         count++;
-        hlidar.right = true;
+        sides.right = true;
     }
 
     if(count == 1) {
-        if(hlidar.right) return this.directions.RIGHT + offset;
-        if(hlidar.left) return this.directions.LEFT + offset;
-        if(hlidar.up) return this.directions.UP + offset;
-        if(hlidar.down) return this.directions.BOTTOM + offset;
+        if(sides.right) return this.directions.RIGHT + offset;
+        if(sides.left) return this.directions.LEFT + offset;
+        if(sides.up) return this.directions.UP + offset;
+        if(sides.down) return this.directions.BOTTOM + offset;
     } else if(count == 2) {
-        if(hlidar.right && hlidar.up) return this.directions.TOP_RIGHT + offset;
-        if(hlidar.left && hlidar.up) return this.directions.TOP_LEFT + offset;
-        if(hlidar.right && hlidar.down) return this.directions.BOTTOM_RIGHT + offset;
-        if(hlidar.left && hlidar.down) return this.directions.BOTTOM_LEFT + offset;
+        if(sides.right && sides.up) return this.directions.TOP_RIGHT + offset;
+        if(sides.left && sides.up) return this.directions.TOP_LEFT + offset;
+        if(sides.right && sides.down) return this.directions.BOTTOM_RIGHT + offset;
+        if(sides.left && sides.down) return this.directions.BOTTOM_LEFT + offset;
 
 
     } else if(count == 0) {

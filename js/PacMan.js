@@ -20,10 +20,6 @@ function PacMan(descr) {
 
     this.rememberResets();
 
-    // Default sprite, if not otherwise specified
-    //TODO: Sprites
-    //this.sprite = this.sprite || g_sprites.ship;
-
     // Set normal drawing scale, and warp state off
     this._scale = 1;
     this._isWarping = false;
@@ -38,8 +34,6 @@ PacMan.prototype.rememberResets = function () {
     this.reset_direction = this.direction;
 };
 
-
-//TODO: Change to arrow keys?
 PacMan.prototype.KEY_UP = 'W'.charCodeAt(0);
 PacMan.prototype.KEY_DOWN  = 'S'.charCodeAt(0);
 PacMan.prototype.KEY_LEFT   = 'A'.charCodeAt(0);
@@ -47,12 +41,16 @@ PacMan.prototype.KEY_RIGHT  = 'D'.charCodeAt(0);
 
 // Initial, inheritable, default values
 PacMan.prototype.direction = 0;
+PacMan.prototype.lives = 3;
+PacMan.prototype.score = 0;
+
 //TODO: FIX
 
 // HACKED-IN AUDIO (no preloading)
 //TODO: Change audio
-PacMan.prototype.eatSound = new Audio("sounds/shipWarp.ogg");
-PacMan.prototype.warpSound = new Audio("sounds/shipWarp.ogg");
+PacMan.prototype.eatSound = new Audio("sounds/pacman_chomp.wav");
+PacMan.prototype.warpSound = new Audio("sounds/pacman_death.wav");
+PacMan.prototype.introSound = new Audio("sounds/pacman_beginning.wav");
 
 PacMan.prototype.reset = function () {
     this.setPos(this.reset_row, this.reset_column);
@@ -64,6 +62,7 @@ PacMan.prototype.reset = function () {
 //When PacMan dies we warp him to his original place
 PacMan.prototype.warp = function (ctx){
     //TODO: Move to original place with animation
+    this.warpSound.play();
     this.reset();
 };
 

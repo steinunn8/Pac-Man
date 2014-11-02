@@ -34,10 +34,6 @@ var entityManager = {
 
     // "PRIVATE" METHODS
 
-    _generateGhosts: function() {
-        // TODO
-    },
-
     _forEachOf: function(aCategory, fn) {
         for (var i = 0; i < aCategory.length; ++i) {
             fn.call(aCategory[i]);
@@ -59,16 +55,18 @@ var entityManager = {
     },
 
     init: function() {
-        this._generateGhosts();
+        //this._generateGhosts();
         //this._generatePacman();
     },
 
     generateGhost : function(descr) {
-        //    this._ghosts.push(new Ghost(descr));
+        this._ghosts.push(new Ghost(descr));
     },
 
     generatePacMan : function(descr) {
         this._pacMans.push(new PacMan(descr));
+        //Testing sounds
+        this._pacMans[0].introSound.play();
     },
 
     update: function(du) {
