@@ -141,7 +141,12 @@ var util = {
         ctx.restore();
     },
 
-    drawLine: function(ctx, x, y, rotation, style) {
+    drawLine: function(ctx, x, y, rotation, style, doubleLine, isDouble) {
+        if(isDouble) {
+            this.drawDoubleLine(ctx, x, y, rotation, style);
+            return;
+        }
+
         var oldStyle = this.prepareLine(ctx, x, y, rotation, style);
 
         var xOffset = 0.1 * consts.BOX_DIMENSION * consts.SCALING;
@@ -149,27 +154,53 @@ var util = {
         ctx.moveTo(xOffset, -yOffset);
         ctx.lineTo(xOffset, yOffset);
 
+        if(doubleLine) {
+            ctx.moveTo(yOffset, -yOffset);
+            ctx.lineTo(yOffset, yOffset);
+        }
+
         this.finishLine(oldStyle);
     },
 
-    drawCurve: function(ctx, x, y, rotation, style) {
+    drawDoubleLine: function(ctx, x, y, rotation, style) {
         var oldStyle = this.prepareLine(ctx, x, y, rotation, style);
 
-        var offset = 0.1 * consts.BOX_DIMENSION * consts.SCALING;
-        var centerOffset = 0.5 * consts.BOX_DIMENSION * consts.SCALING;
-        ctx.moveTo(offset, centerOffset);
-        ctx.quadraticCurveTo(0, 0, centerOffset, offset);
-        
+        var offset = 0.5 * consts.BOX_DIMENSION * consts.SCALING;
+        ctx.moveTo(-offset, -offset);
+        ctx.lineTo(-offset, offset);
+
         this.finishLine(oldStyle);
     },
 
-    drawLongCurve: function(ctx, x, y, rotation, style) {
+    drawCurve: function(ctx, x, y, rotation, style, doubleLine) {
+        var oldStyle = this.prepareLine(ctx, x, y, rotation, style);
+
+        var dimension = consts.BOX_DIMENSION * consts.SCALING;
+        var offset = 0.1 * dimension;
+        var centerOffset = 0.5 * dimension;
+        ctx.moveTo(offset, centerOffset);
+        ctx.quadraticCurveTo(0, 0, centerOffset, offset);
+/*
+        if(doubleLine) {
+            ctx.moveTo(centerOffset, centerOffset+offset);
+            ctx.quadraticCurveTo(centerOffset, centerOffset, centerOffset+offset, centerOffset);
+        }
+*/
+        this.finishLine(oldStyle);
+    },
+
+    drawLongCurve: function(ctx, x, y, rotation, style, doubleLine) {
         var oldStyle = this.prepareLine(ctx, x, y, rotation, style);
 
         var offset = 0.1 * consts.BOX_DIMENSION * consts.SCALING;
         var centerOffset = 0.5 * consts.BOX_DIMENSION * consts.SCALING;
         ctx.moveTo(-offset, centerOffset);
         ctx.quadraticCurveTo(0, 0, centerOffset, -offset);
+
+        if(doubleLine) {
+            ctx.moveTo(-centerOffset, centerOffset);
+            ctx.quadraticCurveTo(-centerOffset, -centerOffset, centerOffset, -centerOffset);
+        }
         
         this.finishLine(oldStyle);
     },

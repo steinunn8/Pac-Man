@@ -36,7 +36,9 @@ walls around each cell.
 
 Code | Meaning 
 ----:| -------
--2   | Impenetrable by Pac-Man / penetrable by Ghosts
+-4   | Impenetrable by Pac-Man / penetrable by Ghosts
+-3   | Impenetrable (double lines)
+-2   | Impenetrable by Pac-Man / penetrable by Ghosts (wall)
 -1   | Impenetrable
  0   | Empty
  1   | Capsule
