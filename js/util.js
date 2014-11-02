@@ -113,46 +113,55 @@ var util = {
         this.fillBox(ctx, x - halfSquareDimension, y - halfSquareDimension, halfSquareDimension*2, halfSquareDimension*2, style);
     },
 
-    drawLine: function(ctx, x, y, rotation, style) {
+    prepareLine: function(ctx, x, y, rotation, style) {
         if(rotation === undefined) rotation = 0;
         if(style === undefined) style = ctx.strokeStyle;
         ctx.save();
 
         ctx.translate(x, y);
         ctx.rotate(rotation);
-
         var oldStyle = ctx.strokeStyle;
         ctx.strokeStyle = style;
         ctx.beginPath();
-        var xOffset = 0.1 * consts.BOX_DIMENSION * consts.SCALING;
-        var yOffset = 0.5 * consts.BOX_DIMENSION * consts.SCALING;
-        ctx.moveTo(xOffset, -yOffset);
-        ctx.lineTo(xOffset, yOffset);
-        ctx.stroke();
+    },
 
+    finishLine: function(oldStyle) {
+        ctx.stroke();
         ctx.fillStyle = oldStyle;
         ctx.restore();
     },
 
+    drawLine: function(ctx, x, y, rotation, style) {
+        var oldStyle = this.prepareLine(ctx, x, y, rotation, style);
+
+        var xOffset = 0.1 * consts.BOX_DIMENSION * consts.SCALING;
+        var yOffset = 0.5 * consts.BOX_DIMENSION * consts.SCALING;
+        ctx.moveTo(xOffset, -yOffset);
+        ctx.lineTo(xOffset, yOffset);
+
+        this.finishLine(oldStyle);
+    },
+
     drawCurve: function(ctx, x, y, rotation, style) {
-        if(rotation === undefined) rotation = 0;
-        if(style === undefined) style = ctx.strokeStyle;
-        ctx.save();
+        var oldStyle = this.prepareLine(ctx, x, y, rotation, style);
 
-        ctx.translate(x, y);
-        ctx.rotate(rotation);
-
-        var oldStyle = ctx.strokeStyle;
-        ctx.strokeStyle = style;
-        ctx.beginPath();
         var offset = 0.1 * consts.BOX_DIMENSION * consts.SCALING;
         var centerOffset = 0.5 * consts.BOX_DIMENSION * consts.SCALING;
         ctx.moveTo(offset, centerOffset);
-        ctx.lineTo(centerOffset, offset);
-        ctx.stroke();
+        ctx.quadraticCurveTo(0, 0, centerOffset, offset);
+        
+        this.finishLine(oldStyle);
+    },
 
-        ctx.fillStyle = oldStyle;
-        ctx.restore();
+    drawLongCurve: function(ctx, x, y, rotation, style) {
+        var oldStyle = this.prepareLine(ctx, x, y, rotation, style);
+
+        var offset = 0.1 * consts.BOX_DIMENSION * consts.SCALING;
+        var centerOffset = 0.5 * consts.BOX_DIMENSION * consts.SCALING;
+        ctx.moveTo(-offset, centerOffset);
+        ctx.quadraticCurveTo(0, 0, centerOffset, -offset);
+        
+        this.finishLine(oldStyle);
     },
 
 
@@ -171,6 +180,10 @@ var util = {
         var row = (y - dimension/2) / dimension;
 
         return {row: row, column: column};
+    },
+
+    inArray: function(arr, value) {
+        return arr.indexOf(value) > -1;
     }
 
 };

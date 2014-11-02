@@ -34,7 +34,12 @@ Maze.prototype.directions = {
     TOP_RIGHT: -5,
     TOP_LEFT: -6,
     BOTTOM_RIGHT: -7,
-    BOTTOM_LEFT: -8
+    BOTTOM_LEFT: -8,
+    NONE: -9,
+    LONG_TOP_RIGHT: -10,
+    LONG_TOP_LEFT: -11,
+    LONG_BOTTOM_RIGHT: -12,
+    LONG_BOTTOM_LEFT: -13
 };
 
 Maze.prototype._generateWall = function() {
@@ -69,28 +74,52 @@ Maze.prototype._getRenderValue = function(row, column) {
 };
 
 Maze.prototype._drawPart = function(ctx, renderValue, x, y) {
-    if(renderValue == this.directions.RIGHT) {
-        util.drawLine(ctx, x, y, Math.PI, "blue");
-    } else if(renderValue == this.directions.LEFT) {
-        util.drawLine(ctx, x, y, 0, "blue");
-    } else if(renderValue == this.directions.UP) {
-        util.drawLine(ctx, x, y, Math.PI/2, "blue");
-    } else if(renderValue == this.directions.BOTTOM) {
-        util.drawLine(ctx, x, y, -Math.PI/2, "blue");
-    } else if(renderValue == this.directions.TOP_RIGHT) {
-        util.drawCurve(ctx, x, y, Math.PI, "blue");
-    } else if(renderValue == this.directions.TOP_LEFT) {
-        util.drawCurve(ctx, x, y, 0, "blue");
-    } else if(renderValue == this.directions.BOTTOM_RIGHT) {
-        util.drawCurve(ctx, x, y, Math.PI/2, "blue");
-    } else if(renderValue == this.directions.BOTTOM_LEFT) {
-        util.drawCurve(ctx, x, y, -Math.PI/2, "blue");
+    var rotation;
+    switch(renderValue) {
+        case this.directions.RIGHT:
+        case this.directions.BOTTOM_RIGHT:
+        case this.directions.LONG_TOP_LEFT:
+            rotation = Math.PI;
+            break;
+        case this.directions.LEFT:
+        case this.directions.TOP_LEFT:
+        case this.directions.LONG_BOTTOM_RIGHT:
+            rotation = 0;
+            break;
+        case this.directions.UP:
+        case this.directions.TOP_RIGHT:
+        case this.directions.LONG_BOTTOM_LEFT:
+            rotation = Math.PI/2;
+            break;
+        case this.directions.BOTTOM:
+        case this.directions.BOTTOM_LEFT:
+        case this.directions.LONG_TOP_RIGHT:
+            rotation = -Math.PI/2;
+            break;
+            
+    }
+    var style = "blue"
+    if(util.inArray([this.directions.RIGHT, 
+                     this.directions.LEFT, 
+                     this.directions.UP, 
+                     this.directions.BOTTOM], renderValue)) {
+        util.drawLine(ctx, x, y, rotation, style);
+    } else if(util.inArray([this.directions.BOTTOM_LEFT, 
+                            this.directions.BOTTOM_RIGHT, 
+                            this.directions.TOP_RIGHT, 
+                            this.directions.TOP_LEFT], renderValue)) {
+        util.drawCurve(ctx, x, y, rotation, style);
+    } else if(util.inArray([this.directions.LONG_BOTTOM_LEFT, 
+                            this.directions.LONG_BOTTOM_RIGHT, 
+                            this.directions.LONG_TOP_RIGHT, 
+                            this.directions.LONG_TOP_LEFT], renderValue)) {
+        util.drawLongCurve(ctx, x, y, rotation, style);
+    } else if(renderValue == 5) {
+        util.fillCenteredSquare(ctx, x, y, consts.SCALING*consts.BOX_DIMENSION/2, "green");
     } else if(renderValue == 1) {
         util.fillCircle(ctx, x, y, consts.SCALING*consts.BOX_DIMENSION/8, "yellow");
     } else if(renderValue == 2) {
         util.fillCircle(ctx, x, y, consts.SCALING*consts.BOX_DIMENSION/2.5, "yellow");
-    } else if(renderValue == 5) {
-        util.fillCenteredSquare(ctx, x, y, consts.SCALING*consts.BOX_DIMENSION/2, "green");
     }
 };
 
@@ -120,10 +149,24 @@ Maze.prototype._adjecentCount = function(row, column) {
         if(hlidar.up) return this.directions.UP;
         if(hlidar.down) return this.directions.BOTTOM;
     } else if(count == 2) {
-        if(hlidar.right && hlidar.top) return this.directions.TOP_RIGHT;
-        if(hlidar.left && hlidar.top) return this.directions.TOP_LEFT;
+        if(hlidar.right && hlidar.up) return this.directions.TOP_RIGHT;
+        if(hlidar.left && hlidar.up) return this.directions.TOP_LEFT;
         if(hlidar.right && hlidar.down) return this.directions.BOTTOM_RIGHT;
         if(hlidar.left && hlidar.down) return this.directions.BOTTOM_LEFT;
+    } else if(count == 0) {
+        if(row > 0 && column > 0 && this.aGrid[row-1][column-1] > -1) {
+            return this.directions.LONG_TOP_LEFT;
+        }
+        if(row < this.aGrid.length-1 && column > 0 && this.aGrid[row+1][column-1] > -1) {
+            return this.directions.LONG_BOTTOM_LEFT;
+        }
+        if(column < this.aGrid[0].length-1 && row > 0 && this.aGrid[row-1][column+1] > -1) {
+            return this.directions.LONG_TOP_RIGHT;
+        }
+        if(column < this.aGrid[0].length-1 && row < this.aGrid.length-1 && this.aGrid[row+1][column+1] > -1) {
+            return this.directions.LONG_BOTTOM_RIGHT;
+        }
+        return this.directions.NONE;
     }
 
     return 5;
