@@ -19,8 +19,8 @@ function createPacMan() {
     entityManager.generatePacMan({
         sprite: g_sprites.pacMan,
         column: 14,
-        row: 20,
-        speed: 0.10,
+        row: 21,
+        speed: 0.20,
         rotation: 0
     });
 }
@@ -140,6 +140,8 @@ function preloadDone() {
     main.init();
 
     createMaze();
+    g_canvas.width = g_maze.nColumns*consts.BOX_DIMENSION*2;
+    g_canvas.height = g_maze.nRows*consts.BOX_DIMENSION*2;
     // TODO lata spatial manager vita af tilvist maze
 }
 
