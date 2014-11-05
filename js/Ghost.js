@@ -23,6 +23,7 @@ function Ghost(descr) {
     // Set normal drawing scale, and warp state off
     this._scale = 1;
     this._isDead = false; //only eyes
+    this._isEatable = false;
 };
 
 Ghost.prototype = new Entity();

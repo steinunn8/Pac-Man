@@ -60,8 +60,6 @@ function updateSimulation(du) {
     processDiagnostics();
 
     entityManager.update(du);
-
-    // Prevent perpetual firing!
 }
 
 // GAME-SPECIFIC DIAGNOSTICS
@@ -132,7 +130,7 @@ function preloadDone() {
     g_sprites.capsule = new Sprite(g_images.sprites,
                                    293, 79,
                                    4, 4);
-//    g_sprites.specialCapsule;
+    //g_sprites.specialCapsule;
 
     entityManager.init();
     createPacMan();
