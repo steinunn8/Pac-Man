@@ -27,9 +27,10 @@ var entityManager = {
 
     // "PRIVATE" DATA
 
-    _pacMans : [],
+    _pacMans  : [],
     _ghosts   : [],
     _maze     : [],
+    _capsules : [],
 
 
     // "PRIVATE" METHODS
@@ -68,6 +69,11 @@ var entityManager = {
         //Testing sounds, uncomment for PacMan-party 
         //this._pacMans[0].introSound.play();
     },
+
+    generateCapsule : function(descr){
+        this._capsules.push(new Capsule(descr));
+    },
+
 
     update: function(du) {
 

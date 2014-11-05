@@ -121,6 +121,10 @@ Entity.prototype.findHitEntity = function () {
     );
 };
 
+Entity.prototype.isEaten = function(){
+    return false;
+};
+
 // This is just little "convenience wrapper"
 Entity.prototype.isColliding = function () {
     return this.findHitEntity();
