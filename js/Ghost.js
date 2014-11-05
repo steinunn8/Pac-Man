@@ -27,6 +27,7 @@ function Ghost(descr) {
 };
 
 Ghost.prototype = new Entity();
+Ghost.prototype.directions = ["up", "down", "left", "right"];
 
 Ghost.prototype.rememberResets = function () {
     // Remember my reset positions
@@ -34,7 +35,7 @@ Ghost.prototype.rememberResets = function () {
     this.reset_column = this.column;
 };
 
-Ghost.prototype.direction = 0;
+Ghost.prototype.direction = "left";
 Ghost.prototype.nextDirection = 0;
 
 Ghost.prototype.reset = function () {
@@ -42,6 +43,15 @@ Ghost.prototype.reset = function () {
 };
 
 Ghost.prototype.update = function (du) {
+    this.move(du, this.direction, this.nextDirection);
+
+    var directionValue;
+    while(!this.direction) {
+        directionValue = (Math.random()*4)|0;
+        this.nextDirection = this.directions[directionValue];
+        this.move(du, this.direction, this.nextDirection);
+    }
+
     // TODO: Unregister and check for death (if blue)
     spatialManager.unregister(this);
 
@@ -58,4 +68,7 @@ Ghost.prototype.render = function (ctx) {
     //       if specialCapsule, draw blue/white ghost from sprite
     
     // this.sprite.drawCentredAt(ctx, pos.xPos, pos.yPos, rotation);
+    var pos = util.getCoordsFromBox(this.row, this.column);
+    var dimens = 20;
+    util.fillBox(ctx, pos.xPos - dimens/2, pos.yPos - dimens/2, dimens, dimens, "blue");
 };

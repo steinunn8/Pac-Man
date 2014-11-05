@@ -44,7 +44,58 @@ Entity.prototype.setup = function (descr) {
     
     // I am not dead yet!
     this._isDeadNow = false;
+    // Time to next is the remaining proportion of the distance traveled
+    // to next cell
+    this.timeToNext = 1;
 };
+
+Entity.prototype.getNextPos = function(direction) {
+    var row = this.row,
+        column = this.column;
+    
+    if (direction === "up") {
+        row -= 1;
+    } else if (direction === "down") {
+        row += 1;
+    } else if (direction === "left") {
+        column -= 1;
+    } else if (direction === "right") {
+        column += 1;
+    }
+
+    return util.wrapPosition(row, column);
+};
+
+Entity.prototype.move = function(du, direction, nextDirection) {
+    this.timeToNext -= this.speed * du / NOMINAL_UPDATE_INTERVAL;
+    if (this.timeToNext <= 0) {
+
+        var oldPos = this.getPos();
+
+        // First try the the key pressed
+        var nextPos = this.getNextPos(nextDirection);
+
+        if (!g_maze.penetrable(nextPos.row, nextPos.column)) {
+            // Not allowed to go there, Try the old direction
+            nextPos = this.getNextPos(direction);
+        } else {
+            // We can move into the new direction. For now just make
+            // that our future direction, and move later.
+            this.direction = nextDirection;
+        }
+        
+        if (!g_maze.penetrable(nextPos.row, nextPos.column)) {
+            // Still not allowed, so just stop
+            this.direction = 0;
+        } else {
+            // we can move!!
+            this.setPos(nextPos.row, nextPos.column);
+        }
+
+        // Make the distance to next cell positive again
+        this.timeToNext += 1;
+    }
+}
 
 Entity.prototype.getPos = function() {
     return { row: this.row, column: this.column };

@@ -25,6 +25,16 @@ function createPacMan() {
     });
 }
 
+function createGhosts() {
+    entityManager.generateGhost({
+        sprite: g_sprites.pacMan,
+        column: 14,
+        row: 14,
+        speed: 2, // columns per second
+        rotation: 0
+    });
+}
+
 var g_maze;
 
 function createMaze() {
@@ -134,6 +144,7 @@ function preloadDone() {
 
     entityManager.init();
     createPacMan();
+    createGhosts();
 
     main.init();
 

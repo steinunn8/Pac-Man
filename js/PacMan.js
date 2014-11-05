@@ -71,26 +71,10 @@ PacMan.prototype.warp = function (ctx){
     this.reset();
 };
 
-// Time to next is the remaining proportion of the distance traveled
-// to next cell
-PacMan.prototype.timeToNext = 1;
-
-PacMan.prototype.getNextPos = function(direction) {
-    var row = this.row,
-        column = this.column;
-    
-    if (direction === "up") {
-        row -= 1;
-    } else if (direction === "down") {
-        row += 1;
-    } else if (direction === "left") {
-        column -= 1;
-    } else if (direction === "right") {
-        column += 1;
-    }
-
-    return util.wrapPosition(row, column);
-};
+PacMan.prototype._keyMove = function() {
+    return keys[this.KEY_UP] || keys[this.KEY_DOWN] || 
+           keys[this.KEY_LEFT] || keys[this.KEY_RIGHT];
+}
 
 PacMan.prototype.update = function (du) {
     if (keys[this.KEY_UP]) {
@@ -106,34 +90,12 @@ PacMan.prototype.update = function (du) {
         this.nextDirection = "right";
     }
 
-    this.timeToNext -= this.speed * du / NOMINAL_UPDATE_INTERVAL;
-    if (this.timeToNext <= 0) {
-
-        var oldPos = this.getPos();
-
-        // First try the the key pressed
-        var nextPos = this.getNextPos(this.nextDirection);
-
-        if (!g_maze.penetrable(nextPos.row, nextPos.column)) {
-            // Not allowed to go there, Try the old direction
-            nextPos = this.getNextPos(this.direction);
-        } else {
-            // We can move into the new direction. For now just make
-            // that our future direction, and move later.
-            this.direction = this.nextDirection;
-        }
-        
-        if (!g_maze.penetrable(nextPos.row, nextPos.column)) {
-            // Still not allowed, so just stop
-            this.direction = 0;
-        } else {
-            // we can move!!
-            this.setPos(nextPos.row, nextPos.column);
-        }
-
-        // Make the distance to next cell positive again
-        this.timeToNext += 1;
+    if (this._keyMove() && this.direction === 0) {
+        this.timeToNext = 0;
     }
+
+    // mutates the direction of pacman
+    this.move(du, this.direction, this.nextDirection);
 
     // TODO: Unregister and check for death
     spatialManager.unregister(this);
