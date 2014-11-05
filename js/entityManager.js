@@ -100,6 +100,10 @@ var entityManager = {
         return this._maze[0].aGrid.length;
     },
     
+    generateCapsule : function(descr){
+        this._capsules.push(new Capsule(descr));
+    },
+
     update: function(du) {
 
         for (var c = 0; c < this._categories.length; ++c) {

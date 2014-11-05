@@ -45,18 +45,4 @@ var spatialManager = {
         var spatialID = entity.getSpatialID();
         delete this._entities[spatialID];
     },
-    
-    render: function(ctx) {
-        var oldStyle = ctx.strokeStyle;
-        ctx.strokeStyle = "red";
-        
-        for (var ID in this._entities) {
-            var e = this._entities[ID];
-            if (e === undefined) continue;
-            var pos = e.getPos();
-            var radius = e.getRadius();
-            util.strokeCircle(ctx, pos.posX, pos.posY, radius);
-        }
-        ctx.strokeStyle = oldStyle;
-    }
 };
