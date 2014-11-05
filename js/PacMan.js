@@ -106,7 +106,7 @@ PacMan.prototype.update = function (du) {
         this.nextDirection = "right";
     }
 
-    this.timeToNext -= this.speed;
+    this.timeToNext -= this.speed * du / NOMINAL_UPDATE_INTERVAL;
     if (this.timeToNext <= 0) {
 
         var oldPos = this.getPos();
