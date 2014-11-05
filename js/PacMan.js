@@ -151,7 +151,7 @@ PacMan.prototype.drawCentredAt = function(ctx, cx, cy, rotation) {
     var boxDim = consts.BOX_DIMENSION;
     var startMouth = this._mouthOpenProp*2*Math.PI,
         endMouth = (1-this._mouthOpenProp)*2*Math.PI,
-        r = consts.SCALING*boxDim/1.5;
+        r = boxDim/1.5;
 
     var draw = function(cx, cy) {
         ctx.save();
@@ -185,16 +185,16 @@ PacMan.prototype.render = function (ctx) {
     var dir = this.direction;
     var going = this.nextDirection;
     if (dir === "up") {
-        pos.yPos += (this.timeToNext)*boxDim*2;
+        pos.yPos += (this.timeToNext)*boxDim;
         rotation = 3*Math.PI/2;
     } else if (dir === "down") {
-        pos.yPos -= (this.timeToNext)*boxDim*2;
+        pos.yPos -= (this.timeToNext)*boxDim;
         rotation = 1*Math.PI/2;
     } else if (dir === "left") {
-        pos.xPos += (this.timeToNext)*boxDim*2;
+        pos.xPos += (this.timeToNext)*boxDim;
         rotation = 2*Math.PI/2;
     } else if (dir === "right") {
-        pos.xPos -= (this.timeToNext)*boxDim*2;
+        pos.xPos -= (this.timeToNext)*boxDim;
     }
 
     if (!dir) {
