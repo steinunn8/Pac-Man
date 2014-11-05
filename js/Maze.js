@@ -73,7 +73,7 @@ Maze.prototype.gridValues = {
     GHOST_WALL: -2,
     DOUBLE_WALL: -3,
     GHOST_SPAWN: -4
-}
+};
 
 // for normal double lines
 Maze.prototype.DOUBLE_LINE_OFFSET = -100;
@@ -96,18 +96,21 @@ Maze.prototype.update = function(du) {
 };
 
 Maze.prototype.render = function(ctx) {
-    if(this.sprite == -1) {
-        for(var i = 0; i < this.aRenderingWall.length; i++) {
-            for(var j = 0; j < this.aRenderingWall[i].length; j++) {
-                var renderValue = this.aRenderingWall[i][j];
-                var pos = util.getCoordsFromBox(i, j);
+    var renderValue, pos, i, j;
+    if (this.sprite == -1) {
+        for (i = 0; i < this.aRenderingWall.length; i++) {
+            for (j = 0; j < this.aRenderingWall[i].length; j++) {
+                renderValue = this.aRenderingWall[i][j];
+                pos = util.getCoordsFromBox(i, j);
                 this._drawPart(ctx, renderValue, pos.xPos, pos.yPos);
             }
         }
 
         var image = new Image();
         image.src = canvas.toDataURL();
-        this.sprite = new Sprite(image, 0, 0, g_canvas.width, g_canvas.height, 1);
+        this.sprite = new Sprite(image, 0, 0,
+                                 g_canvas.width, g_canvas.height,
+                                 1);
 
     } else {
         this.sprite.drawAt(ctx, 0, 0);
@@ -117,10 +120,10 @@ Maze.prototype.render = function(ctx) {
     var oldStyle = ctx.fillStyle;
     ctx.fillStyle = "#FBB382";
 
-    for(var i = 0; i < this.aRenderingWall.length; i++) {
-        for(var j = 0; j < this.aRenderingWall[i].length; j++) {
-            var renderValue = this.aRenderingWall[i][j];
-            var pos = util.getCoordsFromBox(i, j);
+    for (i = 0; i < this.aRenderingWall.length; i++) {
+        for (j = 0; j < this.aRenderingWall[i].length; j++) {
+            renderValue = this.aRenderingWall[i][j];
+            pos = util.getCoordsFromBox(i, j);
             this._drawItems(ctx, renderValue, pos.xPos, pos.yPos);
         }
     }
@@ -129,13 +132,17 @@ Maze.prototype.render = function(ctx) {
 };
 
 Maze.prototype._getRenderValue = function(row, column) {
-    if(this.aGrid[row][column] == this.gridValues.GHOST_WALL) {
+    if (this.aGrid[row][column] == this.gridValues.GHOST_WALL) {
         return this.renderValues.GHOST_WALL;
-    } else if(this.aGrid[row][column] < this.gridValues.EMPTY) {
+    } else if (this.aGrid[row][column] < this.gridValues.EMPTY) {
         return this._adjecentCheck(row, column);
     }
-    if(this.aGrid[row][column] == this.gridValues.CAPSULE) return this.renderValues.CAPSULE;
-    if(this.aGrid[row][column] == this.gridValues.SPECIAL_CAPSULE) return this.renderValues.SPECIAL_CAPSULE;
+    if (this.aGrid[row][column] == this.gridValues.CAPSULE) {
+        return this.renderValues.CAPSULE;
+    }
+    if (this.aGrid[row][column] == this.gridValues.SPECIAL_CAPSULE) {
+        return this.renderValues.SPECIAL_CAPSULE;
+    }
     return this.renderValues.EMPTY;
 };
 
@@ -225,7 +232,7 @@ Maze.prototype._drawPart = function(ctx, renderValue, x, y, isDouble) {
 
     rotation = this._getRotation(renderValue);
     
-    var style = "blue"
+    var style = "blue";
     if(util.inArray([this.renderValues.RIGHT, 
                      this.renderValues.LEFT, 
                      this.renderValues.UP, 
@@ -245,7 +252,8 @@ Maze.prototype._drawPart = function(ctx, renderValue, x, y, isDouble) {
         util.fillCenteredSquare(ctx, x, y, consts.BOX_DIMENSION/2, "green");
     } else if(renderValue == this.renderValues.GHOST_WALL) {
         var halfDimension = consts.BOX_DIMENSION/2;
-        util.fillBox(ctx, x-halfDimension, y+halfDimension/2.5, halfDimension*2, halfDimension/2, "#FBB382")
+        util.fillBox(ctx, x-halfDimension, y+halfDimension/2.5,
+                     halfDimension*2, halfDimension/2, "#FBB382");
     }
 };
 
@@ -262,7 +270,8 @@ Maze.prototype._adjecentCheck = function(row, column) {
         count++;
         sides.up = true;
     }
-    if(row < this.aGrid.length-1 && this.aGrid[row+1][column] >= this.gridValues.EMPTY) {
+    if(row < this.aGrid.length-1 &&
+       this.aGrid[row+1][column] >= this.gridValues.EMPTY) {
         count++;
         sides.down = true;
     }
@@ -270,7 +279,8 @@ Maze.prototype._adjecentCheck = function(row, column) {
         count++;
         sides.left = true;
     }
-    if(column < this.aGrid[0].length-1 && this.aGrid[row][column+1] >= this.gridValues.EMPTY) {
+    if(column < this.aGrid[0].length-1 &&
+       this.aGrid[row][column+1] >= this.gridValues.EMPTY) {
         count++;
         sides.right = true;
     }
@@ -281,45 +291,65 @@ Maze.prototype._adjecentCheck = function(row, column) {
         if(sides.up) return this.renderValues.UP + offset;
         if(sides.down) return this.renderValues.BOTTOM + offset;
     } else if(count == 2) {
-        if(sides.right && sides.up) return this.renderValues.TOP_RIGHT + offset;
-        if(sides.left && sides.up) return this.renderValues.TOP_LEFT + offset;
-        if(sides.right && sides.down) return this.renderValues.BOTTOM_RIGHT + offset;
-        if(sides.left && sides.down) return this.renderValues.BOTTOM_LEFT + offset;
+        if(sides.right && sides.up)
+            return this.renderValues.TOP_RIGHT + offset;
+        if(sides.left && sides.up)
+            return this.renderValues.TOP_LEFT + offset;
+        if(sides.right && sides.down)
+            return this.renderValues.BOTTOM_RIGHT + offset;
+        if(sides.left && sides.down)
+            return this.renderValues.BOTTOM_LEFT + offset;
 
 
     } else if(count == 0) {
-        // if we are drawing double lines we might want to not do a curved one for the outer line
+        // if we are drawing double lines we might want to not do a
+        // curved one for the outer line
         var horizontal = false;
         var vertical = false;
         if(offset == this.DOUBLE_LINE_OFFSET) {
-            if(row > 0 && row < this.aGrid.length-1 && this.aGrid[row-1][column] == this.gridValues.DOUBLE_WALL && 
-                                                       this.aGrid[row+1][column] == this.gridValues.DOUBLE_WALL) {
+            if(row > 0 && row < this.aGrid.length-1 &&
+               this.aGrid[row-1][column] == this.gridValues.DOUBLE_WALL &&
+               this.aGrid[row+1][column] == this.gridValues.DOUBLE_WALL) {
                 vertical = true;
             } else if(column > 0 && column < this.aGrid[0].length-1 && 
-                                             this.aGrid[row][column-1] == this.gridValues.DOUBLE_WALL && 
-                                             this.aGrid[row][column+1] == this.gridValues.DOUBLE_WALL) {
+                      this.aGrid[row][column-1] == this.gridValues.DOUBLE_WALL &&
+                      this.aGrid[row][column+1] == this.gridValues.DOUBLE_WALL) {
                 horizontal = true;
             }
         }
 
-        if(row > 0 && column > 0 && this.aGrid[row-1][column-1] >= this.gridValues.EMPTY) {
-            if(vertical) return this.renderValues.DOUBLE_LONG_TOP_LEFT_RIGHT;
-            else if(horizontal) return this.renderValues.DOUBLE_LONG_TOP_LEFT_BOTTOM;
+        if(row > 0 && column > 0 &&
+           this.aGrid[row-1][column-1] >= this.gridValues.EMPTY) {
+            if(vertical)
+                return this.renderValues.DOUBLE_LONG_TOP_LEFT_RIGHT;
+            else if(horizontal)
+                return this.renderValues.DOUBLE_LONG_TOP_LEFT_BOTTOM;
             return this.renderValues.LONG_TOP_LEFT + offset;
         }
-        if(row < this.aGrid.length-1 && column > 0 && this.aGrid[row+1][column-1] >= this.gridValues.EMPTY) {
-            if(vertical) return this.renderValues.DOUBLE_LONG_BOTTOM_LEFT_RIGHT;
-            else if(horizontal) return this.renderValues.DOUBLE_LONG_BOTTOM_LEFT_TOP;
+        
+        if(row < this.aGrid.length-1 && column > 0 &&
+           this.aGrid[row+1][column-1] >= this.gridValues.EMPTY) {
+            if(vertical)
+                return this.renderValues.DOUBLE_LONG_BOTTOM_LEFT_RIGHT;
+            else if(horizontal)
+                return this.renderValues.DOUBLE_LONG_BOTTOM_LEFT_TOP;
             return this.renderValues.LONG_BOTTOM_LEFT + offset;
         }
-        if(column < this.aGrid[0].length-1 && row > 0 && this.aGrid[row-1][column+1] >= this.gridValues.EMPTY) {
-            if(vertical) return this.renderValues.DOUBLE_LONG_TOP_RIGHT_LEFT;
-            else if(horizontal) return this.renderValues.DOUBLE_LONG_TOP_RIGHT_BOTTOM;
+        if(column < this.aGrid[0].length-1 && row > 0 &&
+           this.aGrid[row-1][column+1] >= this.gridValues.EMPTY) {
+            if(vertical)
+                return this.renderValues.DOUBLE_LONG_TOP_RIGHT_LEFT;
+            else if(horizontal)
+                return this.renderValues.DOUBLE_LONG_TOP_RIGHT_BOTTOM;
             return this.renderValues.LONG_TOP_RIGHT + offset;
         }
-        if(column < this.aGrid[0].length-1 && row < this.aGrid.length-1 && this.aGrid[row+1][column+1] >= this.gridValues.EMPTY) {
-            if(vertical) return this.renderValues.DOUBLE_LONG_BOTTOM_RIGHT_LEFT;
-            else if(horizontal) return this.renderValues.DOUBLE_LONG_BOTTOM_RIGHT_TOP;
+        if(column < this.aGrid[0].length-1 &&
+           row < this.aGrid.length-1 &&
+           this.aGrid[row+1][column+1] >= this.gridValues.EMPTY) {
+            if(vertical)
+                return this.renderValues.DOUBLE_LONG_BOTTOM_RIGHT_LEFT;
+            else if(horizontal)
+                return this.renderValues.DOUBLE_LONG_BOTTOM_RIGHT_TOP;
             return this.renderValues.LONG_BOTTOM_RIGHT + offset;
         }
         return this.renderValues.NONE;
@@ -366,5 +396,5 @@ Maze.prototype._getDefaultMazeArray = function() {
             [-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3],
             [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],
             [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]
-        ]
-}
+        ];
+};

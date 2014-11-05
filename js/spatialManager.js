@@ -44,5 +44,5 @@ var spatialManager = {
     unregister: function(entity) {
         var spatialID = entity.getSpatialID();
         delete this._entities[spatialID];
-    },
+    }
 };
