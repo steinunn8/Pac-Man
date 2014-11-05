@@ -1,6 +1,6 @@
-// ==============
-// Capsule Object
-// ==============
+// ======================
+// Special Capsule Object
+// ======================
 
 "use strict";
 
@@ -13,23 +13,23 @@
 
 
 // A generic contructor which accepts an arbitrary descriptor object
-function Capsule(descr) {
+function SpecialCapsule(descr) {
     this.setup(descr);
     this.isAlive = true;
 };
 
-Capsule.prototype.row = -1;
-Capsule.prototype.column = -1;
+SpecialCapsule.prototype.row = -1;
+SpecialCapsule.prototype.column = -1;
 
 
-Capsule.prototype.isEaten = function(){
+SpecialCapsule.prototype.isEaten = function(){
 	return false;
 };
 
-Capsule.prototype.update = function(du){
+SpecialCapsule.prototype.update = function(du){
 
 };
 
-Capsule.prototype.render = function(du){
+SpecialCapsule.prototype.render = function(du){
 
 };
