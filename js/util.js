@@ -38,11 +38,11 @@ var util = {
 
     wrapPosition: function(row, column) {
         var pos = {row: row, column: column};
-        if (column >= g_maze.nColumns) { pos.column -= g_maze.nColumns; }
-        else if (column < 0) { pos.column += g_maze.nColumns; }
+        if (column >= entityManager.getMazeColumns()) { pos.column -= entityManager.getMazeColumns(); }
+        else if (column < 0) { pos.column += entityManager.getMazeColumns(); }
 
-        if (row >= g_maze.nRows) { pos.row -= g_maze.nRows; }
-        else if (row < 0) { pos.row += g_maze.nRows; }
+        if (row >= entityManager.getMazeRows()) { pos.row -= entityManager.getMazeRows(); }
+        else if (row < 0) { pos.row += entityManager.getMazeRows(); }
 
         return pos;
     },

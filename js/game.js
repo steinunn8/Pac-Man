@@ -15,18 +15,13 @@ var g_ctx = g_canvas.getContext("2d");
 12345678901234567890123456789012345678901234567890123456789012345678901234567890
 */
 
-function createPacMan() {
-    entityManager.generatePacMan({
-        sprite: g_sprites.pacMan,
-        column: 14,
-        row: 20,
-        speed: 2, // columns per second
-        rotation: 0
-    });
-}
+//~ function createPacMan() {
+    //~ entityManager._generatePacMan({
+    //~ });
+//~ }
 
 function createGhosts() {
-    entityManager.generateGhost({
+    entityManager._generateGhost({
         sprite: g_sprites.pacMan,
         column: 14,
         row: 14,
@@ -35,11 +30,11 @@ function createGhosts() {
     });
 }
 
-var g_maze;
+//~ var g_maze;
 
-function createMaze() {
-    g_maze = new Maze({});
-}
+//~ function createMaze() {
+    //~ g_maze = new Maze({});
+//~ }
 
 // =============
 // GATHER INPUTS
@@ -106,7 +101,7 @@ function processDiagnostics() {
 
 function renderSimulation(ctx) {
 
-    g_maze.render(ctx);
+    //~ g_maze.render(ctx);
     entityManager.render(ctx);
 
     if (g_renderSpatialDebug) spatialManager.render(ctx);
@@ -143,14 +138,14 @@ function preloadDone() {
     //g_sprites.specialCapsule;
 
     entityManager.init();
-    createPacMan();
-    createGhosts();
+    //~ createPacMan();
+    //~ createGhosts();
 
     main.init();
 
-    createMaze();
-    g_canvas.width = g_maze.nColumns*consts.BOX_DIMENSION;
-    g_canvas.height = g_maze.nRows*consts.BOX_DIMENSION;
+    //~ createMaze();
+    //~ g_canvas.width = g_maze.nColumns*consts.BOX_DIMENSION;
+    //~ g_canvas.height = g_maze.nRows*consts.BOX_DIMENSION;
     // TODO lata spatial manager vita af tilvist maze
 }
 

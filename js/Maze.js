@@ -16,8 +16,8 @@ function Maze(descr) {
         this[property] = descr[property];
     }
     this.aGrid = this._getDefaultMazeArray();
-    this.nRows = this.aGrid.length;
-    this.nColumns = this.aGrid[0].length;
+    this.nRows = this.aGrid.length; //36
+    this.nColumns = this.aGrid[0].length; //28
 
     this._generateWall();
 };
@@ -89,6 +89,10 @@ Maze.prototype._generateWall = function() {
             this.aRenderingWall[i].push(value);
         }
     }
+};
+
+Maze.prototype.update = function(du) {
+    return;
 };
 
 Maze.prototype.render = function(ctx) {

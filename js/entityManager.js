@@ -27,9 +27,10 @@ var entityManager = {
 
     // "PRIVATE" DATA
 
-    _pacMans : [],
+    _pacMans  : [],
     _ghosts   : [],
     _maze     : [],
+    _capsules : [],
 
 
     // "PRIVATE" METHODS
@@ -55,20 +56,50 @@ var entityManager = {
     },
 
     init: function() {
-        //this._generateGhosts();
-        //this._generatePacman();
+        
+        //~ this._generateGhosts();
+        this._generateMaze();
+        this._generatePacMan();
     },
-
-    generateGhost : function(descr) {
+    
+    _generateMaze : function(descr) {
+        console.log("Pushin maze!");
+        console.log(this._maze);
+        this._maze.push(new Maze({}));
+        console.log(this._maze);
+    },
+    
+    _generateCapsules : function(descr) {
+        //~ TODO: Implement double for-loops that iterate through the
+        //~       input array and generates capsules from the value 1
+        return;
+    },
+    
+    _generateGhost : function(descr) {
         this._ghosts.push(new Ghost(descr));
     },
 
-    generatePacMan : function(descr) {
-        this._pacMans.push(new PacMan(descr));
+    _generatePacMan : function(descr) {
+        this._pacMans.push(new PacMan({
+            sprite: g_sprites.pacMan,
+            column: 14,
+            row: 20,
+            speed: 2, // columns per second
+            rotation: 0
+        }));
+        
         //Testing sounds, uncomment for PacMan-party 
         //this._pacMans[0].introSound.play();
     },
-
+    
+    getMazeColumns : function() {
+        return this._maze[0].aGrid[0].length;
+    },
+    
+    getMazeRows : function() {
+        return this._maze[0].aGrid.length;
+    },
+    
     update: function(du) {
 
         for (var c = 0; c < this._categories.length; ++c) {
