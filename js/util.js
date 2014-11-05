@@ -101,15 +101,16 @@ var util = {
     },
 
     fillCircle: function (ctx, x, y, r, style) {
-        if(style === undefined) {
-            style = ctx.fillStyle;
+        if(style !== undefined) {
+            var oldStyle = ctx.fillStyle;
+            ctx.fillStyle = style;
         }
-        var oldStyle = ctx.fillStyle;
-        ctx.fillStyle = style;
         ctx.beginPath();
         ctx.arc(x, y, r, 0, Math.PI * 2);
         ctx.fill();
-        ctx.fillStyle = oldStyle;
+        if(style !== undefined) {
+            ctx.fillStyle = oldStyle;
+        }
     },
 
     fillBox: function (ctx, x, y, w, h, style) {

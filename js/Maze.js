@@ -78,6 +78,8 @@ Maze.prototype.gridValues = {
 // for normal double lines
 Maze.prototype.DOUBLE_LINE_OFFSET = -100;
 
+Maze.prototype.sprite = -1;
+
 Maze.prototype._generateWall = function() {
     this.aRenderingWall = [];
     for(var i = 0; i < this.nRows; i++) {
@@ -90,13 +92,36 @@ Maze.prototype._generateWall = function() {
 };
 
 Maze.prototype.render = function(ctx) {
+    if(this.sprite == -1) {
+        for(var i = 0; i < this.aRenderingWall.length; i++) {
+            for(var j = 0; j < this.aRenderingWall[i].length; j++) {
+                var renderValue = this.aRenderingWall[i][j];
+                var pos = util.getCoordsFromBox(i, j);
+                this._drawPart(ctx, renderValue, pos.xPos, pos.yPos);
+            }
+        }
+
+        var image = new Image();
+        image.src = canvas.toDataURL();
+        this.sprite = new Sprite(image, 0, 0, g_canvas.width, g_canvas.height, 1);
+
+    } else {
+        this.sprite.drawAt(ctx, 0, 0);
+    }
+
+    // only do this once
+    var oldStyle = ctx.fillStyle;
+    ctx.fillStyle = "#FBB382";
+
     for(var i = 0; i < this.aRenderingWall.length; i++) {
         for(var j = 0; j < this.aRenderingWall[i].length; j++) {
             var renderValue = this.aRenderingWall[i][j];
             var pos = util.getCoordsFromBox(i, j);
-            this._drawPart(ctx, renderValue, pos.xPos, pos.yPos);
+            this._drawItems(ctx, renderValue, pos.xPos, pos.yPos);
         }
     }
+
+    ctx.fillStyle = oldStyle; 
 };
 
 Maze.prototype._getRenderValue = function(row, column) {
@@ -137,6 +162,15 @@ Maze.prototype._getRotation = function(direction) {
 
     return -1;
 };
+
+Maze.prototype._drawItems = function(ctx, renderValue, x, y) {
+    // We might want to make these images instead of circles to speed up
+    if(renderValue == this.renderValues.CAPSULE) {
+        util.fillCircle(ctx, x, y, consts.SCALING*consts.BOX_DIMENSION/8);
+    } else if(renderValue == this.renderValues.SPECIAL_CAPSULE) {
+        util.fillCircle(ctx, x, y, consts.SCALING*consts.BOX_DIMENSION/2.5);
+    }
+}
 
 Maze.prototype._drawPart = function(ctx, renderValue, x, y, isDouble) {
     if(isDouble === undefined) isDouble = false;
@@ -205,10 +239,6 @@ Maze.prototype._drawPart = function(ctx, renderValue, x, y, isDouble) {
         util.drawLongCurve(ctx, x, y, rotation, style, doubleLine);
     } else if(renderValue == this.renderValues.ERROR) {
         util.fillCenteredSquare(ctx, x, y, consts.SCALING*consts.BOX_DIMENSION/2, "green");
-    } else if(renderValue == this.renderValues.CAPSULE) {
-        util.fillCircle(ctx, x, y, consts.SCALING*consts.BOX_DIMENSION/8, "#FBB382");
-    } else if(renderValue == this.renderValues.SPECIAL_CAPSULE) {
-        util.fillCircle(ctx, x, y, consts.SCALING*consts.BOX_DIMENSION/2.5, "#FBB382");
     } else if(renderValue == this.renderValues.GHOST_WALL) {
         var halfDimension = consts.SCALING*consts.BOX_DIMENSION/2;
         util.fillBox(ctx, x-halfDimension, y+halfDimension/2.5, halfDimension*2, halfDimension/2, "#FBB382")
