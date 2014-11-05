@@ -133,10 +133,6 @@ PacMan.prototype.drawCentredAt = function(ctx, cx, cy, rotation) {
     };
 
     draw(cx, cy);
-    //~ draw(cx + boxDim*g_maze.nColumns, cy);
-    //~ draw(cx - boxDim*g_maze.nColumns, cy);
-    //~ draw(cx, cy + boxDim*g_maze.nRows);
-    //~ draw(cx, cy - boxDim*g_maze.nRows);
     draw(cx + boxDim*entityManager.getMazeColumns(), cy);
     draw(cx - boxDim*entityManager.getMazeColumns(), cy);
     draw(cx, cy + boxDim*entityManager.getMazeRows());

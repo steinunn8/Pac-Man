@@ -181,7 +181,7 @@ Maze.prototype._drawItems = function(ctx, renderValue, x, y) {
     } else if(renderValue == this.renderValues.SPECIAL_CAPSULE) {
         util.fillCircle(ctx, x, y, consts.BOX_DIMENSION/2.5);
     }
-}
+};
 
 Maze.prototype._drawPart = function(ctx, renderValue, x, y, isDouble) {
     if(isDouble === undefined) isDouble = false;
