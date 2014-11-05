@@ -4,10 +4,10 @@ Pac-man
 Week 1
 ------
 
-~~* Implement "Maze" object~~
-~~* Pac-man entity~~
-~~* Collision-detection~~
-~~* Moveable pac-man~~
+* ~~Implement "Maze" object~~
+* ~~Pac-man entity~~
+* ~~Collision-detection~~
+* ~~Moveable pac-man~~
 
 Week 2
 ------
