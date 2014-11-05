@@ -15,11 +15,11 @@ Week 2
 * Impelment "Ghosts"
 * Sprites
 * Collition detections for ghosts
+* "Capsules" for pac-man to eat
 
 Week 3
 ------
 
-* "Capsules" for pac-man to eat
 * "berries"
 * Connect "special capsules" for eating ghosts
 * Sound
