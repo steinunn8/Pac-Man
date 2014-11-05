@@ -60,6 +60,7 @@ var entityManager = {
         //~ this._generateGhosts();
         this._generateMaze();
         this._generatePacMan();
+        this._generateGhosts();
     },
     
     _generateMaze : function(descr) {
@@ -75,8 +76,14 @@ var entityManager = {
         return;
     },
     
-    _generateGhost : function(descr) {
-        this._ghosts.push(new Ghost(descr));
+    _generateGhosts : function(descr) {
+        this._ghosts.push(new Ghost({
+            sprite: g_sprites.pacMan,
+            column: 14,
+            row: 14,
+            speed: 2, // columns per second
+            direction: "left"
+        }));
     },
 
     _generatePacMan : function(descr) {
@@ -85,7 +92,7 @@ var entityManager = {
             column: 14,
             row: 20,
             speed: 2, // columns per second
-            rotation: 0
+            direction: "left"
         }));
         
         //Testing sounds, uncomment for PacMan-party 

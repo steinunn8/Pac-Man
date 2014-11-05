@@ -20,15 +20,15 @@ var g_ctx = g_canvas.getContext("2d");
     //~ });
 //~ }
 
-function createGhosts() {
-    entityManager._generateGhost({
-        sprite: g_sprites.pacMan,
-        column: 14,
-        row: 14,
-        speed: 2, // columns per second
-        rotation: 0
-    });
-}
+// function createGhosts() {
+//     entityManager._generateGhost({
+//         sprite: g_sprites.pacMan,
+//         column: 14,
+//         row: 14,
+//         speed: 2, // columns per second
+//         rotation: 0
+//     });
+// }
 
 //~ var g_maze;
 
@@ -144,8 +144,10 @@ function preloadDone() {
     main.init();
 
     //~ createMaze();
-    //~ g_canvas.width = g_maze.nColumns*consts.BOX_DIMENSION;
-    //~ g_canvas.height = g_maze.nRows*consts.BOX_DIMENSION;
+    g_canvas.width = (consts.BOX_DIMENSION *
+                      entityManager.getMazeColumns());
+    g_canvas.height = (consts.BOX_DIMENSION *
+                       entityManager.getMazeRows());
     // TODO lata spatial manager vita af tilvist maze
 }
 
