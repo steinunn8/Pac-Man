@@ -220,7 +220,7 @@ Maze.prototype._adjecentCheck = function(row, column) {
     var sides = {right: false, down: false, left: false, up: false};
     var offset = 0;
 
-    if(this.aGrid[row][column] == this.DOUBLE_WALL) {
+    if(this.aGrid[row][column] == this.gridValues.DOUBLE_WALL) {
         offset = this.DOUBLE_LINE_OFFSET;
     }
 
