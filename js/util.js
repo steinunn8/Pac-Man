@@ -149,8 +149,8 @@ var util = {
 
         var oldStyle = this.prepareLine(ctx, x, y, rotation, style);
 
-        var xOffset = 0.1 * consts.BOX_DIMENSION * consts.SCALING;
-        var yOffset = 0.5 * consts.BOX_DIMENSION * consts.SCALING;
+        var xOffset = 0.1 * consts.BOX_DIMENSION;
+        var yOffset = 0.5 * consts.BOX_DIMENSION;
         ctx.moveTo(xOffset, -yOffset);
         ctx.lineTo(xOffset, yOffset);
 
@@ -165,7 +165,7 @@ var util = {
     drawDoubleLine: function(ctx, x, y, rotation, style) {
         var oldStyle = this.prepareLine(ctx, x, y, rotation, style);
 
-        var offset = 0.5 * consts.BOX_DIMENSION * consts.SCALING;
+        var offset = 0.5 * consts.BOX_DIMENSION;
         ctx.moveTo(-offset, -offset);
         ctx.lineTo(-offset, offset);
 
@@ -175,7 +175,7 @@ var util = {
     drawCurve: function(ctx, x, y, rotation, style, doubleLine) {
         var oldStyle = this.prepareLine(ctx, x, y, rotation, style);
 
-        var dimension = consts.BOX_DIMENSION * consts.SCALING;
+        var dimension = consts.BOX_DIMENSION;
         var offset = 0.1 * dimension;
         var centerOffset = 0.5 * dimension;
         ctx.moveTo(offset, centerOffset);
@@ -192,8 +192,8 @@ var util = {
     drawLongCurve: function(ctx, x, y, rotation, style, doubleLine) {
         var oldStyle = this.prepareLine(ctx, x, y, rotation, style);
 
-        var offset = 0.1 * consts.BOX_DIMENSION * consts.SCALING;
-        var centerOffset = 0.5 * consts.BOX_DIMENSION * consts.SCALING;
+        var offset = 0.1 * consts.BOX_DIMENSION;
+        var centerOffset = 0.5 * consts.BOX_DIMENSION;
         ctx.moveTo(-offset, centerOffset);
         ctx.quadraticCurveTo(0, 0, centerOffset, -offset);
 
@@ -209,14 +209,15 @@ var util = {
     //EXTRAS WITH NO HOME
 
     getCoordsFromBox: function(row, column) {
-        var dimension = consts.BOX_DIMENSION * consts.SCALING;
+        var dimension = consts.BOX_DIMENSION;
         var xPos = column * dimension + dimension / 2;
         var yPos = row * dimension + dimension / 2;
         return {xPos: xPos, yPos: yPos};
     },
 
     getBoxFromCoord: function(x, y) {
-        var dimension = consts.BOX_DIMENSION * consts.SCALING;
+        var dimension = consts.BOX_DIMENSION;
+        var dimension = consts.BOX_DIMENSION;
         var column = (x - dimension/2) / dimension;
         var row = (y - dimension/2) / dimension;
 

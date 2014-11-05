@@ -204,13 +204,13 @@ Maze.prototype._drawPart = function(ctx, renderValue, x, y, isDouble) {
                             this.renderValues.LONG_TOP_LEFT], renderValue)) {
         util.drawLongCurve(ctx, x, y, rotation, style, doubleLine);
     } else if(renderValue == this.renderValues.ERROR) {
-        util.fillCenteredSquare(ctx, x, y, consts.SCALING*consts.BOX_DIMENSION/2, "green");
+        util.fillCenteredSquare(ctx, x, y, consts.BOX_DIMENSION/2, "green");
     } else if(renderValue == this.renderValues.CAPSULE) {
-        util.fillCircle(ctx, x, y, consts.SCALING*consts.BOX_DIMENSION/8, "#FBB382");
+        util.fillCircle(ctx, x, y, consts.BOX_DIMENSION/8, "#FBB382");
     } else if(renderValue == this.renderValues.SPECIAL_CAPSULE) {
-        util.fillCircle(ctx, x, y, consts.SCALING*consts.BOX_DIMENSION/2.5, "#FBB382");
+        util.fillCircle(ctx, x, y, consts.BOX_DIMENSION/2.5, "#FBB382");
     } else if(renderValue == this.renderValues.GHOST_WALL) {
-        var halfDimension = consts.SCALING*consts.BOX_DIMENSION/2;
+        var halfDimension = consts.BOX_DIMENSION/2;
         util.fillBox(ctx, x-halfDimension, y+halfDimension/2.5, halfDimension*2, halfDimension/2, "#FBB382")
     }
 };

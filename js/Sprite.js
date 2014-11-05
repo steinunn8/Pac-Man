@@ -21,7 +21,7 @@ function Sprite(image, sx, sy, width, height, scale) {
     this.sy = sy;
     this.width = width;
     this.height = height;
-    this.scale = scale || consts.SCALING;
+    this.scale = scale || 1;
 }
 
 Sprite.prototype.drawAt = function (ctx, x, y) {
