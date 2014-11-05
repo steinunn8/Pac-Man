@@ -33,6 +33,9 @@ Ghost.prototype.rememberResets = function () {
     this.reset_column = this.column;
 };
 
+Ghost.prototype.direction = 0;
+Ghost.prototype.nextDirection = 0;
+
 Ghost.prototype.reset = function () {
     this.setPos(this.reset_row, this.reset_column);
 };
