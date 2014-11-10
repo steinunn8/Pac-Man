@@ -49,6 +49,9 @@ Entity.prototype.setup = function (descr) {
     this.timeToNext = 1;
 };
 
+Entity.prototype.direction = 0;
+Entity.prototype.nextDirection = "left";
+
 Entity.prototype.getNextPos = function(direction) {
     var row = this.row,
         column = this.column;
@@ -94,7 +97,33 @@ Entity.prototype.move = function(du, direction, nextDirection) {
 
         // Make the distance to next cell positive again
         this.timeToNext += 1;
+
+        return true;
     }
+
+    return false;
+};
+
+Entity.prototype.getOpposite = function(direction) {
+    return (direction === "left") ? "right" :
+           (direction === "right") ? "left" :
+           (direction === "up") ? "down" : 
+           (direction === "down") ? "up" :
+           0;
+};
+
+// returns offset based on direction, for example
+// "left" would return {row: -1, column: 0};
+Entity.prototype.getOffset = function(direction) {
+    var offset = {row: 0, column: 0};
+    offset.column = (direction === "left") ? -1 :
+                    (direction === "right") ? 1 : 
+                    0;
+    offset.row = (direction === "up") ? -1 : 
+                 (direction === "down") ? 1 :
+                 0;
+
+    return offset;
 }
 
 Entity.prototype.getPos = function() {
