@@ -112,21 +112,47 @@ function renderSimulation(ctx) {
 // PRELOAD STUFF
 // =============
 
-var g_images = {};
-
+var g_images;
+var g_sprites;
 function requestPreloads() {
 
-    var requiredImages = {
-        sprites   : "sprite.png"
+    /*var requiredImages = {
+        sprite1   : "sprite2.png"
     };
 
     imagesPreload(requiredImages, g_images, preloadDone);
+*/
+    g_images = new Image();
+    g_images.onload = preloadDone;
+    g_images.src = "sprite2.png";
+
+    var celWidth  = 20;
+    var celHeight = 20;
+    var numCols = 2;
+    var numRows = 7;
+    var scale = 2;
+    
+    g_sprites = [];
+    var sprite;
+    var placeY = 6;
+    var placeX = 0;
+
+    //Pacman test
+    for (var row = placeY; row < numRows; ++row) {
+        for (var col = placeX; col < numCols; ++col) {
+            sprite = new Sprite(g_images, 
+                          col * celWidth, row * celHeight,
+                          celWidth, celHeight,
+                           1) 
+            g_sprites.push(sprite);
+        }
+    }
+    console.log(g_sprites);
+    
 }
 
-var g_sprites = {};
-
 function preloadDone() {
-    g_sprites.pacMan  = new Sprite(g_images.sprites,
+    /*g_sprites.pacMan  = new Sprite(g_images.sprites,
                                    268, 162,
                                    16, 16, 1);
     g_sprites.wall  = new Sprite(g_images.sprites,
@@ -135,8 +161,15 @@ function preloadDone() {
     g_sprites.capsule = new Sprite(g_images.sprites,
                                    293, 79,
                                    4, 4);
-    //g_sprites.specialCapsule;
+    g_sprites.pacManLeft = new Sprite(g_images.sprite2,
+                                      0, 0, 20, 20, 1);
 
+    g_sprite.ghostBlue = new Sprite(g_image.sprite2,
+                                    80, 0, 20, 20, 1);
+
+    g_sprite.ghostRed = new Sprite(g_imate.sprite2,
+                                  120, 0, 20, 20, 1);
+*/
     entityManager.init();
     //~ createPacMan();
     //~ createGhosts();

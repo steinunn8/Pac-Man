@@ -63,6 +63,7 @@ Ghost.prototype.drawCentredAt = function(ctx, cx, cy, rotation) {
 
 };
 
+var g_cell = 0;
 Ghost.prototype.render = function (ctx) {
     // TODO: If dead, change to sprite eyes and then send home
     //       if specialCapsule, draw blue/white ghost from sprite
@@ -70,7 +71,12 @@ Ghost.prototype.render = function (ctx) {
     // this.sprite.drawCentredAt(ctx, pos.xPos, pos.yPos, rotation);
     var pos = util.getCoordsFromBox(this.row, this.column);
     var dimens = 20;
-    util.fillBox(ctx, pos.xPos - dimens/2,
+    /*util.fillBox(ctx, pos.xPos - dimens/2,
                  pos.yPos - dimens/2,
-                 dimens, dimens, "blue");
+                 dimens, dimens, "blue");*/
+    g_sprites[g_cell].drawAt(ctx, 
+                            pos.xPos - dimens/2, 
+                            pos.yPos - dimens/2);
+    ++g_cell;
+    if(g_cell == 2) g_cell = 0;
 };
