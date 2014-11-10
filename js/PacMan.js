@@ -77,7 +77,7 @@ PacMan.prototype.warp = function (ctx){
 PacMan.prototype._keyMove = function() {
     return keys[this.KEY_UP] || keys[this.KEY_DOWN] || 
            keys[this.KEY_LEFT] || keys[this.KEY_RIGHT];
-}
+};
 
 PacMan.prototype.update = function (du) {
     if (keys[this.KEY_UP]) {
@@ -142,7 +142,20 @@ PacMan.prototype.drawCentredAt = function(ctx, cx, cy, rotation) {
     draw(cx, cy - boxDim*entityManager.getMazeRows());
 };
 
+PacMan.prototype.hitMe = function (aggressor) {
+    if (aggressor.entityType === entityManager.entityTypes["Ghost"]) {
+        console.log("Ghost hit PacMan");
+        
+        //~ Implement "ghost-maniac-mode" with Boolean value?
+        //~ [But wheeere?]
+        this.kill();
+    } 
+};
+
 PacMan.prototype.render = function (ctx) {
+    //~ TODO: change logic when PacMan dies
+    if (this._isDeadNow) return;
+    
     var rotation = 0;
     var boxDim = consts.BOX_DIMENSION;
     var pos = util.getCoordsFromBox(this.row, this.column);

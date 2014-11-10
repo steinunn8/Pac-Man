@@ -49,7 +49,7 @@ var spatialManager = {
     _findEntityAt: function(row, column) {
         for (var ID in this._entities) {
             
-            console.log("e:", e);
+            //~ console.log("e:", e);
             
             var e = this._entities[ID];
             if (!e) continue;
@@ -61,12 +61,14 @@ var spatialManager = {
         return null;
     }, 
     
-    imGoingHere: function(myEntityType, row, column) {
-        console.log("spatialManager reckons that " + myEntityType +
-        " is going to (row,column)=(" + row + "," + column + ").");
+    imGoingHere: function(aggressor, row, column) {
+        //~ console.log("spatialManager reckons that " + myEntityType +
+        //~ " is going to (row,column)=(" + row + "," + column + ").");
         
         var entity = this._findEntityAt(row, column);
-        if (entity)
-            console.log(myEntityType + " ran into " + entity.entityType);
+        if (entity) {
+            //~ console.log(myEntityType + " ran into " + entity.entityType);
+            entity.hitMe(aggressor);
+        }
     }
 };

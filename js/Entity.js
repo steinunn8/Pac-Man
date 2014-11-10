@@ -93,7 +93,7 @@ Entity.prototype.move = function(du, direction, nextDirection) {
         } else {
             // we can move!!
             this.setPos(nextPos.row, nextPos.column);
-            spatialManager.imGoingHere(this.entityType, nextPos.row, nextPos.column);
+            spatialManager.imGoingHere(this, nextPos.row, nextPos.column);
         }
 
         // Make the distance to next cell positive again
@@ -125,9 +125,10 @@ Entity.prototype.findHitEntity = function () {
     );
 };
 
-Entity.prototype.isEaten = function(){
+Entity.prototype.hitMe = function(aggressor){
+    //~ Implement me for every type of Entity
+    //~ who extends me
     return false;
-    //this.isEaten();
 };
 
 // This is just little "convenience wrapper"

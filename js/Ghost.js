@@ -45,6 +45,20 @@ Ghost.prototype.reset = function () {
     this.setPos(this.reset_row, this.reset_column);
 };
 
+Ghost.prototype.drawCentredAt = function(ctx, cx, cy, rotation) {
+
+};
+
+Ghost.prototype.hitMe = function (aggressor) {
+    if (aggressor.entityType === entityManager.entityTypes["PacMan"]) {
+        console.log("PacMan hit Ghost");
+        
+        //~ Implement "ghost-maniac-mode" with Boolean value?
+        //~ [But wheeere?]
+        aggressor.kill();
+    } 
+};
+
 Ghost.prototype.update = function (du) {
     // TODO: Unregister and check for death (if blue)
     spatialManager.unregister(this);
@@ -60,10 +74,6 @@ Ghost.prototype.update = function (du) {
     
     // TODO: If going through "tunnel", handle
     spatialManager.register(this);
-};
-
-Ghost.prototype.drawCentredAt = function(ctx, cx, cy, rotation) {
-
 };
 
 var g_cell = 0;
