@@ -74,9 +74,9 @@ Ghost.prototype.render = function (ctx) {
     /*util.fillBox(ctx, pos.xPos - dimens/2,
                  pos.yPos - dimens/2,
                  dimens, dimens, "blue");*/
-    g_sprites[g_cell].drawAt(ctx, 
-                            pos.xPos - dimens/2, 
-                            pos.yPos - dimens/2);
+    g_sprites[g_cell].drawCentredAt(ctx, 
+                            pos.xPos, 
+                            pos.yPos);
     ++g_cell;
     if(g_cell == 2) g_cell = 0;
 };

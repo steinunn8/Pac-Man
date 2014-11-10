@@ -113,7 +113,7 @@ function renderSimulation(ctx) {
 // =============
 
 var g_images;
-var g_sprites;
+var g_sprites = [];
 function requestPreloads() {
 
     /*var requiredImages = {
@@ -132,7 +132,6 @@ function requestPreloads() {
     var numRows = 7;
     var scale = 2;
     
-    g_sprites = [];
     var sprite;
     var placeY = 6;
     var placeX = 0;
@@ -143,12 +142,10 @@ function requestPreloads() {
             sprite = new Sprite(g_images, 
                           col * celWidth, row * celHeight,
                           celWidth, celHeight,
-                           1) 
+                           1.25) 
             g_sprites.push(sprite);
         }
-    }
-    console.log(g_sprites);
-    
+    }    
 }
 
 function preloadDone() {
