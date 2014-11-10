@@ -46,6 +46,9 @@ Ghost.prototype.reset = function () {
 };
 
 Ghost.prototype.update = function (du) {
+    // TODO: Unregister and check for death (if blue)
+    spatialManager.unregister(this);
+    
     this.move(du, this.direction, this.nextDirection);
 
     var directionValue;
@@ -54,10 +57,7 @@ Ghost.prototype.update = function (du) {
         this.nextDirection = this.directions[directionValue];
         this.move(du, this.direction, this.nextDirection);
     }
-
-    // TODO: Unregister and check for death (if blue)
-    spatialManager.unregister(this);
-
+    
     // TODO: If going through "tunnel", handle
     spatialManager.register(this);
 };

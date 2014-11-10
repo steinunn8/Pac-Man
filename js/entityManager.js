@@ -35,11 +35,12 @@ var entityManager = {
     
     // PUBLIC DATA
     
-    entityTypes : { PacMan : "PacMan",
-                    Ghost : "Ghost",
-                    Capsule : "Capsule",
-                    SpecialCapsule : "Special Capsule"
-                },
+    entityTypes : {
+        PacMan : "PacMan",
+        Ghost : "Ghost",
+        Capsule : "Capsule",
+        SpecialCapsule : "Special Capsule"
+    },
     
 
     // "PRIVATE" METHODS
