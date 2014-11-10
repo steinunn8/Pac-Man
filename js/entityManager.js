@@ -91,11 +91,59 @@ var entityManager = {
     _generateGhosts : function(descr) {
         console.log("Generating ghosts");
         this._ghosts.push(new Ghost({
+            name: "blinky",
+            color: "red",
             sprite: g_sprites.pacMan,
             column: 14,
             row: 14,
             speed: 2, // columns per second
-            direction: "left"
+            direction: "left",
+            target_: {
+                row: 0,
+                column: this.getMazeColumns()
+            }
+        }));
+
+        this._ghosts.push(new Ghost({
+            name: "pinky",
+            color: "pink",
+            sprite: g_sprites.pacMan,
+            column: 14,
+            row: 14,
+            speed: 2, // columns per second
+            direction: "left",
+            target_: {
+                row: 0,
+                column: 0
+            }
+        }));
+
+        this._ghosts.push(new Ghost({
+            name: "clyde",
+            color: "orange",
+            sprite: g_sprites.pacMan,
+            column: 14,
+            row: 14,
+            speed: 2, // columns per second
+            direction: "left",
+            target_: {
+                row: this.getMazeRows(),
+                column: 0
+            }
+        }));
+
+        this._ghosts.push(new Ghost({
+            name: "inky",
+            color: "cyan",
+            sprite: g_sprites.pacMan,
+            column: 14,
+            row: 14,
+            speed: 2, // columns per second
+            direction: "left",
+            target_: {
+                row: this.getMazeRows(),
+                column: this.getMazeColumns()
+            }
         }));
     },
 

@@ -227,6 +227,11 @@ var util = {
 
     inArray: function(arr, value) {
         return arr.indexOf(value) > -1;
+    },
+
+    arrayRemove: function(arr, value) {
+        var i = arr.indexOf(value);
+        arr.splice(i, 1);
     }
 
 };

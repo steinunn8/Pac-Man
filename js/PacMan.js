@@ -43,7 +43,6 @@ PacMan.prototype.KEY_LEFT   = 'A'.charCodeAt(0);
 PacMan.prototype.KEY_RIGHT  = 'D'.charCodeAt(0);
 
 // Initial, inheritable, default values
-PacMan.prototype.direction = 0;
 PacMan.prototype.lives = 3;
 PacMan.prototype.score = 0;
 

@@ -34,6 +34,27 @@ Maze.prototype.isSpecialCapsule = function(row, column){
     return this.aGrid[row][column] == this.gridValues.SPECIAL_CAPSULE;
 }
 
+Maze.prototype.getDirections = function(row, column) {
+    var directions = [];
+
+    if(row > 0 && this.aGrid[row-1][column] >= this.gridValues.EMPTY) {
+        directions.push("up");
+    }
+    if(row < this.aGrid.length-1 &&
+       this.aGrid[row+1][column] >= this.gridValues.EMPTY) {
+        directions.push("down");
+    }
+    if(column > 0 && this.aGrid[row][column-1] >= this.gridValues.EMPTY) {
+        directions.push("left");
+    }
+    if(column < this.aGrid[0].length-1 &&
+       this.aGrid[row][column+1] >= this.gridValues.EMPTY) {
+        directions.push("right");
+    }
+
+    return directions;
+}
+
 // Every value in the render array and it's meaning
 Maze.prototype.renderValues = {
     ERROR: 5,
