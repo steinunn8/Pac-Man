@@ -17,6 +17,9 @@ function PacMan(descr) {
 
     // Common inherited setup logic from Entity
     this.setup(descr);
+    
+    // Used in collision logic in spatialManager.js
+    this.entityType = entityManager.entityTypes["PacMan"];
 
     this.rememberResets();
 
