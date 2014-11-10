@@ -70,7 +70,18 @@ Ghost.prototype.render = function (ctx) {
     
     // this.sprite.drawCentredAt(ctx, pos.xPos, pos.yPos, rotation);
     var pos = util.getCoordsFromBox(this.row, this.column);
-    var dimens = 20;
+    var boxDim = consts.BOX_DIMENSION;
+
+    var dir = this.direction;
+    if (dir === "up") {
+        pos.yPos += (this.timeToNext)*boxDim;
+    } else if (dir === "down") {
+        pos.yPos -= (this.timeToNext)*boxDim;
+    } else if (dir === "left") {
+        pos.xPos += (this.timeToNext)*boxDim;
+    } else if (dir === "right") {
+        pos.xPos -= (this.timeToNext)*boxDim;
+    }
     /*util.fillBox(ctx, pos.xPos - dimens/2,
                  pos.yPos - dimens/2,
                  dimens, dimens, "blue");*/
