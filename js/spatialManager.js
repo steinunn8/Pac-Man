@@ -44,5 +44,29 @@ var spatialManager = {
     unregister: function(entity) {
         var spatialID = entity.getSpatialID();
         delete this._entities[spatialID];
+    },
+    
+    _findEntityAt: function(row, column) {
+        for (var ID in this._entities) {
+            
+            console.log("e:", e);
+            
+            var e = this._entities[ID];
+            if (!e) continue;
+            
+            var pos = e.getPos();
+            if (pos.row===row && pos.column===column)
+                return e;
+        }
+        return null;
+    }, 
+    
+    imGoingHere: function(myEntityType, row, column) {
+        console.log("spatialManager reckons that " + myEntityType +
+        " is going to (row,column)=(" + row + "," + column + ").");
+        
+        var entity = this._findEntityAt(row, column);
+        if (entity)
+            console.log(myEntityType + " ran into " + entity.entityType);
     }
 };

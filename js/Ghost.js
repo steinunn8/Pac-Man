@@ -17,6 +17,9 @@ function Ghost(descr) {
 
     // Common inherited setup logic from Entity
     this.setup(descr);
+    
+    // Used in collision logic in spatialManager.js
+    this.entityType = entityManager.entityTypes["Ghost"];
 
     this.rememberResets();
 
@@ -44,6 +47,10 @@ Ghost.prototype.reset = function () {
 };
 
 Ghost.prototype.update = function (du) {
+    // TODO: Unregister and check for death (if blue)
+    spatialManager.unregister(this);
+
+    // moves the ghost
     this._hasMoved = this.move(du, this.direction, this.nextDirection);
 
     // If we're about to move, make decision
@@ -59,10 +66,7 @@ Ghost.prototype.update = function (du) {
 
         this._hasMoved = false;
     }
-
-    // TODO: Unregister and check for death (if blue)
-    spatialManager.unregister(this);
-
+    
     // TODO: If going through "tunnel", handle
     spatialManager.register(this);
 };

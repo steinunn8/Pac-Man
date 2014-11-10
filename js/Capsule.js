@@ -14,7 +14,12 @@
 
 // A generic contructor which accepts an arbitrary descriptor object
 function Capsule(descr) {
+    
     this.setup(descr);
+    
+    // Used in collision logic in spatialManager.js
+    this.entityType = entityManager.entityTypes["Capsule"];
+    
     this.isAlive = true;
 };
 
@@ -23,7 +28,7 @@ Capsule.prototype.column = -1;
 
 
 Capsule.prototype.isEaten = function(){
-	return false;
+    return false;
 };
 
 Capsule.prototype.update = function(du){

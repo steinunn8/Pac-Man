@@ -39,6 +39,9 @@ Entity.prototype.setup = function (descr) {
         this[property] = descr[property];
     }
     
+    // Entity type by default is undefined
+    this.entityType = undefined;
+    
     // Get my (unique) spatial ID
     this._spatialID = spatialManager.getNewSpatialID();
     
@@ -93,6 +96,7 @@ Entity.prototype.move = function(du, direction, nextDirection) {
         } else {
             // we can move!!
             this.setPos(nextPos.row, nextPos.column);
+            spatialManager.imGoingHere(this.entityType, nextPos.row, nextPos.column);
         }
 
         // Make the distance to next cell positive again

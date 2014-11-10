@@ -17,6 +17,9 @@ function PacMan(descr) {
 
     // Common inherited setup logic from Entity
     this.setup(descr);
+    
+    // Used in collision logic in spatialManager.js
+    this.entityType = entityManager.entityTypes["PacMan"];
 
     this.rememberResets();
 
@@ -93,14 +96,14 @@ PacMan.prototype.update = function (du) {
         this.timeToNext = 0;
     }
 
-    // mutates the direction of pacman
-    this.move(du, this.direction, this.nextDirection);
-
     // TODO: Unregister and check for death
     spatialManager.unregister(this);
-
+    
+    // mutates the direction of pacman
+    this.move(du, this.direction, this.nextDirection);
+    
     // TODO: Warp if isColliding, otherwise Register
-
+    
     // TODO: If going through "tunnel", handle
     spatialManager.register(this);
 };

@@ -31,7 +31,17 @@ var entityManager = {
     _ghosts   : [],
     _maze     : [],
     _capsules : [],
-
+    
+    
+    // PUBLIC DATA
+    
+    entityTypes : {
+        PacMan : "PacMan",
+        Ghost : "Ghost",
+        Capsule : "Capsule",
+        SpecialCapsule : "Special Capsule"
+    },
+    
 
     // "PRIVATE" METHODS
 
@@ -59,12 +69,13 @@ var entityManager = {
         
         //~ this._generateGhosts();
         this._generateMaze();
+        this._generateCapsules();
         this._generatePacMan();
         this._generateGhosts();
     },
     
     _generateMaze : function(descr) {
-        console.log("Pushin maze!");
+        console.log("Generating maze");
         console.log(this._maze);
         this._maze.push(new Maze({}));
         console.log(this._maze);
@@ -73,10 +84,12 @@ var entityManager = {
     _generateCapsules : function(descr) {
         //~ TODO: Implement double for-loops that iterate through the
         //~       input array and generates capsules from the value 1
+        console.log("Generating capsules");
         return;
     },
     
     _generateGhosts : function(descr) {
+        console.log("Generating ghosts");
         this._ghosts.push(new Ghost({
             name: "blinky",
             color: "red",
@@ -135,6 +148,7 @@ var entityManager = {
     },
 
     _generatePacMan : function(descr) {
+        console.log("Generating Pac-Man");
         this._pacMans.push(new PacMan({
             sprite: g_sprites.pacMan,
             column: 14,
