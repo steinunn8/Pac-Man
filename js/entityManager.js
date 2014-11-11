@@ -93,7 +93,8 @@ var entityManager = {
         this._ghosts.push(new Ghost({
             name: "blinky",
             color: "red",
-            sprite: g_sprites.pacMan,
+            isHome: false,
+            sprite: new Sprite(g_images, 0, 80, 20, 20, 16, 16, 1.25),
             column: 14,
             row: 14,
             speed: 2, // columns per second
@@ -107,11 +108,11 @@ var entityManager = {
         this._ghosts.push(new Ghost({
             name: "pinky",
             color: "pink",
-            sprite: g_sprites.pacMan,
-            column: 14,
-            row: 14,
+            sprite: new Sprite(g_images, 0, 100, 20, 20, 16, 16, 1.25),
+            column: 12,
+            row: 17,
             speed: 2, // columns per second
-            direction: "left",
+            direction: 0,
             target_: {
                 row: 0,
                 column: 0
@@ -121,11 +122,11 @@ var entityManager = {
         this._ghosts.push(new Ghost({
             name: "clyde",
             color: "orange",
-            sprite: g_sprites.pacMan,
+            sprite: new Sprite(g_images, 0, 140, 20, 20, 16, 16, 1.25),
             column: 14,
-            row: 14,
+            row: 17,
             speed: 2, // columns per second
-            direction: "left",
+            direction: 0,
             target_: {
                 row: this.getMazeRows(),
                 column: 0
@@ -135,11 +136,11 @@ var entityManager = {
         this._ghosts.push(new Ghost({
             name: "inky",
             color: "cyan",
-            sprite: g_sprites.pacMan,
-            column: 14,
-            row: 14,
+            sprite: new Sprite(g_images, 0, 120, 20, 20, 16, 16, 1.25),
+            column: 16,
+            row: 17,
             speed: 2, // columns per second
-            direction: "left",
+            direction: 0,
             target_: {
                 row: this.getMazeRows(),
                 column: this.getMazeColumns()
@@ -151,8 +152,8 @@ var entityManager = {
         console.log("Generating Pac-Man");
         this._pacMans.push(new PacMan({
             sprite: g_sprites.pacMan,
-            column: 14,
-            row: 20,
+            column: 13,
+            row: 26,
             speed: 2, // columns per second
             direction: "left"
         }));

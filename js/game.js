@@ -130,6 +130,8 @@ function requestPreloads() {
     var celHeight = 20;
     var numCols = 2;
     var numRows = 7;
+    var boxDim = consts.BOX_DIMENSION;
+                                
     var scale = 2;
     
     var sprite;
@@ -137,15 +139,15 @@ function requestPreloads() {
     var placeX = 0;
 
     //Pacman test
-    for (var row = placeY; row < numRows; ++row) {
-        for (var col = placeX; col < numCols; ++col) {
-            sprite = new Sprite(g_images, 
-                          col * celWidth, row * celHeight,
-                          celWidth, celHeight,
-                           1.25) 
-            g_sprites.push(sprite);
-        }
-    }    
+    // for (var row = placeY; row < numRows; ++row) {
+    //     for (var col = placeX; col < numCols; ++col) {
+    //         sprite = new Sprite(g_images, 
+    //                             col*celWidth, row*celHeight,
+    //                             celWidth, celHeight,
+    //                             boxDim, boxDim, 1);
+    //         g_sprites.push(sprite);
+    //     }
+    // }    
 }
 
 function preloadDone() {
