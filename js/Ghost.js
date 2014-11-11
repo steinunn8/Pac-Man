@@ -158,7 +158,7 @@ Ghost.prototype.render = function (ctx) {
     var boxDim = consts.BOX_DIMENSION;
 
     // Ghosts at home just bounce up and down
-    if (this.isHome) {
+    if (this.mode === "home") {
         pos.xPos -= 0.5*boxDim;
         pos.yPos -= this.bounceProp*boxDim;
         this.bounceProp += (this.bouncingUp ? 1 : -1) * this.bounceSpeed;
