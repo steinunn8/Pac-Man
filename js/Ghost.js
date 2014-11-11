@@ -31,17 +31,6 @@ function Ghost(descr) {
 };
 
 Ghost.prototype = new Entity();
-Ghost.prototype.directions = ["up", "down", "left", "right"];
-Ghost.prototype.direction = "left";
-Ghost.prototype.nextDirection = "left";
-
-// TODO:
-//Ghosts are forced to reverse direction by the system anytime the mode changes from: 
-//chase-to-scatter, chase-to-frightened, scatter-to-chase, and scatter-to-frightened. 
-//Ghosts do not reverse direction when changing back from frightened to chase or scatter modes.
-
-// possible modes: chase, scatter, frightened, home
-Ghost.prototype.mode = "chase";
 
 Ghost.prototype.rememberResets = function () {
     // Remember my reset positions and home corner (starting target)
@@ -57,6 +46,18 @@ Ghost.prototype.resetTarget = function() {
     this.target_.row = this.startTarget.row;
     this.target_.column = this.startTarget.column;
 };
+
+Ghost.prototype.directions = ["up", "down", "left", "right"];
+Ghost.prototype.direction = 0;
+Ghost.prototype.nextDirection = "left";
+
+// TODO:
+//Ghosts are forced to reverse direction by the system anytime the mode changes from: 
+//chase-to-scatter, chase-to-frightened, scatter-to-chase, and scatter-to-frightened. 
+//Ghosts do not reverse direction when changing back from frightened to chase or scatter modes.
+
+// possible modes: chase, scatter, frightened, home
+Ghost.prototype.mode = "chase";
 
 Ghost.prototype.reset = function () {
     this.setPos(this.reset_row, this.reset_column);
@@ -85,6 +86,12 @@ Ghost.prototype.update = function (du) {
 
     // If we're about to move, make decision
     if (this._hasMoved) {
+        
+        // Don't do anything if inside the center box
+        if (this.mode === "home") {
+            return;
+        }
+
         var directions = entityManager._maze[0].getDirections(this.row, this.column);
         // make it impossible to turn back
         util.arrayRemove(directions, this.getOpposite(this.direction));
@@ -120,7 +127,7 @@ Ghost.prototype.getNextDirection = function(directions) {
         var xPos = pos.column + offset.column;
         var dist = util.distSq(xPos, yPos, this.target_.column, this.target_.row);
 
-        if(dist < minDist) {
+        if (dist < minDist) {
             minDist = dist;
             direction = directions[i];
         }
@@ -139,7 +146,9 @@ Ghost.prototype.drawCentredAt = function(ctx, cx, cy, rotation) {
 
 };
 
-var g_cell = 0;
+Ghost.prototype.bounceProp = 0;
+Ghost.prototype.bounceSpeed = 0.1;
+Ghost.prototype.bouncingUp = true;
 Ghost.prototype.render = function (ctx) {
     // TODO: If dead, change to sprite eyes and then send home
     //       if specialCapsule, draw blue/white ghost from sprite
@@ -148,22 +157,26 @@ Ghost.prototype.render = function (ctx) {
     var pos = util.getCoordsFromBox(this.row, this.column);
     var boxDim = consts.BOX_DIMENSION;
 
-    var dir = this.direction;
-    if (dir === "up") {
-        pos.yPos += (this.timeToNext)*boxDim;
-    } else if (dir === "down") {
-        pos.yPos -= (this.timeToNext)*boxDim;
-    } else if (dir === "left") {
-        pos.xPos += (this.timeToNext)*boxDim;
-    } else if (dir === "right") {
-        pos.xPos -= (this.timeToNext)*boxDim;
+    // Ghosts at home just bounce up and down
+    if (this.isHome) {
+        pos.xPos -= 0.5*boxDim;
+        pos.yPos -= this.bounceProp*boxDim;
+        this.bounceProp += (this.bouncingUp ? 1 : -1) * this.bounceSpeed;
+        if (Math.abs(this.bounceProp) > 0.5) {
+            this.bouncingUp = !this.bouncingUp;
+        }
+    } else {
+        var dir = this.direction;
+        if (dir === "up") {
+            pos.yPos += (this.timeToNext)*boxDim;
+        } else if (dir === "down") {
+            pos.yPos -= (this.timeToNext)*boxDim;
+        } else if (dir === "left") {
+            pos.xPos += (this.timeToNext)*boxDim;
+        } else if (dir === "right") {
+            pos.xPos -= (this.timeToNext)*boxDim;
+        }
     }
-    /*util.fillBox(ctx, pos.xPos - dimens/2,
-                 pos.yPos - dimens/2,
-                 dimens, dimens, "blue");*/
-    g_sprites[g_cell].drawCentredAt(ctx, 
-                            pos.xPos, 
-                            pos.yPos);
-    ++g_cell;
-    if(g_cell == 2) g_cell = 0;
+    
+    this.sprite.drawCentredAt(ctx, pos.xPos, pos.yPos);
 };

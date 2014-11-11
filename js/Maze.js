@@ -131,6 +131,7 @@ Maze.prototype.render = function(ctx) {
         image.src = canvas.toDataURL();
         this.sprite = new Sprite(image, 0, 0,
                                  g_canvas.width, g_canvas.height,
+                                 g_canvas.width, g_canvas.height,
                                  1);
 
     } else {
