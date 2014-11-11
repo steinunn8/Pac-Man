@@ -32,15 +32,31 @@ function Ghost(descr) {
 
 Ghost.prototype = new Entity();
 Ghost.prototype.directions = ["up", "down", "left", "right"];
-
-Ghost.prototype.rememberResets = function () {
-    // Remember my reset positions
-    this.reset_row = this.row;
-    this.reset_column = this.column;
-};
-
 Ghost.prototype.direction = "left";
 Ghost.prototype.nextDirection = "left";
+
+// TODO:
+//Ghosts are forced to reverse direction by the system anytime the mode changes from: 
+//chase-to-scatter, chase-to-frightened, scatter-to-chase, and scatter-to-frightened. 
+//Ghosts do not reverse direction when changing back from frightened to chase or scatter modes.
+
+// possible modes: chase, scatter, frightened, home
+Ghost.prototype.mode = "chase";
+
+Ghost.prototype.rememberResets = function () {
+    // Remember my reset positions and home corner (starting target)
+    this.reset_row = this.row;
+    this.reset_column = this.column;
+    this.startTarget = {
+        row: this.target_.row,
+        column: this.target_.column
+    };
+};
+
+Ghost.prototype.resetTarget = function() {
+    this.target_.row = this.startTarget.row;
+    this.target_.column = this.startTarget.column;
+};
 
 Ghost.prototype.reset = function () {
     this.setPos(this.reset_row, this.reset_column);
@@ -72,9 +88,17 @@ Ghost.prototype.update = function (du) {
         var directions = entityManager._maze[0].getDirections(this.row, this.column);
         // make it impossible to turn back
         util.arrayRemove(directions, this.getOpposite(this.direction));
+
+        // if we don't have a choice, continue
         if(directions.length == 1) {
             this.nextDirection = directions[0];
         } else if(directions.length >= 2) {
+            // update target if needed and change direction
+            if(this.mode === "chase") {
+                this.updateTarget();
+            } else if(this.mode === "scatter") {
+                this.resetTarget();
+            }
             this.nextDirection = this.getNextDirection(directions);
         }
 
@@ -101,6 +125,13 @@ Ghost.prototype.getNextDirection = function(directions) {
             direction = directions[i];
         }
     }
+
+    // if frightened we should random
+    if(this.mode === "frightened") {
+        var randomValue = parseInt(Math.random()*directions.length);
+        direction = directions[randomValue];
+    }
+
     return direction;
 };
 

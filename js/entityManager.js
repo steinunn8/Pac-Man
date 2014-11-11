@@ -96,11 +96,17 @@ var entityManager = {
             sprite: g_sprites.pacMan,
             column: 14,
             row: 14,
-            speed: 2, // columns per second
+            speed: 1.5, // columns per second
             direction: "left",
             target_: {
                 row: 0,
                 column: this.getMazeColumns()
+            },
+            updateTarget: function() {
+                // targets pacman
+                var pos = entityManager.getPacmanPos();
+                this.target_.row = pos.row;
+                this.target_.column = pos.column;
             }
         }));
 
@@ -110,11 +116,19 @@ var entityManager = {
             sprite: g_sprites.pacMan,
             column: 14,
             row: 14,
-            speed: 2, // columns per second
+            speed: 1.5, // columns per second
             direction: "left",
             target_: {
                 row: 0,
                 column: 0
+            },
+            updateTarget: function() {
+                // targets 4 tiles in front of pacman
+                var pos = entityManager.getPacmanPos();
+                var direction = entityManager.getPacmanDirection();
+                var offset = this.getOffset(direction, 4);
+                this.target_.row = pos.row + offset.row;
+                this.target_.column = pos.column + offset.column;
             }
         }));
 
@@ -124,11 +138,24 @@ var entityManager = {
             sprite: g_sprites.pacMan,
             column: 14,
             row: 14,
-            speed: 2, // columns per second
+            speed: 1.5, // columns per second
             direction: "left",
             target_: {
                 row: this.getMazeRows(),
                 column: 0
+            },
+            updateTarget: function() {
+                // targets pacman when the distance between
+                // them is >= 8
+                var pos = entityManager.getPacmanPos();
+                
+                if (util.distSq(pos.column, pos.row, this.column, this.row) >= 64) {
+                    this.target_.row = pos.row;
+                    this.target_.column = pos.column;
+                } else {
+                    this.resetTarget();
+                }
+                
             }
         }));
 
@@ -138,11 +165,22 @@ var entityManager = {
             sprite: g_sprites.pacMan,
             column: 14,
             row: 14,
-            speed: 2, // columns per second
+            speed: 1.5, // columns per second
             direction: "left",
             target_: {
                 row: this.getMazeRows(),
                 column: this.getMazeColumns()
+            },
+            updateTarget: function() {
+                // targets 2 tiles in front of pacman
+                // then doubles the vector between that
+                // target and blinky
+                var pacmanPos = entityManager.getPacmanPos();
+                var direction = entityManager.getPacmanDirection();
+                var blinkyPos = entityManager.getBlinkyPos();
+                var offset = this.getOffset(direction, 2);
+                this.target_.row = (pacmanPos.row + offset.row - blinkyPos.row) * 2;
+                this.target_.column = (pacmanPos.column + offset.column - blinkyPos.column) * 2;
             }
         }));
     },
@@ -167,6 +205,22 @@ var entityManager = {
     
     getMazeRows : function() {
         return this._maze[0].aGrid.length;
+    },
+
+    getPacmanPos : function() {
+        return this._pacMans[0].getPos();
+    },
+
+    getPacmanDirection : function() {
+        return this._pacMans[0].getDirection();
+    },
+
+    getBlinkyPos : function() {
+        for (var i = 0; i < this._ghosts.length; i++) {
+            if (this._ghosts[i].name == "blinky") {
+                return this._ghosts[i].getPos();
+            }
+        }
     },
     
     generateCapsule : function(descr){

@@ -118,13 +118,16 @@ Entity.prototype.getOpposite = function(direction) {
 
 // returns offset based on direction, for example
 // "left" would return {row: -1, column: 0};
-Entity.prototype.getOffset = function(direction) {
+Entity.prototype.getOffset = function(direction, value) {
+    if (value === undefined) {
+        value = 1;
+    }
     var offset = {row: 0, column: 0};
-    offset.column = (direction === "left") ? -1 :
-                    (direction === "right") ? 1 : 
+    offset.column = (direction === "left") ? -value :
+                    (direction === "right") ? value : 
                     0;
-    offset.row = (direction === "up") ? -1 : 
-                 (direction === "down") ? 1 :
+    offset.row = (direction === "up") ? -value : 
+                 (direction === "down") ? value :
                  0;
 
     return offset;
@@ -137,6 +140,10 @@ Entity.prototype.getPos = function() {
 Entity.prototype.setPos = function(row, column) {
     this.row = row;
     this.column = column;
+};
+
+Entity.prototype.getDirection = function() {
+    return this.direction;
 };
 
 Entity.prototype.getSpatialID = function () {
