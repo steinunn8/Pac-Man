@@ -51,13 +51,24 @@ Ghost.prototype.directions = ["up", "down", "left", "right"];
 Ghost.prototype.direction = 0;
 Ghost.prototype.nextDirection = "left";
 
-// TODO:
-//Ghosts are forced to reverse direction by the system anytime the mode changes from: 
-//chase-to-scatter, chase-to-frightened, scatter-to-chase, and scatter-to-frightened. 
-//Ghosts do not reverse direction when changing back from frightened to chase or scatter modes.
-
 // possible modes: chase, scatter, frightened, home
 Ghost.prototype.mode = "chase";
+
+Ghost.prototype.changeMode = function(mode) {
+    // can't change the mode from home with this method
+    if(this.mode === "home") {
+        return;
+    }
+
+    //Ghosts are forced to reverse direction by the system anytime the mode changes from: 
+    //chase-to-scatter, chase-to-frightened, scatter-to-chase, and scatter-to-frightened. 
+    //Ghosts do not reverse direction when changing back from frightened to chase or scatter modes.
+    if(this.mode !== "frightened") {
+        this.direction = this.getOpposite(this.direction);
+    }
+
+    this.mode = mode;
+}
 
 Ghost.prototype.reset = function () {
     this.setPos(this.reset_row, this.reset_column);
@@ -90,7 +101,7 @@ Ghost.prototype.update = function (du) {
         // Don't do anything if inside the center box
         if (this.mode === "home") {
             if (this.homeTime < 0) {
-                this.mode = "chase";
+                this.mode = entityManager.getGhostMode();
                 // teleport out
                 this.column = 14;
                 this.row = 14;
