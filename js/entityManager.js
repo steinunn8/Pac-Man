@@ -90,10 +90,10 @@ var entityManager = {
         
         for (var i=0; i<grid.length; i++) {
             for (var j=0; j<grid[i].length; j++) {
-                if (grid[i][j] === this._maze[0].renderValues.CAPSULE) {
+                if (grid[i][j] === this._maze[0].gridValues.CAPSULE) {
                     //~ console.log("(i,j)=("+i+","+j+")");
                     this._capsules.push(new Capsule({ row : i , column : j }));
-                } else if (grid[i][j] === this._maze[0].renderValues.SPECIAL_CAPSULE) {
+                } else if (grid[i][j] === this._maze[0].gridValues.SPECIAL_CAPSULE) {
                     this._capsules.push(new SpecialCapsule({ row : i , column : j }));
                 }
             }

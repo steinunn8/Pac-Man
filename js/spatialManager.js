@@ -49,11 +49,10 @@ var spatialManager = {
     _findEntityAt: function(row, column) {
         //~ XXX: More than one entity can be on the same (row,column),
         //~      this implemention finds the first and returns it.
-        //~      In praxis this works well but this needs to be adjusted
-        //~      to give higher priority to PacMan and Ghosts (Capsules
-        //~      coming last).
-        for (var ID in this._entities) {
-            
+        //~      PacMan and Ghosts get higher priority than capsules
+        //~      because capsules are registered once but PacMan and
+        //~      Ghosts keep unregistering and registering
+        for (var ID = this._entities.length-1; ID >= 0; ID--) {            
             var e = this._entities[ID];
             if (!e) continue;
             
