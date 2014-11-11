@@ -66,32 +66,43 @@ var entityManager = {
     // i.e. thing which need `this` to be defined.
     //
     deferredSetup : function () {
-        this._categories = [this._maze, this._ghosts, this._pacMans];
+        this._categories = [this._maze, this._capsules, this._ghosts, this._pacMans];
     },
 
     init: function(grid) {
-        
-        this._generateMaze({ aGrid : grid.splice(0) }); //clonging array
-        this._generateCapsules({ aGrid : grid.splice(0) }); //clonging array
-        this._generatePacMan({ aGrid : grid.splice(0) }); //use the grid to initialise Pac-Man (position etc.)
-        this._generateGhosts({ aGrid : grid.splice(0) }); //use the grid to initialise Ghosts
+        this._generateMaze(grid);
+        this._generateCapsules(grid);
+        this._generatePacMan(grid); //use the grid to initialise Pac-Man (position etc.)
+        this._generateGhosts(grid); //use the grid to initialise Ghosts
     },
     
-    _generateMaze : function(descr) {
-        console.log("Generating maze", descr);
-        console.log(this._maze);
-        this._maze.push(new Maze(descr));
-        console.log(this._maze);
+    _generateMaze : function(grid) {
+        console.log("Generating maze");
+        console.log("maze grid", grid);
+        this._maze.push(new Maze({ aGrid : grid }));
     },
     
-    _generateCapsules : function(descr) {
+    _generateCapsules : function(grid) {
         //~ TODO: Implement double for-loops that iterate through the
         //~       input array and generates capsules from the value 1
         console.log("Generating capsules");
+        console.log("capsule grid", grid);
+        
+        for (var i=0; i<grid.length; i++) {
+            for (var j=0; j<grid[i].length; j++) {
+                if (grid[i][j] === this._maze[0].renderValues.CAPSULE) {
+                    //~ console.log("(i,j)=("+i+","+j+")");
+                    this._capsules.push(new Capsule({ row : i , column : j }));
+                } else if (grid[i][j] === this._maze[0].renderValues.SPECIAL_CAPSULE) {
+                    this._capsules.push(new SpecialCapsule({ row : i , column : j }));
+                }
+            }
+        }
+        
         return;
     },
     
-    _generateGhosts : function(descr) {
+    _generateGhosts : function(grid) {
         console.log("Generating ghosts");
         this._ghosts.push(new Ghost({
             name: "blinky",
@@ -263,7 +274,7 @@ var entityManager = {
         }));
     },
 
-    _generatePacMan : function(descr) {
+    _generatePacMan : function(grid) {
         console.log("Generating Pac-Man");
         this._pacMans.push(new PacMan({
             sprite: {

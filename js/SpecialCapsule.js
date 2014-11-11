@@ -23,6 +23,8 @@ function SpecialCapsule(descr) {
     this.isAlive = true;
 };
 
+SpecialCapsule.prototype = new Entity();
+
 SpecialCapsule.prototype.row = -1;
 SpecialCapsule.prototype.column = -1;
 
@@ -31,10 +33,22 @@ SpecialCapsule.prototype.hitMe = function(aggressor) {
     //~ who extends me
     return false;
 };
-SpecialCapsule.prototype.update = function(du) {
 
+SpecialCapsule.prototype.update = function(du) {
+    return;
 };
 
-SpecialCapsule.prototype.render = function(du) {
+SpecialCapsule.prototype.render = function(ctx) {
+    //~ console.log("Capsule rendering!");
+    
+    if (!this.isAlive) return;
+    
+    var oldStyle = ctx.fillStyle;
+    ctx.fillStyle = "#FBB382";
+    
+    var pos = util.getCoordsFromBox(this.row, this.column);
+    //~ console.log("special capsule pos", pos);
+    util.fillCircle(ctx, pos.xPos, pos.yPos, consts.BOX_DIMENSION/2.5);
 
+    ctx.fillStyle = oldStyle; 
 };
