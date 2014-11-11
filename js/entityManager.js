@@ -94,7 +94,24 @@ var entityManager = {
             name: "blinky",
             color: "red",
             mode: "chase",
-            sprite: new Sprite(g_images, 0, 80, 20, 20, 16, 16, 2),
+            sprite: {
+                up: [
+                    new Sprite(g_images, 0, 80, 20, 20, 16, 16, 2),
+                    new Sprite(g_images, 20, 80, 20, 20, 16, 16, 2),
+                ],
+                down: [
+                    new Sprite(g_images, 40, 80, 20, 20, 16, 16, 2),
+                    new Sprite(g_images, 60, 80, 20, 20, 16, 16, 2),
+                ],
+                left: [
+                    new Sprite(g_images, 80, 80, 20, 20, 16, 16, 2),
+                    new Sprite(g_images, 100, 80, 20, 20, 16, 16, 2),
+                ],
+                right: [
+                    new Sprite(g_images, 120, 80, 20, 20, 16, 16, 2),
+                    new Sprite(g_images, 140, 80, 20, 20, 16, 16, 2),
+                ]
+            },
             column: 14,
             row: 14,
             speed: 1.5, // columns per second
@@ -116,8 +133,25 @@ var entityManager = {
             color: "pink",
             mode: "home",
             homeTime: 4, //seconds
-            sprite: new Sprite(g_images, 0, 100, 20, 20, 16, 16, 2),
-            column: 12,
+            sprite: {
+                up: [
+                    new Sprite(g_images, 0, 100, 20, 20, 16, 16, 2),
+                    new Sprite(g_images, 20, 100, 20, 20, 16, 16, 2),
+                ],
+                down: [
+                    new Sprite(g_images, 40, 100, 20, 20, 16, 16, 2),
+                    new Sprite(g_images, 60, 100, 20, 20, 16, 16, 2),
+                ],
+                left: [
+                    new Sprite(g_images, 80, 100, 20, 20, 16, 16, 2),
+                    new Sprite(g_images, 100, 100, 20, 20, 16, 16, 2),
+                ],
+                right: [
+                    new Sprite(g_images, 120, 100, 20, 20, 16, 16, 2),
+                    new Sprite(g_images, 140, 100, 20, 20, 16, 16, 2),
+                ]
+            },
+            column: 16,
             row: 17,
             speed: 1.5, // columns per second
             direction: 0,
@@ -140,7 +174,24 @@ var entityManager = {
             color: "orange",
             mode: "home",
             homeTime: 8, //seconds
-            sprite: new Sprite(g_images, 0, 140, 20, 20, 16, 16, 2),
+            sprite: {
+                up: [
+                    new Sprite(g_images, 0, 140, 20, 20, 16, 16, 2),
+                    new Sprite(g_images, 20, 140, 20, 20, 16, 16, 2),
+                ],
+                down: [
+                    new Sprite(g_images, 40, 140, 20, 20, 16, 16, 2),
+                    new Sprite(g_images, 60, 140, 20, 20, 16, 16, 2),
+                ],
+                left: [
+                    new Sprite(g_images, 80, 140, 20, 20, 16, 16, 2),
+                    new Sprite(g_images, 100, 140, 20, 20, 16, 16, 2),
+                ],
+                right: [
+                    new Sprite(g_images, 120, 140, 20, 20, 16, 16, 2),
+                    new Sprite(g_images, 140, 140, 20, 20, 16, 16, 2),
+                ]
+            },
             column: 14,
             row: 17,
             speed: 1.5, // columns per second
@@ -168,8 +219,25 @@ var entityManager = {
             name: "inky",
             color: "cyan",
             mode: "home",
-            homeTime: 15, //seconds
-            sprite: new Sprite(g_images, 0, 120, 20, 20, 16, 16, 2),
+            homeTime: 12, //seconds
+            sprite: {
+                up: [
+                    new Sprite(g_images, 0, 120, 20, 20, 16, 16, 2),
+                    new Sprite(g_images, 20, 120, 20, 20, 16, 16, 2),
+                ],
+                down: [
+                    new Sprite(g_images, 40, 120, 20, 20, 16, 16, 2),
+                    new Sprite(g_images, 60, 120, 20, 20, 16, 16, 2),
+                ],
+                left: [
+                    new Sprite(g_images, 80, 120, 20, 20, 16, 16, 2),
+                    new Sprite(g_images, 100, 120, 20, 20, 16, 16, 2),
+                ],
+                right: [
+                    new Sprite(g_images, 120, 120, 20, 20, 16, 16, 2),
+                    new Sprite(g_images, 140, 120, 20, 20, 16, 16, 2),
+                ]
+            },
             column: 12,
             row: 17,
             speed: 1.5, // columns per second
