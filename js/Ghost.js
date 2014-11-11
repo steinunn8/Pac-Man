@@ -195,6 +195,9 @@ Ghost.prototype.render = function (ctx) {
             pos.xPos -= (this.timeToNext)*boxDim;
         }
     }
-    
-    this.sprite.drawCentredAt(ctx, pos.xPos, pos.yPos);
+
+     // full animation circle frames per cell traverse
+    var animFrame = Math.round(this.timeToNext);
+
+    this.sprite[dir || "up"][animFrame].drawCentredAt(ctx, pos.xPos, pos.yPos);
 };
