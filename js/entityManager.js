@@ -93,7 +93,7 @@ var entityManager = {
         this._ghosts.push(new Ghost({
             name: "blinky",
             color: "red",
-            isHome: false,
+            mode: "chase",
             sprite: new Sprite(g_images, 0, 80, 20, 20, 16, 16, 2),
             column: 14,
             row: 14,
@@ -114,6 +114,7 @@ var entityManager = {
         this._ghosts.push(new Ghost({
             name: "pinky",
             color: "pink",
+            mode: "home",
             sprite: new Sprite(g_images, 0, 100, 20, 20, 16, 16, 2),
             column: 12,
             row: 17,
@@ -136,6 +137,7 @@ var entityManager = {
         this._ghosts.push(new Ghost({
             name: "clyde",
             color: "orange",
+            mode: "home",
             sprite: new Sprite(g_images, 0, 140, 20, 20, 16, 16, 2),
             column: 14,
             row: 17,
@@ -163,6 +165,7 @@ var entityManager = {
         this._ghosts.push(new Ghost({
             name: "inky",
             color: "cyan",
+            mode: "home",
             sprite: new Sprite(g_images, 0, 120, 20, 20, 16, 16, 2),
             column: 16,
             row: 17,
