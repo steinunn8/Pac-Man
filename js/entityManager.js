@@ -32,9 +32,9 @@ var entityManager = {
     _maze     : [],
     _capsules : [],
     _modeTimer: 0,
-    _modes: [{duration: 7, mode: "scatter"}, {time: 20, mode: "chase"}, 
-             {duration: 7, mode: "scatter"}, {time: 20, mode: "chase"},
-             {duration: 5, mode: "scatter"}, {time: Infinity, mode: "chase"}],
+    _modes: [{duration: 7, mode: "scatter"}, {duration: 20, mode: "chase"}, 
+             {duration: 7, mode: "scatter"}, {duration: 20, mode: "chase"},
+             {duration: 5, mode: "scatter"}, {duration: Infinity, mode: "chase"}],
     
     
     // PUBLIC DATA
@@ -322,6 +322,7 @@ var entityManager = {
 
         if(this._modes.length > 0 && this._modeTimer >= this._modes[0].duration * SECS_TO_NOMINALS) {
             this._modes.splice(0, 1);
+            this._modeTimer = 0;
             if(this._modes.length > 0) {
                 this.setGhostMode(this._modes[0].mode);
             }
