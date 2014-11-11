@@ -161,7 +161,7 @@ Entity.prototype.findHitEntity = function () {
     );
 };
 
-Entity.prototype.hitMe = function(aggressor){
+Entity.prototype.hitMe = function(aggressor) {
     //~ Implement me for every type of Entity
     //~ who extends me
     return false;

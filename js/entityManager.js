@@ -69,19 +69,18 @@ var entityManager = {
         this._categories = [this._maze, this._ghosts, this._pacMans];
     },
 
-    init: function() {
+    init: function(grid) {
         
-        //~ this._generateGhosts();
-        this._generateMaze();
-        this._generateCapsules();
-        this._generatePacMan();
-        this._generateGhosts();
+        this._generateMaze({ aGrid : grid.splice(0) }); //clonging array
+        this._generateCapsules({ aGrid : grid.splice(0) }); //clonging array
+        this._generatePacMan({ aGrid : grid.splice(0) }); //use the grid to initialise Pac-Man (position etc.)
+        this._generateGhosts({ aGrid : grid.splice(0) }); //use the grid to initialise Ghosts
     },
     
     _generateMaze : function(descr) {
-        console.log("Generating maze");
+        console.log("Generating maze", descr);
         console.log(this._maze);
-        this._maze.push(new Maze({}));
+        this._maze.push(new Maze(descr));
         console.log(this._maze);
     },
     

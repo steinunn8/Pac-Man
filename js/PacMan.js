@@ -165,7 +165,7 @@ PacMan.prototype.render = function (ctx) {
         }
         
         animFrame =  Math.round(this._animProp*10);
-        this.sprite["dying"][animFrame].drawCentredAt(ctx, pos.xPos, pos.yPos);
+        //~ this.sprite["dying"][animFrame].drawCentredAt(ctx, pos.xPos, pos.yPos);
         return;
     }
     

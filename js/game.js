@@ -169,7 +169,10 @@ function preloadDone() {
     g_sprite.ghostRed = new Sprite(g_imate.sprite2,
                                   120, 0, 20, 20, 1);
 */
-    entityManager.init();
+    
+    console.log("lvl1 array", consts.LEVEL_1_ARRAY);
+    entityManager.init(consts.LEVEL_1_ARRAY);
+    //~ entityManager.init();
     //~ createPacMan();
     //~ createGhosts();
 

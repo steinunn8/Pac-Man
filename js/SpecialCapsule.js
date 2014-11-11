@@ -26,15 +26,15 @@ function SpecialCapsule(descr) {
 SpecialCapsule.prototype.row = -1;
 SpecialCapsule.prototype.column = -1;
 
-
-SpecialCapsule.prototype.isEaten = function(){
+SpecialCapsule.prototype.hitMe = function(aggressor) {
+    //~ Implement me for every type of Entity
+    //~ who extends me
     return false;
 };
-
-SpecialCapsule.prototype.update = function(du){
+SpecialCapsule.prototype.update = function(du) {
 
 };
 
-SpecialCapsule.prototype.render = function(du){
+SpecialCapsule.prototype.render = function(du) {
 
 };
