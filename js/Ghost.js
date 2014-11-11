@@ -51,7 +51,7 @@ Ghost.prototype.directions = ["up", "down", "left", "right"];
 Ghost.prototype.direction = 0;
 Ghost.prototype.nextDirection = "left";
 
-// possible modes: chase, scatter, frightened, home
+// possible modes: chase, scatter, frightened, home, movingOut
 Ghost.prototype.mode = "chase";
 
 Ghost.prototype.changeMode = function(mode) {
@@ -93,20 +93,33 @@ Ghost.prototype.update = function (du) {
     spatialManager.unregister(this);
 
     // moves the ghost
-    this._hasMoved = this.move(du, this.direction, this.nextDirection);
+    this._hasMoved = this.move(du, this.direction, this.nextDirection, this.mode === "movingOut");
 
     // If we're about to move, make decision
     if (this._hasMoved) {
-        
+        this.homeTime -= du / NOMINAL_UPDATE_INTERVAL;
         // Don't do anything if inside the center box
         if (this.mode === "home") {
             if (this.homeTime < 0) {
-                this.mode = entityManager.getGhostMode();
-                // teleport out
-                this.column = 14;
-                this.row = 14;
+                this.mode = "movingOut";
+            } else {
+                return;
             }
-            this.homeTime -= du / NOMINAL_UPDATE_INTERVAL;
+        }
+
+        if (this.mode === "movingOut") {
+            if (this.column == 14 && this.row == 14) {
+                this.mode = entityManager.getGhostMode();
+                this.homeTime = 0;
+            } else if(this.column != 14) {
+                if(this.column > 14) {
+                    this.nextDirection = "left";
+                } else {
+                    this.nextDirection = "right"
+                }
+            } else {
+                this.nextDirection = "up";
+            }
             return;
         }
 
@@ -193,6 +206,15 @@ Ghost.prototype.render = function (ctx) {
             pos.xPos += (this.timeToNext)*boxDim;
         } else if (dir === "right") {
             pos.xPos -= (this.timeToNext)*boxDim;
+        }
+
+        // when we change from movingOut to other modes we
+        // need to smooth the transition
+        var smoothDuration = 0.7;
+        if (this.mode === "movingOut") {
+            pos.xPos -= 0.5*boxDim;
+        } else if(-this.homeTime < smoothDuration) {
+            pos.xPos -= 0.5*boxDim*(1+this.homeTime/smoothDuration);
         }
     }
 

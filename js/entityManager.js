@@ -146,7 +146,7 @@ var entityManager = {
             name: "pinky",
             color: "pink",
             mode: "home",
-            homeTime: 4, //seconds
+            homeTime: 1, //seconds
             sprite: {
                 up: [
                     new Sprite(g_images, 0, 100, 20, 20, 16, 16, 2),
@@ -165,7 +165,7 @@ var entityManager = {
                     new Sprite(g_images, 140, 100, 20, 20, 16, 16, 2),
                 ]
             },
-            column: 16,
+            column: 14,
             row: 17,
             speed: 1.5, // columns per second
             direction: 0,
@@ -206,7 +206,7 @@ var entityManager = {
                     new Sprite(g_images, 140, 140, 20, 20, 16, 16, 2),
                 ]
             },
-            column: 14,
+            column: 16,
             row: 17,
             speed: 1.5, // columns per second
             direction: 0,

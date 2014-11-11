@@ -72,9 +72,20 @@ Entity.prototype.getNextPos = function(direction) {
     return util.wrapPosition(row, column);
 };
 
-Entity.prototype.move = function(du, direction, nextDirection) {
+Entity.prototype.move = function(du, direction, nextDirection, force) {
+    if (force === undefined) {
+        force = false;
+    }
     this.timeToNext -= this.speed * du / NOMINAL_UPDATE_INTERVAL;
     if (this.timeToNext <= 0) {
+        // force entity to move
+        if(force) {
+            nextPos = this.getNextPos(nextDirection);
+            this.direction = nextDirection;
+            this.setPos(nextPos.row, nextPos.column);
+            this.timeToNext += 1;
+            return true;
+        }
 
         var oldPos = this.getPos();
 
