@@ -89,6 +89,13 @@ Ghost.prototype.update = function (du) {
         
         // Don't do anything if inside the center box
         if (this.mode === "home") {
+            if (this.homeTime < 0) {
+                this.mode = "chase";
+                // teleport out
+                this.column = 14;
+                this.row = 14;
+            }
+            this.homeTime -= du / NOMINAL_UPDATE_INTERVAL;
             return;
         }
 

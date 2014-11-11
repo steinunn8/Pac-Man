@@ -115,6 +115,7 @@ var entityManager = {
             name: "pinky",
             color: "pink",
             mode: "home",
+            homeTime: 4, //seconds
             sprite: new Sprite(g_images, 0, 100, 20, 20, 16, 16, 2),
             column: 12,
             row: 17,
@@ -138,6 +139,7 @@ var entityManager = {
             name: "clyde",
             color: "orange",
             mode: "home",
+            homeTime: 8, //seconds
             sprite: new Sprite(g_images, 0, 140, 20, 20, 16, 16, 2),
             column: 14,
             row: 17,
@@ -166,8 +168,9 @@ var entityManager = {
             name: "inky",
             color: "cyan",
             mode: "home",
+            homeTime: 15, //seconds
             sprite: new Sprite(g_images, 0, 120, 20, 20, 16, 16, 2),
-            column: 16,
+            column: 12,
             row: 17,
             speed: 1.5, // columns per second
             direction: 0,
