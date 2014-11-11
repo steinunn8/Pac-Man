@@ -62,8 +62,7 @@ PacMan.prototype.introSound = new Audio("sounds/pacman_beginning.wav");
 PacMan.prototype.reset = function () {
     this.setPos(this.reset_row, this.reset_column);
     this.direction = this.reset_direction;
-
-    this.halt();
+    this._isDeadNow = false;
 };
 
 //When PacMan dies we warp him to his original place
@@ -108,38 +107,37 @@ PacMan.prototype.update = function (du) {
     spatialManager.register(this);
 };
 
-PacMan.prototype._mouthOpenProp = 0.1;
-PacMan.prototype._mouthSpeed = 0.02;
-PacMan.prototype._mouthOpening = false;
-PacMan.prototype.drawCentredAt = function(ctx, cx, cy, rotation) {
-    var boxDim = consts.BOX_DIMENSION;
-    var startMouth = this._mouthOpenProp*2*Math.PI,
-        endMouth = (1-this._mouthOpenProp)*2*Math.PI,
-        r = boxDim/1.5;
+PacMan.prototype._animProp = 0;
+PacMan.prototype._animSpeed = 0.1; //frames per second
+// PacMan.prototype.drawCentredAt = function(ctx, cx, cy, rotation) {
+//     var boxDim = consts.BOX_DIMENSION;
+//     var startMouth = this._mouthOpenProp*2*Math.PI,
+//         endMouth = (1-this._mouthOpenProp)*2*Math.PI,
+//         r = boxDim/1.5;
 
-    var draw = function(cx, cy) {
-        ctx.save();
+//     var draw = function(cx, cy) {
+//         ctx.save();
 
-        ctx.fillStyle = "#EBFC00";
-        ctx.translate(cx, cy);
-        ctx.rotate(rotation);
+//         ctx.fillStyle = "#EBFC00";
+//         ctx.translate(cx, cy);
+//         ctx.rotate(rotation);
         
-        ctx.beginPath();
-        ctx.moveTo(0, 0);
-        ctx.arc(0, 0, r, startMouth, endMouth);
-        ctx.lineTo(0, 0);
-        ctx.fill();
+//         ctx.beginPath();
+//         ctx.moveTo(0, 0);
+//         ctx.arc(0, 0, r, startMouth, endMouth);
+//         ctx.lineTo(0, 0);
+//         ctx.fill();
     
-        ctx.restore();
+//         ctx.restore();
   
-    };
+//     };
 
-    draw(cx, cy);
-    draw(cx + boxDim*entityManager.getMazeColumns(), cy);
-    draw(cx - boxDim*entityManager.getMazeColumns(), cy);
-    draw(cx, cy + boxDim*entityManager.getMazeRows());
-    draw(cx, cy - boxDim*entityManager.getMazeRows());
-};
+//     draw(cx, cy);
+//     draw(cx + boxDim*entityManager.getMazeColumns(), cy);
+//     draw(cx - boxDim*entityManager.getMazeColumns(), cy);
+//     draw(cx, cy + boxDim*entityManager.getMazeRows());
+//     draw(cx, cy - boxDim*entityManager.getMazeRows());
+// };
 
 PacMan.prototype.hitMe = function (aggressor) {
     if (aggressor.entityType === entityManager.entityTypes["Ghost"]) {
@@ -147,55 +145,61 @@ PacMan.prototype.hitMe = function (aggressor) {
         
         //~ Implement "ghost-maniac-mode" with Boolean value?
         //~ [But wheeere?]
+        this._animProp = 0;
         this.kill();
     } 
 };
 
 PacMan.prototype.render = function (ctx) {
-    //~ TODO: change logic when PacMan dies
-    if (this._isDeadNow) return;
-    
-    var rotation = 0;
     var boxDim = consts.BOX_DIMENSION;
     var pos = util.getCoordsFromBox(this.row, this.column);
+    var animFrame;
 
+    //~ TODO: change logic when PacMan dies
+    if (this._isDeadNow) {
+        
+        this._animProp += this._animSpeed;
+        if (this._animProp > 1) {
+            // XXX: dont do this in the rendering logic
+            this.reset();
+        }
+        
+        animFrame =  Math.round(this._animProp*10);
+        this.sprite["dying"][animFrame].drawCentredAt(ctx, pos.xPos, pos.yPos);
+        return;
+    }
+    
     var dir = this.direction;
     var going = this.nextDirection;
     if (dir === "up") {
         pos.yPos += (this.timeToNext)*boxDim;
-        rotation = 3*Math.PI/2;
     } else if (dir === "down") {
         pos.yPos -= (this.timeToNext)*boxDim;
-        rotation = 1*Math.PI/2;
     } else if (dir === "left") {
         pos.xPos += (this.timeToNext)*boxDim;
-        rotation = 2*Math.PI/2;
     } else if (dir === "right") {
         pos.xPos -= (this.timeToNext)*boxDim;
     }
 
-    if (!dir) {
-        if (going === "up") {
-            rotation = 3*Math.PI/2;
-        } else if (going === "down") {
-            rotation = 1*Math.PI/2;
-        } else if (going === "left") {
-            rotation = 2*Math.PI/2;
-        }
-    }
+    // if (!dir) {
+    //     if (going === "up") {
+    //         rotation = 3*Math.PI/2;
+    //     } else if (going === "down") {
+    //         rotation = 1*Math.PI/2;
+    //     } else if (going === "left") {
+    //         rotation = 2*Math.PI/2;
+    //     }
+    // }
 
-    this.drawCentredAt(ctx, pos.xPos, pos.yPos, rotation);
+    // this.drawCentredAt(ctx, pos.xPos, pos.yPos, rotation);
+    
+    // update animationFrame
     if (this.direction) {
-        if (this._mouthOpenProp > 0.1) {
-            this._mouthOpening = false;
-        } else if (this._mouthOpenProp <= 0) {
-            this._mouthOpening = true;
-        }
-        if (this._mouthOpening) {
-            this._mouthOpenProp += this._mouthSpeed;
-        } else {
-            this._mouthOpenProp -= this._mouthSpeed;
+        this._animProp += this._animSpeed;
+        if (this._animProp > 1) {
+            this._animProp -= 1;
         }
     }
-    // this.sprite.drawCentredAt(ctx, pos.xPos, pos.yPos, rotation);
+    animFrame =  Math.round(this._animProp*2);
+    this.sprite[dir||going||"left"][animFrame].drawCentredAt(ctx, pos.xPos, pos.yPos);
 };

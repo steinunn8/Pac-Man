@@ -263,7 +263,41 @@ var entityManager = {
     _generatePacMan : function(descr) {
         console.log("Generating Pac-Man");
         this._pacMans.push(new PacMan({
-            sprite: g_sprites.pacMan,
+            sprite: {
+                left: [
+                    new Sprite(g_images,  0, 0, 20, 20, 16, 16, 2),
+                    new Sprite(g_images, 20, 0, 20, 20, 16, 16, 2),
+                    new Sprite(g_images, 40, 0, 20, 20, 16, 16, 2)
+                ],
+                right: [
+                    new Sprite(g_images,  0, 20, 20, 20, 16, 16, 2),
+                    new Sprite(g_images, 20, 20, 20, 20, 16, 16, 2),
+                    new Sprite(g_images, 40, 20, 20, 20, 16, 16, 2)
+                ],
+                up: [
+                    new Sprite(g_images,  0, 40, 20, 20, 16, 16, 2),
+                    new Sprite(g_images, 20, 40, 20, 20, 16, 16, 2),
+                    new Sprite(g_images, 40, 40, 20, 20, 16, 16, 2)
+                ],
+                down: [
+                    new Sprite(g_images,  0, 60, 20, 20, 16, 16, 2),
+                    new Sprite(g_images, 20, 60, 20, 20, 16, 16, 2),
+                    new Sprite(g_images, 40, 60, 20, 20, 16, 16, 2)
+                ],
+                dying: [
+                    new Sprite(g_images,   0, 240, 20, 20, 16, 16, 2),
+                    new Sprite(g_images,  20, 240, 20, 20, 16, 16, 2),
+                    new Sprite(g_images,  40, 240, 20, 20, 16, 16, 2),
+                    new Sprite(g_images,  60, 240, 20, 20, 16, 16, 2),
+                    new Sprite(g_images,  80, 240, 20, 20, 16, 16, 2),
+                    new Sprite(g_images, 100, 240, 20, 20, 16, 16, 2),
+                    new Sprite(g_images, 120, 240, 20, 20, 16, 16, 2),
+                    new Sprite(g_images, 140, 240, 20, 20, 16, 16, 2),
+                    new Sprite(g_images, 160, 240, 20, 20, 16, 16, 2),
+                    new Sprite(g_images, 180, 240, 20, 20, 16, 16, 2),
+                    new Sprite(g_images, 200, 240, 20, 20, 16, 16, 2)
+                ]
+            },
             column: 13,
             row: 26,
             speed: 2, // columns per second
