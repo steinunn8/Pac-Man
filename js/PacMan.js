@@ -65,11 +65,10 @@ PacMan.prototype.reset = function () {
     this._isDeadNow = false;
 };
 
-//When PacMan dies we warp him to his original place
-PacMan.prototype.warp = function (ctx){
-    //TODO: Move to original place with animation
+// When PacMan dies we warp him to his original place
+PacMan.prototype.kill = function (ctx) {
     this.warpSound.play();
-    this.reset();
+    this._isDeadNow = true;
 };
 
 PacMan.prototype._keyMove = function() {
@@ -77,7 +76,19 @@ PacMan.prototype._keyMove = function() {
            keys[this.KEY_LEFT] || keys[this.KEY_RIGHT];
 };
 
+PacMan.prototype._dyingProp = 0;
+PacMan.prototype._dyingSpeed = 0.2; // fps
 PacMan.prototype.update = function (du) {
+    // Special logic for dying behaviour
+    if (this._isDeadNow) {
+        if (this._dyingProp > 1) {
+            this._dyingProp = 0;
+            this.reset();
+        }
+        this._dyingProp += this._dyingSpeed * (du/NOMINAL_UPDATE_INTERVAL);
+        return;
+    }
+    
     if (keys[this.KEY_UP]) {
         this.nextDirection = "up";
     }
@@ -107,37 +118,8 @@ PacMan.prototype.update = function (du) {
     spatialManager.register(this);
 };
 
-PacMan.prototype._animProp = 0;
+PacMan.prototype._animProp = 0;    //proportion of the animation cycle
 PacMan.prototype._animSpeed = 0.1; //frames per second
-// PacMan.prototype.drawCentredAt = function(ctx, cx, cy, rotation) {
-//     var boxDim = consts.BOX_DIMENSION;
-//     var startMouth = this._mouthOpenProp*2*Math.PI,
-//         endMouth = (1-this._mouthOpenProp)*2*Math.PI,
-//         r = boxDim/1.5;
-
-//     var draw = function(cx, cy) {
-//         ctx.save();
-
-//         ctx.fillStyle = "#EBFC00";
-//         ctx.translate(cx, cy);
-//         ctx.rotate(rotation);
-        
-//         ctx.beginPath();
-//         ctx.moveTo(0, 0);
-//         ctx.arc(0, 0, r, startMouth, endMouth);
-//         ctx.lineTo(0, 0);
-//         ctx.fill();
-    
-//         ctx.restore();
-  
-//     };
-
-//     draw(cx, cy);
-//     draw(cx + boxDim*entityManager.getMazeColumns(), cy);
-//     draw(cx - boxDim*entityManager.getMazeColumns(), cy);
-//     draw(cx, cy + boxDim*entityManager.getMazeRows());
-//     draw(cx, cy - boxDim*entityManager.getMazeRows());
-// };
 
 PacMan.prototype.hitMe = function (aggressor) {
     if (aggressor.entityType === entityManager.entityTypes["Ghost"]) {
@@ -145,7 +127,6 @@ PacMan.prototype.hitMe = function (aggressor) {
         
         //~ Implement "ghost-maniac-mode" with Boolean value?
         //~ [But wheeere?]
-        this._animProp = 0;
         this.kill();
     } 
 };
@@ -158,14 +139,10 @@ PacMan.prototype.render = function (ctx) {
     //~ TODO: change logic when PacMan dies
     if (this._isDeadNow) {
         
-        this._animProp += this._animSpeed;
-        if (this._animProp > 1) {
-            // XXX: dont do this in the rendering logic
-            this.reset();
-        }
-        
-        animFrame = Math.round(this._animProp*10);
-        //~ this.sprite["dying"][animFrame].drawCentredAt(ctx, pos.xPos, pos.yPos);
+        animFrame = Math.round((this._dyingProp)*10); // 0-10 frames of dying
+        if (animFrame > 10) { animFrame=10; }
+        console.log(animFrame);
+        this.sprite["dying"][animFrame].drawCentredAt(ctx, pos.xPos, pos.yPos);
         return;
     }
     
