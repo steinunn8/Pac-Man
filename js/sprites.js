@@ -6,6 +6,7 @@ var sprites = {
     _pacMans  : [],
     _ghosts   : [],
     _extras   : [],
+    
 
 
     makeSpritesArray: function() {
@@ -15,7 +16,7 @@ var sprites = {
     },
 
     makeGhosts: function(){
-        this._ghosts = {red:[], pink:[], cyan:[], orange:[]};
+        this._ghosts = {red:[], pink:[], cyan:[], orange:[], eatable:[], dead:[]};
         var row = 4;
         var col = 0;
         for(attr in this._ghosts){
