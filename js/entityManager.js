@@ -111,7 +111,7 @@ var entityManager = {
             name: "blinky",
             color: "red",
             mode: "scatter",
-            sprite: sprites._ghosts.red,
+            sprite: g_sprites.ghosts.red,
             column: pos.column,
             row: pos.row,
             speed: 1.5, // columns per second
@@ -134,7 +134,7 @@ var entityManager = {
             color: "pink",
             mode: "home",
             homeTime: 1, //seconds
-            sprite: sprites._ghosts.pink,
+            sprite: g_sprites.ghosts.pink,
             column: 14,
             row: 17,
             speed: 1.5, // columns per second
@@ -159,7 +159,7 @@ var entityManager = {
             color: "orange",
             mode: "home",
             homeTime: 8, //seconds
-            sprite: sprites._ghosts.orange,
+            sprite: g_sprites.ghosts.orange,
             column: 16,
             row: 17,
             speed: 1.5, // columns per second
@@ -189,7 +189,7 @@ var entityManager = {
             color: "cyan",
             mode: "home",
             homeTime: 12, //seconds
-            sprite: sprites._ghosts.cyan,
+            sprite: g_sprites.ghosts.cyan,
             column: 12,
             row: 17,
             speed: 1.5, // columns per second
@@ -215,7 +215,8 @@ var entityManager = {
     _generatePacMan : function(grid) {
         var pos = this._maze[0].getEntityPos(this._maze[0].gridValues.PACMAN);
         this._pacMans.push(new PacMan({
-            sprite: sprites._pacMans,
+
+            sprite: g_sprites.pacMans,
             column: pos.column,
             row: pos.row,
             speed: 2, // columns per second

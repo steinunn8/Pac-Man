@@ -120,14 +120,14 @@ function renderSimulation(ctx) {
 // =============
 
 var g_images;
-var g_sprites = [];
+var g_sprites = {};
 function requestPreloads() {
 
     g_images = new Image();
     g_images.onload = preloadDone;
     g_images.src = "sprite2.png";
 
-    sprites.makeSpritesArray(); 
+    g_sprites = sprites(); 
 }
 
 function preloadDone() {
