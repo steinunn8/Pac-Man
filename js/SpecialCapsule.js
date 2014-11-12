@@ -16,6 +16,7 @@
 function SpecialCapsule(descr) {
     
     this.setup(descr);
+    spatialManager.register(this);
     
     // Used in collision logic in spatialManager.js
     this.entityType = entityManager.entityTypes["SpecialCapsule"];
@@ -28,11 +29,22 @@ SpecialCapsule.prototype = new Entity();
 SpecialCapsule.prototype.row = -1;
 SpecialCapsule.prototype.column = -1;
 
-SpecialCapsule.prototype.hitMe = function(aggressor) {
-    //~ Implement me for every type of Entity
-    //~ who extends me
-    return false;
+SpecialCapsule.prototype.kill = function () {
+    this._isDeadNow = true;
+    this.isAlive = false;
+    spatialManager.unregister(this);
 };
+
+SpecialCapsule.prototype.hitMe = function(aggressor) {
+    //~ console.log("Special Capsule under attack!");
+    if (aggressor.entityType === entityManager.entityTypes["PacMan"]) {
+        //~ console.log("Special Capsule eaten by PacMan");
+        
+        //~ Implement "ghost-maniac-mode" with Boolean value?
+        //~ [But wheeere?]
+        //~ this._animProp = 0;
+        this.kill();
+    }};
 
 SpecialCapsule.prototype.update = function(du) {
     return;
