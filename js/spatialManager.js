@@ -72,5 +72,15 @@ var spatialManager = {
             //~ console.log(myEntityType + " ran into " + entity.entityType);
             entity.hitMe(aggressor);
         }
+    },
+
+    render: function(ctx) {
+        for (var i = 0; i < this._entities.length-1; i++) {
+            var e = this._entities[i];
+            if (!e) continue;
+            var boxPos = e.getPos();
+            var pos = util.getCoordsFromBox(boxPos.row, boxPos.column);
+            util.fillBox(ctx, pos.xPos - consts.BOX_DIMENSION/2, pos.yPos - consts.BOX_DIMENSION/2, consts.BOX_DIMENSION, consts.BOX_DIMENSION, "red");
+        }
     }
 };

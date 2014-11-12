@@ -64,7 +64,7 @@ Ghost.prototype.changeMode = function(mode) {
     //chase-to-scatter, chase-to-frightened, scatter-to-chase, and scatter-to-frightened. 
     //Ghosts do not reverse direction when changing back from frightened to chase or scatter modes.
     if(this.mode !== "frightened") {
-        this.direction = this.getOpposite(this.direction);
+        this.nextDirection = this.getOpposite(this.direction);
     }
 
     this.mode = mode;

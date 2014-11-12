@@ -49,7 +49,7 @@ Entity.prototype.setup = function (descr) {
     this._isDeadNow = false;
     // Time to next is the remaining proportion of the distance traveled
     // to next cell
-    this.timeToNext = 1;
+    this.timeToNext = 0;
 };
 
 Entity.prototype.direction = 0;
@@ -77,6 +77,10 @@ Entity.prototype.move = function(du, direction, nextDirection, force) {
         force = false;
     }
     this.timeToNext -= this.speed * du / NOMINAL_UPDATE_INTERVAL;
+    // When our center is in a new cell, we let spatial manager know
+    if (this.timeToNext < 0.5) {
+        spatialManager.imGoingHere(this, this.row, this.column);
+    }
     if (this.timeToNext <= 0) {
         // force entity to move
         if(force) {
@@ -107,7 +111,6 @@ Entity.prototype.move = function(du, direction, nextDirection, force) {
         } else {
             // we can move!!
             this.setPos(nextPos.row, nextPos.column);
-            spatialManager.imGoingHere(this, nextPos.row, nextPos.column);
         }
 
         // Make the distance to next cell positive again
@@ -145,6 +148,13 @@ Entity.prototype.getOffset = function(direction, value) {
 }
 
 Entity.prototype.getPos = function() {
+    // gets position of the center
+    if (this.timeToNext > 0.5) {
+        var oppositeDir = this.getOpposite(this.direction);
+        var offset = this.getOffset(oppositeDir);
+        return { row: this.row + offset.row, column: this.column + offset.column };
+    }
+
     return { row: this.row, column: this.column };
 };
 
