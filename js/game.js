@@ -75,7 +75,7 @@ var g_renderSpatialDebug = false;
 
 var KEY_MIXED   = keyCode('M');
 var KEY_SPATIAL = keyCode('X');
-var KEY_LOG_MAZE = keyCode('C');
+var KEY_LOG_MAZE = keyCode('V');
 
 function processDiagnostics() {
 
