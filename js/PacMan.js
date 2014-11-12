@@ -122,7 +122,7 @@ PacMan.prototype.render = function (ctx) {
 
     //~ TODO: change logic when PacMan dies
     if (this._isDeadNow) {
-        
+        entityManager.resetGhosts();
         animFrame = Math.round((this._dyingProp)*10); // 0-10 frames of dying
         if (animFrame > 10) { animFrame=10; }
         //~ console.log(animFrame);

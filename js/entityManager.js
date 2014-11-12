@@ -216,9 +216,6 @@ var entityManager = {
             speed: 2, // columns per second
             direction: "left"
         }));
-        
-        //Testing sounds, uncomment for PacMan-party 
-        //this._pacMans[0].introSound.play();
     },
     
     getMazeColumns : function() {
@@ -258,6 +255,12 @@ var entityManager = {
     
     generateCapsule : function(descr){
         this._capsules.push(new Capsule(descr));
+    },
+
+    resetGhosts : function(){
+        for(var i = 0; i < this._ghosts.length; i++){
+            this._ghosts[i].reset();
+        }
     },
 
     update: function(du) {

@@ -31,6 +31,10 @@ function Ghost(descr) {
 };
 
 Ghost.prototype = new Entity();
+Ghost.prototype.direction = 0;
+Ghost.prototype.nextDirection = "left";
+// possible modes: chase, scatter, frightened, home, movingOut
+Ghost.prototype.mode = "chase";
 
 Ghost.prototype.rememberResets = function () {
     // Remember my reset positions and home corner (starting target)
@@ -47,13 +51,6 @@ Ghost.prototype.resetTarget = function() {
     this.target_.column = this.startTarget.column;
 };
 
-Ghost.prototype.directions = ["up", "down", "left", "right"];
-Ghost.prototype.direction = 0;
-Ghost.prototype.nextDirection = "left";
-
-// possible modes: chase, scatter, frightened, home, movingOut
-Ghost.prototype.mode = "chase";
-
 Ghost.prototype.changeMode = function(mode) {
     // can't change the mode from home with this method
     if(this.mode === "home") {
@@ -68,7 +65,7 @@ Ghost.prototype.changeMode = function(mode) {
     }
 
     this.mode = mode;
-}
+};
 
 Ghost.prototype.reset = function () {
     this.setPos(this.reset_row, this.reset_column);
@@ -89,7 +86,6 @@ Ghost.prototype.hitMe = function (aggressor) {
 };
 
 Ghost.prototype.update = function (du) {
-    // TODO: Unregister and check for death (if blue)
     spatialManager.unregister(this);
 
     // moves the ghost
@@ -170,10 +166,6 @@ Ghost.prototype.getNextDirection = function(directions) {
     }
 
     return direction;
-};
-
-Ghost.prototype.drawCentredAt = function(ctx, cx, cy, rotation) {
-
 };
 
 Ghost.prototype.bounceProp = 0;

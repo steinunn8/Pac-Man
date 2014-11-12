@@ -36,7 +36,6 @@ var spatialManager = {
     },
     
     register: function(entity) {
-        // var pos = entity.getPos();
         var spatialID = entity.getSpatialID();
         this._entities[spatialID] = entity;
     },
