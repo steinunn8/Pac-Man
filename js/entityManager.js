@@ -100,7 +100,7 @@ var entityManager = {
 
     regenerateCapsules : function(grid) {
         while(this._capsules.length > 0) {
-            this._capsules.pop();
+            this._capsules.pop().kill();
         }
         this._generateCapsules(grid);
     },
