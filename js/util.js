@@ -136,7 +136,7 @@ var util = {
         ctx.beginPath();
     },
 
-    finishLine: function(oldStyle) {
+    finishLine: function(ctx, oldStyle) {
         ctx.stroke();
         ctx.fillStyle = oldStyle;
         ctx.restore();
@@ -160,7 +160,7 @@ var util = {
             ctx.lineTo(yOffset, yOffset);
         }
 
-        this.finishLine(oldStyle);
+        this.finishLine(ctx, oldStyle);
     },
 
     drawDoubleLine: function(ctx, x, y, rotation, style) {
@@ -170,7 +170,7 @@ var util = {
         ctx.moveTo(-offset, -offset);
         ctx.lineTo(-offset, offset);
 
-        this.finishLine(oldStyle);
+        this.finishLine(ctx, oldStyle);
     },
 
     drawCurve: function(ctx, x, y, rotation, style, doubleLine) {
@@ -187,7 +187,7 @@ var util = {
             ctx.quadraticCurveTo(centerOffset, centerOffset, centerOffset+offset, centerOffset);
         }
 */
-        this.finishLine(oldStyle);
+        this.finishLine(ctx, oldStyle);
     },
 
     drawLongCurve: function(ctx, x, y, rotation, style, doubleLine) {
@@ -203,9 +203,8 @@ var util = {
             ctx.quadraticCurveTo(-centerOffset, -centerOffset, centerOffset, -centerOffset);
         }
         
-        this.finishLine(oldStyle);
+        this.finishLine(ctx, oldStyle);
     },
-
 
     //EXTRAS WITH NO HOME
 

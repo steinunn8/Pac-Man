@@ -35,6 +35,8 @@ var entityManager = {
     _modes: [{duration: 7, mode: "scatter"}, {duration: 20, mode: "chase"}, 
              {duration: 7, mode: "scatter"}, {duration: 20, mode: "chase"},
              {duration: 5, mode: "scatter"}, {duration: Infinity, mode: "chase"}],
+
+    editingEnabled: false,
     
     
     // PUBLIC DATA
@@ -84,10 +86,7 @@ var entityManager = {
     
     _generateCapsules : function(grid) {
         //~ TODO: Implement double for-loops that iterate through the
-        //~       input array and generates capsules from the value 1
-        console.log("Generating capsules");
-        console.log("capsule grid", grid);
-        
+        //~       input array and generates capsules from the value 1        
         for (var i=0; i<grid.length; i++) {
             for (var j=0; j<grid[i].length; j++) {
                 if (grid[i][j] === this._maze[0].gridValues.CAPSULE) {
@@ -100,6 +99,13 @@ var entityManager = {
         }
         
         return;
+    },
+
+    regenerateCapsules : function(grid) {
+        while(this._capsules.length > 0) {
+            this._capsules.pop();
+        }
+        this._generateCapsules(grid);
     },
     
     _generateGhosts : function(grid) {
@@ -362,6 +368,14 @@ var entityManager = {
     },
 
     update: function(du) {
+        var TOGGLE_LEVEL_EDIT = keyCode('L');
+        if (eatKey(TOGGLE_LEVEL_EDIT)) this.editingEnabled = !this.editingEnabled;
+
+        if (this.editingEnabled) {
+            this._maze[0].update(du);
+            return;
+        }
+
         this._modeTimer += du;
 
         if(this._modes.length > 0 && this._modeTimer >= this._modes[0].duration * SECS_TO_NOMINALS) {
@@ -408,6 +422,15 @@ var entityManager = {
 
             }
             debugY += 10;
+        }
+    },
+
+    mouseClick: function(x, y) {
+        var pos = util.getBoxFromCoord(x + consts.BOX_DIMENSION/2, y + consts.BOX_DIMENSION/2);
+        pos.row = Math.floor(pos.row);
+        pos.column = Math.floor(pos.column);
+        if (this.editingEnabled) {
+            this._maze[0].editGrid(pos);
         }
     }
 

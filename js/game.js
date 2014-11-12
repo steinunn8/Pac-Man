@@ -73,8 +73,9 @@ var g_allowMixedActions = true;
 var g_useAveVel = true;
 var g_renderSpatialDebug = false;
 
-var KEY_MIXED   = keyCode('M');;
+var KEY_MIXED   = keyCode('M');
 var KEY_SPATIAL = keyCode('X');
+var KEY_LOG_MAZE = keyCode('C');
 
 function processDiagnostics() {
 
@@ -82,6 +83,12 @@ function processDiagnostics() {
         g_allowMixedActions = !g_allowMixedActions;
 
     if (eatKey(KEY_SPATIAL)) g_renderSpatialDebug = !g_renderSpatialDebug;
+
+    // prints level data to console
+    if (eatKey(KEY_LOG_MAZE)) {
+//        window.prompt("Level array: ", JSON.stringify(entityManager._maze[0].aGrid));
+        console.log(JSON.stringify(entityManager._maze[0].aGrid));
+    }
 }
 
 

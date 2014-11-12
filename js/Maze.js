@@ -22,6 +22,9 @@ function Maze(descr) {
     this.nColumns = this.aGrid[0].length; //28
 
     this._generateWall();
+    this.selectedBlock = Infinity;
+
+    this.image = -1;
 };
 
 Maze.prototype.penetrable = function(row, column) {
@@ -101,8 +104,6 @@ Maze.prototype.gridValues = {
 // for normal double lines
 Maze.prototype.DOUBLE_LINE_OFFSET = -100;
 
-Maze.prototype.sprite = -1;
-
 Maze.prototype._generateWall = function() {
     this.aRenderingWall = [];
     for (var i = 0; i < this.nRows; i++) {
@@ -115,45 +116,56 @@ Maze.prototype._generateWall = function() {
 };
 
 Maze.prototype.update = function(du) {
+    var KEY_WALL = keyCode('1');
+    var KEY_EMPTY = keyCode('2');
+    var KEY_CAPSULE = keyCode('3');
+    if (eatKey(KEY_WALL)) {
+        this.selectedBlock = this.gridValues.WALL;
+    }
+    if (eatKey(KEY_EMPTY)) {
+        this.selectedBlock = this.gridValues.EMPTY;
+    }
+    if (eatKey(KEY_CAPSULE)) {
+        this.selectedBlock = this.gridValues.CAPSULE;
+    }
     return;
 };
 
+Maze.prototype.editGrid = function(pos) {
+    if (this.selectedBlock === Infinity) {
+        return;
+    }
+    this.aGrid[pos.row][pos.column] = this.selectedBlock;
+    this.image = -1;
+    this._generateWall();
+
+    entityManager.regenerateCapsules(this.aGrid);
+}
+
 Maze.prototype.render = function(ctx) {
-    var renderValue, pos, i, j;
-    if (this.sprite == -1) {
-        for (i = 0; i < this.aRenderingWall.length; i++) {
-            for (j = 0; j < this.aRenderingWall[i].length; j++) {
-                renderValue = this.aRenderingWall[i][j];
-                pos = util.getCoordsFromBox(i, j);
-                this._drawPart(ctx, renderValue, pos.xPos, pos.yPos);
-            }
-        }
+    if (this.image == -1) {
+        var buffer = document.createElement('canvas');
+        buffer.width = g_canvas.width;
+        buffer.height = g_canvas.height;
+        this.renderAll(buffer.getContext('2d'));
 
-        var image = new Image();
-        image.src = canvas.toDataURL();
-        this.sprite = new Sprite(image, 0, 0,
-                                 g_canvas.width, g_canvas.height,
-                                 g_canvas.width, g_canvas.height,
-                                 1);
-
-    } else {
-        this.sprite.drawAt(ctx, 0, 0);
+        this.image = buffer;
     }
 
-    // only do this once
-    var oldStyle = ctx.fillStyle;
-    ctx.fillStyle = "#FBB382";
+    ctx.drawImage(this.image, 0, 0);
+};
 
+Maze.prototype.renderAll = function(ctx) {
+    var renderValue, pos, i, j;
+    ctx.strokeStyle = '#ff0000';
     for (i = 0; i < this.aRenderingWall.length; i++) {
         for (j = 0; j < this.aRenderingWall[i].length; j++) {
             renderValue = this.aRenderingWall[i][j];
             pos = util.getCoordsFromBox(i, j);
-            this._drawItems(ctx, renderValue, pos.xPos, pos.yPos);
+            this._drawPart(ctx, renderValue, pos.xPos, pos.yPos);
         }
     }
-
-    ctx.fillStyle = oldStyle; 
-};
+}
 
 Maze.prototype._getRenderValue = function(row, column) {
     if (this.aGrid[row][column] == this.gridValues.GHOST_WALL) {
@@ -196,15 +208,6 @@ Maze.prototype._getRotation = function(direction) {
     }
 
     return -1;
-};
-
-Maze.prototype._drawItems = function(ctx, renderValue, x, y) {
-    // We might want to make these images instead of circles to speed up
-    if(renderValue == this.renderValues.CAPSULE) {
-        //~ util.fillCircle(ctx, x, y, consts.BOX_DIMENSION/8);
-    } else if(renderValue == this.renderValues.SPECIAL_CAPSULE) {
-        //~ util.fillCircle(ctx, x, y, consts.BOX_DIMENSION/2.5);
-    }
 };
 
 Maze.prototype._drawPart = function(ctx, renderValue, x, y, isDouble) {
