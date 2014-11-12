@@ -230,7 +230,9 @@ var util = {
 
     arrayRemove: function(arr, value) {
         var i = arr.indexOf(value);
-        arr.splice(i, 1);
+        if (i !== -1) {
+            arr.splice(i, 1);
+        }
     }
 
 };
