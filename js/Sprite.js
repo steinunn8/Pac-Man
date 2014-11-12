@@ -51,3 +51,15 @@ Sprite.prototype.drawCentredAt = function (ctx, cx, cy, rotation) {
 
     ctx.restore();
 };
+
+Sprite.prototype.drawWrapedCentredAt = function(ctx, cx, cy, rotation) {
+    var w = g_canvas.width;
+    var h = g_canvas.height;
+    
+    this.drawCentredAt(ctx, cx, cy, rotation);
+    
+    this.drawCentredAt(ctx, cx+w, cy, rotation);
+    this.drawCentredAt(ctx, cx-w, cy, rotation);
+    this.drawCentredAt(ctx, cx, cy+h, rotation);
+    this.drawCentredAt(ctx, cx, cy-h, rotation);
+};

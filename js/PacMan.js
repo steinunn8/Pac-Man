@@ -150,5 +150,5 @@ PacMan.prototype.render = function (ctx) {
         }
     }
     animFrame =  Math.round(this._animProp*2);
-    this.sprite[dir||going||"left"][animFrame].drawCentredAt(ctx, pos.xPos, pos.yPos);
+    this.sprite[dir||going||"left"][animFrame].drawWrapedCentredAt(ctx, pos.xPos, pos.yPos);
 };
