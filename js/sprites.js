@@ -63,7 +63,7 @@ var sprites = {
         var col = 0;
         this._pacMans = {left:[], right:[], up:[], down:[], dying:[]}
         for(attr in this._pacMans){
-            if(attr == "dying"){}
+            if(attr == "dying"){ continue; }
             this.cutPacManSprite(attr, col, row, 2);
             this.cutPacManSprite(attr, col + 1, row, 2);
             this.cutPacManSprite(attr, col + 2, row, 2);

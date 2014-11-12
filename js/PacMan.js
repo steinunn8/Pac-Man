@@ -99,9 +99,6 @@ PacMan.prototype.update = function (du) {
     // mutates the direction of pacman
     this.move(du, this.direction, this.nextDirection);
     
-    // TODO: Warp if isColliding, otherwise Register
-    
-    // TODO: If going through "tunnel", handle
     spatialManager.register(this);
 };
 
@@ -145,18 +142,6 @@ PacMan.prototype.render = function (ctx) {
         pos.xPos -= (this.timeToNext)*boxDim;
     }
 
-    // if (!dir) {
-    //     if (going === "up") {
-    //         rotation = 3*Math.PI/2;
-    //     } else if (going === "down") {
-    //         rotation = 1*Math.PI/2;
-    //     } else if (going === "left") {
-    //         rotation = 2*Math.PI/2;
-    //     }
-    // }
-
-    // this.drawCentredAt(ctx, pos.xPos, pos.yPos, rotation);
-    
     // update animationFrame
     if (this.direction) {
         this._animProp += this._animSpeed;
