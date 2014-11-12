@@ -40,6 +40,7 @@ Ghost.prototype.rememberResets = function () {
     // Remember my reset positions and home corner (starting target)
     this.reset_row = this.row;
     this.reset_column = this.column;
+    this.reset_mode = this.mode;
     this.startTarget = {
         row: this.target_.row,
         column: this.target_.column
@@ -69,6 +70,7 @@ Ghost.prototype.changeMode = function(mode) {
 
 Ghost.prototype.reset = function () {
     this.setPos(this.reset_row, this.reset_column);
+    this.mode = this.reset_mode;
 };
 
 Ghost.prototype.drawCentredAt = function(ctx, cx, cy, rotation) {
