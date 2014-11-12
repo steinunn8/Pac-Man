@@ -46,19 +46,6 @@ PacMan.prototype.KEY_RIGHT  = 'D'.charCodeAt(0);
 PacMan.prototype.lives = 3;
 PacMan.prototype.score = 0;
 
-//TODO: FIX
-
-// HACKED-IN AUDIO (no preloading)
-//TODO: Change audio
-PacMan.prototype.eatSound = new Audio("sounds/pacman_chomp.wav");
-PacMan.prototype.warpSound = new Audio("sounds/pacman_death.wav");
-PacMan.prototype.eatFruit = new Audio("sounds/pacman_eatfruit.wav");
-PacMan.prototype.eatGhost = new Audio("sounds/pacman_eatghost.wav");
-PacMan.prototype.newLive = new Audio("sounds/pacman_extrapac.wav");
-PacMan.prototype.intermission = new Audio("sounds/pacman_intermission.wav");
-//TODO: Move to better place!
-PacMan.prototype.introSound = new Audio("sounds/pacman_beginning.wav");
-
 PacMan.prototype.reset = function () {
     this.setPos(this.reset_row, this.reset_column);
     this.direction = this.reset_direction;
@@ -67,7 +54,7 @@ PacMan.prototype.reset = function () {
 
 // When PacMan dies we warp him to his original place
 PacMan.prototype.kill = function (ctx) {
-    this.warpSound.play();
+    warpSound.play();
     this._isDeadNow = true;
 };
 

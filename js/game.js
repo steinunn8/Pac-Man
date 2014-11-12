@@ -123,12 +123,6 @@ var g_images;
 var g_sprites = [];
 function requestPreloads() {
 
-    /*var requiredImages = {
-        sprite1   : "sprite2.png"
-    };
-
-    imagesPreload(requiredImages, g_images, preloadDone);
-*/
     g_images = new Image();
     g_images.onload = preloadDone;
     g_images.src = "sprite2.png";
@@ -137,21 +131,12 @@ function requestPreloads() {
 }
 
 function preloadDone() {
-   
-    console.log("lvl1 array", consts.LEVEL_1_ARRAY);
     entityManager.init(consts.LEVEL_1_ARRAY);
-    //~ entityManager.init();
-    //~ createPacMan();
-    //~ createGhosts();
-
     main.init();
-
-    //~ createMaze();
     g_canvas.width = (consts.BOX_DIMENSION *
                       entityManager.getMazeColumns());
     g_canvas.height = (consts.BOX_DIMENSION *
                        entityManager.getMazeRows());
-    // TODO lata spatial manager vita af tilvist maze
 }
 
 // Kick it off

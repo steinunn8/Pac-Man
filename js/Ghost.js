@@ -92,6 +92,8 @@ Ghost.prototype.update = function (du) {
     // TODO: Unregister and check for death (if blue)
     spatialManager.unregister(this);
 
+    var pos = util.getCoordsFromBox(this.row, this.column);
+    var boxDim = consts.BOX_DIMENSION;
     // moves the ghost
     this._hasMoved = this.move(du, this.direction, this.nextDirection, this.mode === "movingOut");
 
@@ -142,8 +144,39 @@ Ghost.prototype.update = function (du) {
 
         this._hasMoved = false;
     }
+
+
+    //TODO: Move all logic from render functuion!
+    // Ghosts at home just bounce up and down
+    if (this.mode === "home") {
+        pos.xPos -= 0.5*boxDim;
+        pos.yPos -= this.bounceProp*boxDim;
+        this.bounceProp += (this.bouncingUp ? 1 : -1) * this.bounceSpeed;
+        if (Math.abs(this.bounceProp) > 0.5) {
+            this.bouncingUp = !this.bouncingUp;
+        }
+    } else {
+        var dir = this.direction;
+        if (dir === "up") {
+            pos.yPos += (this.timeToNext)*boxDim;
+        } else if (dir === "down") {
+            pos.yPos -= (this.timeToNext)*boxDim;
+        } else if (dir === "left") {
+            pos.xPos += (this.timeToNext)*boxDim;
+        } else if (dir === "right") {
+            pos.xPos -= (this.timeToNext)*boxDim;
+        }
+
+        // when we change from movingOut to other modes we
+        // need to smooth the transition
+        var smoothDuration = 0.7;
+        if (this.mode === "movingOut") {
+            pos.xPos -= 0.5*boxDim;
+        } else if(-this.homeTime < smoothDuration) {
+            pos.xPos -= 0.5*boxDim*(1+this.homeTime/smoothDuration);
+        }
+    }
     
-    // TODO: If going through "tunnel", handle
     spatialManager.register(this);
 };
 
@@ -181,45 +214,11 @@ Ghost.prototype.bounceProp = 0;
 Ghost.prototype.bounceSpeed = 0.1;
 Ghost.prototype.bouncingUp = true;
 Ghost.prototype.render = function (ctx) {
-    // TODO: If dead, change to sprite eyes and then send home
-    //       if specialCapsule, draw blue/white ghost from sprite
-    
-    // this.sprite.drawCentredAt(ctx, pos.xPos, pos.yPos, rotation);
     var pos = util.getCoordsFromBox(this.row, this.column);
     var boxDim = consts.BOX_DIMENSION;
 
-    // Ghosts at home just bounce up and down
-    if (this.mode === "home") {
-        pos.xPos -= 0.5*boxDim;
-        pos.yPos -= this.bounceProp*boxDim;
-        this.bounceProp += (this.bouncingUp ? 1 : -1) * this.bounceSpeed;
-        if (Math.abs(this.bounceProp) > 0.5) {
-            this.bouncingUp = !this.bouncingUp;
-        }
-    } else {
-        var dir = this.direction;
-        if (dir === "up") {
-            pos.yPos += (this.timeToNext)*boxDim;
-        } else if (dir === "down") {
-            pos.yPos -= (this.timeToNext)*boxDim;
-        } else if (dir === "left") {
-            pos.xPos += (this.timeToNext)*boxDim;
-        } else if (dir === "right") {
-            pos.xPos -= (this.timeToNext)*boxDim;
-        }
-
-        // when we change from movingOut to other modes we
-        // need to smooth the transition
-        var smoothDuration = 0.7;
-        if (this.mode === "movingOut") {
-            pos.xPos -= 0.5*boxDim;
-        } else if(-this.homeTime < smoothDuration) {
-            pos.xPos -= 0.5*boxDim*(1+this.homeTime/smoothDuration);
-        }
-    }
-
      // full animation circle frames per cell traverse
     var animFrame = Math.round(this.timeToNext);
-
+    var dir = this.direction;
     this.sprite[dir || "up"][animFrame].drawCentredAt(ctx, pos.xPos, pos.yPos);
 };
