@@ -79,8 +79,6 @@ var entityManager = {
     },
     
     _generateMaze : function(grid) {
-        console.log("Generating maze");
-        console.log("maze grid", grid);
         this._maze.push(new Maze({ aGrid : grid }));
     },
     
@@ -90,7 +88,6 @@ var entityManager = {
         for (var i=0; i<grid.length; i++) {
             for (var j=0; j<grid[i].length; j++) {
                 if (grid[i][j] === this._maze[0].gridValues.CAPSULE) {
-                    //~ console.log("(i,j)=("+i+","+j+")");
                     this._capsules.push(new Capsule({ row : i , column : j }));
                 } else if (grid[i][j] === this._maze[0].gridValues.SPECIAL_CAPSULE) {
                     this._capsules.push(new SpecialCapsule({ row : i , column : j }));
@@ -109,7 +106,6 @@ var entityManager = {
     },
     
     _generateGhosts : function(grid) {
-        console.log("Generating ghosts");
         this._ghosts.push(new Ghost({
             name: "blinky",
             color: "red",
@@ -213,43 +209,8 @@ var entityManager = {
     },
 
     _generatePacMan : function(grid) {
-        console.log("Generating Pac-Man");
         this._pacMans.push(new PacMan({
-            sprite: {
-                left: [
-                    new Sprite(g_images,  0, 0, 20, 20, 16, 16, 2),
-                    new Sprite(g_images, 20, 0, 20, 20, 16, 16, 2),
-                    new Sprite(g_images, 40, 0, 20, 20, 16, 16, 2)
-                ],
-                right: [
-                    new Sprite(g_images,  0, 20, 20, 20, 16, 16, 2),
-                    new Sprite(g_images, 20, 20, 20, 20, 16, 16, 2),
-                    new Sprite(g_images, 40, 20, 20, 20, 16, 16, 2)
-                ],
-                up: [
-                    new Sprite(g_images,  0, 40, 20, 20, 16, 16, 2),
-                    new Sprite(g_images, 20, 40, 20, 20, 16, 16, 2),
-                    new Sprite(g_images, 40, 40, 20, 20, 16, 16, 2)
-                ],
-                down: [
-                    new Sprite(g_images,  0, 60, 20, 20, 16, 16, 2),
-                    new Sprite(g_images, 20, 60, 20, 20, 16, 16, 2),
-                    new Sprite(g_images, 40, 60, 20, 20, 16, 16, 2)
-                ],
-                dying: [
-                    new Sprite(g_images,   0, 240, 20, 20, 16, 16, 2),
-                    new Sprite(g_images,  20, 240, 20, 20, 16, 16, 2),
-                    new Sprite(g_images,  40, 240, 20, 20, 16, 16, 2),
-                    new Sprite(g_images,  60, 240, 20, 20, 16, 16, 2),
-                    new Sprite(g_images,  80, 240, 20, 20, 16, 16, 2),
-                    new Sprite(g_images, 100, 240, 20, 20, 16, 16, 2),
-                    new Sprite(g_images, 120, 240, 20, 20, 16, 16, 2),
-                    new Sprite(g_images, 140, 240, 20, 20, 16, 16, 2),
-                    new Sprite(g_images, 160, 240, 20, 20, 16, 16, 2),
-                    new Sprite(g_images, 180, 240, 20, 20, 16, 16, 2),
-                    new Sprite(g_images, 200, 240, 20, 20, 16, 16, 2)
-                ]
-            },
+            sprite: sprites._pacMans,
             column: 13,
             row: 26,
             speed: 2, // columns per second

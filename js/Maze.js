@@ -15,7 +15,6 @@ function Maze(descr) {
     for (var property in descr) {
         this[property] = descr[property];
     }
-    console.log(this.aGrid);
     //~ this.aGrid = this._getDefaultMazeArray();
     //~ this.aGrid = consts.LEVEL_1_ARRAY.slice(0); //clonging array
     this.nRows = this.aGrid.length; //36

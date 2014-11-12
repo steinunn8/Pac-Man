@@ -16,7 +16,7 @@ var sprites = {
     },
 
     makeGhosts: function(){
-        this._ghosts = {red:[], pink:[], cyan:[], orange:[], eatable:[], dead:[]};
+        this._ghosts = {red:[], pink:[], cyan:[], orange:[]};
         var row = 4;
         var col = 0;
         for(attr in this._ghosts){
@@ -29,16 +29,61 @@ var sprites = {
             }
             row++;
         }
+        this.addEatable();
+        this.addDead();
     },
 
-    cutGhostSprite: function(attr, attrAttr, x, y, count){
+    addEatable: function(){
+        this._ghosts["eatable"] = { blue:[], white:[] };
+        var color = "blue";
+        var row = 8;
+        for(var i = 0; i < 4; i++){
+            if(i == 2){color = "white";}
+            this.cutGhostSprite("eatable", color, i, row, 2);
+        }
+    },
+
+    addDead: function(){
+        this._ghosts["dead"] = {eyes:[]};
+        var row = 10;
+        for(var i = 0; i < 4; i++){
+            this.cutGhostSprite("dead", "eyes", i, row, 2);
+        }
+    },
+
+
+    cutGhostSprite: function(attr, attrAttr, x, y, scale){
         var sprite;
-        sprite = new Sprite(g_images, x * 20, y * 20, 20, 20, 16, 16, 2);
+        sprite = new Sprite(g_images, x * 20, y * 20, 20, 20, 16, 16, scale);
         this._ghosts[attr][attrAttr].push(sprite);
     },
 
     makePacmans: function(){
+        var row = 0;
+        var col = 0;
+        this._pacMans = {left:[], right:[], up:[], down:[], dying:[]}
+        for(attr in this._pacMans){
+            if(attr == "dying"){}
+            this.cutPacManSprite(attr, col, row, 2);
+            this.cutPacManSprite(attr, col + 1, row, 2);
+            this.cutPacManSprite(attr, col + 2, row, 2);
+            row++;
+        }
+        this.addDying();
+    },
 
+    addDying: function(){
+        this._pacMans["dying"] = []
+        var row = 12;
+        for(var i = 0; i < 11; i++){
+            this.cutPacManSprite("dying", i, row, 2);
+        }
+    },
+
+    cutPacManSprite: function(attr, x, y, scale){
+        var sprite;
+        sprite = new Sprite(g_images, x * 20, y * 20, 20, 20, 16, 16, scale);
+        this._pacMans[attr].push(sprite);
     },
 
     makeFruits: function(){
