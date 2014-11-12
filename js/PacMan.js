@@ -35,6 +35,7 @@ PacMan.prototype.rememberResets = function () {
     this.reset_row = this.row;
     this.reset_column = this.column;
     this.reset_direction = this.direction;
+    this.reset_nextDirection = this.nextDirection;
 };
 
 PacMan.prototype.KEY_UP = 'W'.charCodeAt(0);
@@ -49,6 +50,7 @@ PacMan.prototype.score = 0;
 PacMan.prototype.reset = function () {
     this.setPos(this.reset_row, this.reset_column);
     this.direction = this.reset_direction;
+    this.nextDirection = this.reset_nextDirection;
     this._isDeadNow = false;
 };
 
