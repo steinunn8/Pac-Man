@@ -36,6 +36,12 @@ Maze.prototype.isCapsule = function(row, column){
 
 Maze.prototype.isSpecialCapsule = function(row, column){
     return this.aGrid[row][column] == this.gridValues.SPECIAL_CAPSULE;
+};
+
+// Maze is handled by entity manager and everything handled by it
+// should have a kill method
+Maze.prototype.kill = function() {
+    return;
 }
 
 Maze.prototype.getDirections = function(row, column) {
@@ -142,6 +148,7 @@ Maze.prototype.update = function(du) {
     var KEY_WALL = keyCode('1');
     var KEY_EMPTY = keyCode('2');
     var KEY_CAPSULE = keyCode('3');
+    var KEY_DOUBLE_WALL = keyCode('4');
     if (eatKey(KEY_WALL)) {
         this.selectedBlock = this.gridValues.WALL;
     }
@@ -150,6 +157,9 @@ Maze.prototype.update = function(du) {
     }
     if (eatKey(KEY_CAPSULE)) {
         this.selectedBlock = this.gridValues.CAPSULE;
+    }
+    if (eatKey(KEY_DOUBLE_WALL)) {
+        this.selectedBlock = this.gridValues.DOUBLE_WALL;
     }
     return;
 };

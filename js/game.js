@@ -131,7 +131,7 @@ function requestPreloads() {
 }
 
 function preloadDone() {
-    entityManager.init(consts.LEVEL_1_ARRAY);
+    entityManager.init(consts.LEVEL_ARRAY);
     main.init();
     g_canvas.width = (consts.BOX_DIMENSION *
                       entityManager.getMazeColumns());

@@ -37,6 +37,7 @@ var entityManager = {
              {duration: 5, mode: "scatter"}, {duration: Infinity, mode: "chase"}],
 
     editingEnabled: false,
+    level: 1,
     
     
     // PUBLIC DATA
@@ -71,11 +72,34 @@ var entityManager = {
         this._categories = [this._maze, this._capsules, this._ghosts, this._pacMans];
     },
 
-    init: function(grid) {
+    init: function(grids) {
+        var grid = grids[this.level-1];
         this._generateMaze(grid);
         this._generateCapsules(grid);
         this._generatePacMan(grid); //use the grid to initialise Pac-Man (position etc.)
         this._generateGhosts(grid); //use the grid to initialise Ghosts
+    },
+
+    setLevel: function(level) {
+        if (consts.LEVEL_ARRAY.length < level) {
+            return;
+        }
+        this.level = level;
+        var grid = consts.LEVEL_ARRAY[this.level-1];
+        this.killAll();
+        this._generateMaze(grid);
+        this._generateCapsules(grid);
+        this._generatePacMan(grid); //use the grid to initialise Pac-Man (position etc.)
+        this._generateGhosts(grid); //use the grid to initialise Ghosts
+    },
+
+    killAll: function() {
+        for (var c = 0; c < this._categories.length; ++c) {
+            var aCategory = this._categories[c];
+            while (aCategory.length > 0) {
+                aCategory.pop().kill();
+            }
+        }
     },
     
     _generateMaze : function(grid) {
@@ -83,8 +107,6 @@ var entityManager = {
     },
     
     _generateCapsules : function(grid) {
-        //~ TODO: Implement double for-loops that iterate through the
-        //~       input array and generates capsules from the value 1        
         for (var i=0; i<grid.length; i++) {
             for (var j=0; j<grid[i].length; j++) {
                 if (grid[i][j] === this._maze[0].gridValues.CAPSULE) {
@@ -94,8 +116,6 @@ var entityManager = {
                 }
             }
         }
-        
-        return;
     },
 
     regenerateCapsules : function(grid) {
@@ -288,6 +308,12 @@ var entityManager = {
         if (this.editingEnabled) {
             this._maze[0].update(du);
             return;
+        }
+
+        var KEY_NEXT_LEVEL = keyCode('N');
+        if (eatKey(KEY_NEXT_LEVEL)) {
+            console.log("Next level");
+            this.setLevel(this.level + 1);
         }
 
         this._modeTimer += du;
