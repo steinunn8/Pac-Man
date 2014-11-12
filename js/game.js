@@ -133,50 +133,11 @@ function requestPreloads() {
     g_images.onload = preloadDone;
     g_images.src = "sprite2.png";
 
-    var celWidth  = 20;
-    var celHeight = 20;
-    var numCols = 2;
-    var numRows = 7;
-    var boxDim = consts.BOX_DIMENSION;
-                                
-    var scale = 2;
-    
-    var sprite;
-    var placeY = 6;
-    var placeX = 0;
-
-    //Pacman test
-    // for (var row = placeY; row < numRows; ++row) {
-    //     for (var col = placeX; col < numCols; ++col) {
-    //         sprite = new Sprite(g_images, 
-    //                             col*celWidth, row*celHeight,
-    //                             celWidth, celHeight,
-    //                             boxDim, boxDim, 1);
-    //         g_sprites.push(sprite);
-    //     }
-    // }    
+    sprites.makeSpritesArray(); 
 }
 
 function preloadDone() {
-    /*g_sprites.pacMan  = new Sprite(g_images.sprites,
-                                   268, 162,
-                                   16, 16, 1);
-    g_sprites.wall  = new Sprite(g_images.sprites,
-                                   270, 164,
-                                   8, 8);
-    g_sprites.capsule = new Sprite(g_images.sprites,
-                                   293, 79,
-                                   4, 4);
-    g_sprites.pacManLeft = new Sprite(g_images.sprite2,
-                                      0, 0, 20, 20, 1);
-
-    g_sprite.ghostBlue = new Sprite(g_image.sprite2,
-                                    80, 0, 20, 20, 1);
-
-    g_sprite.ghostRed = new Sprite(g_imate.sprite2,
-                                  120, 0, 20, 20, 1);
-*/
-    
+   
     console.log("lvl1 array", consts.LEVEL_1_ARRAY);
     entityManager.init(consts.LEVEL_1_ARRAY);
     //~ entityManager.init();
