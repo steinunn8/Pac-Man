@@ -226,6 +226,18 @@ var entityManager = {
         return this._maze[0].aGrid.length;
     },
 
+    getMazeGrid : function() {
+        return this._maze[0].aGrid;
+    },
+
+    getMazeDirections : function(row, column) {
+        return this._maze[0].getDirections(row, column);
+    },
+
+    penetrable : function(row, column) {
+        return this._maze[0].penetrable(row, column);
+    },
+
     getPacmanPos : function() {
         return this._pacMans[0].getPos();
     },

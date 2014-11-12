@@ -86,8 +86,8 @@ function processDiagnostics() {
 
     // prints level data to console
     if (eatKey(KEY_LOG_MAZE)) {
-//        window.prompt("Level array: ", JSON.stringify(entityManager._maze[0].aGrid));
-        console.log(JSON.stringify(entityManager._maze[0].aGrid));
+//        window.prompt("Level array: ", JSON.stringify(entityManager.getMazeGrid()));
+        console.log(JSON.stringify(entityManager.getMazeGrid()));
     }
 }
 

@@ -119,7 +119,7 @@ Ghost.prototype.update = function (du) {
             return;
         }
 
-        var directions = entityManager._maze[0].getDirections(this.row, this.column);
+        var directions = entityManager.getMazeDirections(this.row, this.column);
         // make it impossible to turn back
         util.arrayRemove(directions, this.getOpposite(this.direction));
 

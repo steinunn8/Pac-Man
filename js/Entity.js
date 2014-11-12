@@ -96,7 +96,7 @@ Entity.prototype.move = function(du, direction, nextDirection, force) {
         // First try the the key pressed
         var nextPos = this.getNextPos(nextDirection);
 
-        if (!entityManager._maze[0].penetrable(nextPos.row, nextPos.column)) {
+        if (!entityManager.penetrable(nextPos.row, nextPos.column)) {
             // Not allowed to go there, Try the old direction
             nextPos = this.getNextPos(direction);
         } else {
@@ -105,7 +105,7 @@ Entity.prototype.move = function(du, direction, nextDirection, force) {
             this.direction = nextDirection;
         }
         
-        if (!entityManager._maze[0].penetrable(nextPos.row, nextPos.column)) {
+        if (!entityManager.penetrable(nextPos.row, nextPos.column)) {
             // Still not allowed, so just stop
             this.direction = 0;
         } else {
