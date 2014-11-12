@@ -45,6 +45,7 @@ Ghost.prototype.rememberResets = function () {
         row: this.target_.row,
         column: this.target_.column
     };
+    this.reset_homeTime = this.homeTime;
 };
 
 Ghost.prototype.resetTarget = function() {
@@ -71,6 +72,7 @@ Ghost.prototype.changeMode = function(mode) {
 Ghost.prototype.reset = function () {
     this.setPos(this.reset_row, this.reset_column);
     this.mode = this.reset_mode;
+    this.homeTime = this.reset_homeTime;
 };
 
 Ghost.prototype.drawCentredAt = function(ctx, cx, cy, rotation) {
