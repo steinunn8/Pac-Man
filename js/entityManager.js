@@ -106,13 +106,14 @@ var entityManager = {
     },
     
     _generateGhosts : function(grid) {
+        var pos = this._maze[0].getEntityPos(this._maze[0].gridValues.BLINKY);
         this._ghosts.push(new Ghost({
             name: "blinky",
             color: "red",
             mode: "scatter",
             sprite: g_sprites.ghosts.red,
-            column: 14,
-            row: 14,
+            column: pos.column,
+            row: pos.row,
             speed: 1.5, // columns per second
             direction: "left",
             target_: {
@@ -127,6 +128,7 @@ var entityManager = {
             }
         }));
 
+        pos = this._maze[0].getEntityPos(this._maze[0].gridValues.PINKY);
         this._ghosts.push(new Ghost({
             name: "pinky",
             color: "pink",
@@ -151,6 +153,7 @@ var entityManager = {
             }
         }));
 
+        pos = this._maze[0].getEntityPos(this._maze[0].gridValues.CLYDE);
         this._ghosts.push(new Ghost({
             name: "clyde",
             color: "orange",
@@ -180,6 +183,7 @@ var entityManager = {
             }
         }));
 
+        pos = this._maze[0].getEntityPos(this._maze[0].gridValues.INKY);
         this._ghosts.push(new Ghost({
             name: "inky",
             color: "cyan",
@@ -209,10 +213,12 @@ var entityManager = {
     },
 
     _generatePacMan : function(grid) {
+        var pos = this._maze[0].getEntityPos(this._maze[0].gridValues.PACMAN);
         this._pacMans.push(new PacMan({
+
             sprite: g_sprites.pacMans,
-            column: 13,
-            row: 26,
+            column: pos.column,
+            row: pos.row,
             speed: 2, // columns per second
             direction: "left"
         }));

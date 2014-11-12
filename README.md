@@ -43,3 +43,8 @@ Code | Meaning
  0   | Empty
  1   | Capsule
  2   | Special Capsule
+ 3   | Pacman
+ 4   | Blinky
+ 5   | Pinky
+ 6   | Clyde
+ 7   | Inky
