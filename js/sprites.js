@@ -87,7 +87,18 @@ var sprites = {
     },
 
     makeFruits: function(){
+        var col = 8.5;
+        this._extras = { fruits:[]}
+        for(var i = 8; i < 12; i++){
+            this.cutExtraSprite("fruits", col, i, 2);
+        }
+    },
 
+    cutExtraSprite: function(attr, x, y, scale){
+        var sprite;
+        sprite = new Sprite(g_images, x * 20, y * 20, 20, 20, 16, 16, scale);
+        this._extras[attr].push(sprite);
     }
+
 
 }
