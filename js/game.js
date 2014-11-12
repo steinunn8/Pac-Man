@@ -15,21 +15,26 @@ var g_ctx = g_canvas.getContext("2d");
 12345678901234567890123456789012345678901234567890123456789012345678901234567890
 */
 
-function createPacMan() {
-    entityManager.generatePacMan({
-        sprite: g_sprites.pacMan,
-        column: 14,
-        row: 20,
-        speed: 0.33,
-        rotation: 0
-    });
-}
+//~ function createPacMan() {
+    //~ entityManager._generatePacMan({
+    //~ });
+//~ }
 
-var g_maze;
+// function createGhosts() {
+//     entityManager._generateGhost({
+//         sprite: g_sprites.pacMan,
+//         column: 14,
+//         row: 14,
+//         speed: 2, // columns per second
+//         rotation: 0
+//     });
+// }
 
-function createMaze() {
-    g_maze = new Maze({});
-}
+//~ var g_maze;
+
+//~ function createMaze() {
+    //~ g_maze = new Maze({});
+//~ }
 
 // =============
 // GATHER INPUTS
@@ -60,8 +65,6 @@ function updateSimulation(du) {
     processDiagnostics();
 
     entityManager.update(du);
-
-    // Prevent perpetual firing!
 }
 
 // GAME-SPECIFIC DIAGNOSTICS
@@ -70,8 +73,9 @@ var g_allowMixedActions = true;
 var g_useAveVel = true;
 var g_renderSpatialDebug = false;
 
-var KEY_MIXED   = keyCode('M');;
+var KEY_MIXED   = keyCode('M');
 var KEY_SPATIAL = keyCode('X');
+var KEY_LOG_MAZE = keyCode('V');
 
 function processDiagnostics() {
 
@@ -79,6 +83,12 @@ function processDiagnostics() {
         g_allowMixedActions = !g_allowMixedActions;
 
     if (eatKey(KEY_SPATIAL)) g_renderSpatialDebug = !g_renderSpatialDebug;
+
+    // prints level data to console
+    if (eatKey(KEY_LOG_MAZE)) {
+//        window.prompt("Level array: ", JSON.stringify(entityManager.getMazeGrid()));
+        console.log(JSON.stringify(entityManager.getMazeGrid()));
+    }
 }
 
 
@@ -98,7 +108,7 @@ function processDiagnostics() {
 
 function renderSimulation(ctx) {
 
-    g_maze.render(ctx);
+    //~ g_maze.render(ctx);
     entityManager.render(ctx);
 
     if (g_renderSpatialDebug) spatialManager.render(ctx);
@@ -109,40 +119,24 @@ function renderSimulation(ctx) {
 // PRELOAD STUFF
 // =============
 
-var g_images = {};
-
+var g_images;
+var g_sprites = [];
 function requestPreloads() {
 
-    var requiredImages = {
-        sprites   : "sprite.png"
-    };
+    g_images = new Image();
+    g_images.onload = preloadDone;
+    g_images.src = "sprite2.png";
 
-    imagesPreload(requiredImages, g_images, preloadDone);
+    sprites.makeSpritesArray(); 
 }
 
-var g_sprites = {};
-
 function preloadDone() {
-    g_sprites.pacMan  = new Sprite(g_images.sprites,
-                                   268, 162,
-                                   16, 16, 1);
-    g_sprites.wall  = new Sprite(g_images.sprites,
-                                   270, 164,
-                                   8, 8);
-    g_sprites.capsule = new Sprite(g_images.sprites,
-                                   293, 79,
-                                   4, 4);
-//    g_sprites.specialCapsule;
-
-    entityManager.init();
-    createPacMan();
-
+    entityManager.init(consts.LEVEL_1_ARRAY);
     main.init();
-
-    createMaze();
-    g_canvas.width = g_maze.nColumns*consts.BOX_DIMENSION*2;
-    g_canvas.height = g_maze.nRows*consts.BOX_DIMENSION*2;
-    // TODO lata spatial manager vita af tilvist maze
+    g_canvas.width = (consts.BOX_DIMENSION *
+                      entityManager.getMazeColumns());
+    g_canvas.height = (consts.BOX_DIMENSION *
+                       entityManager.getMazeRows());
 }
 
 // Kick it off

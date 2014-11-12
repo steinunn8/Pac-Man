@@ -15,26 +15,56 @@ function Maze(descr) {
     for (var property in descr) {
         this[property] = descr[property];
     }
-    this.aGrid = this._getDefaultMazeArray();
-    this.nRows = this.aGrid.length;
-    this.nColumns = this.aGrid[0].length;
+    //~ this.aGrid = this._getDefaultMazeArray();
+    //~ this.aGrid = consts.LEVEL_1_ARRAY.slice(0); //clonging array
+    this.nRows = this.aGrid.length; //36
+    this.nColumns = this.aGrid[0].length; //28
 
     this._generateWall();
+    this.selectedBlock = Infinity;
+
+    this.image = -1;
 };
 
 Maze.prototype.penetrable = function(row, column) {
-    return this.aGrid[row][column] >= 0;
+    return this.aGrid[row][column] >= this.gridValues.EMPTY;
 };
 
 Maze.prototype.isCapsule = function(row, column){
-    return this.aGrid[row][column] == 1;
+    return this.aGrid[row][column] == this.gridValues.CAPSULE;
 }
 
 Maze.prototype.isSpecialCapsule = function(row, column){
-    return this.aGrid[row][column] == 2;
+    return this.aGrid[row][column] == this.gridValues.SPECIAL_CAPSULE;
 }
 
-Maze.prototype.directions = {
+Maze.prototype.getDirections = function(row, column) {
+    var directions = [];
+
+    if(row > 0 && this.aGrid[row-1][column] >= this.gridValues.EMPTY) {
+        directions.push("up");
+    }
+    if(row < this.aGrid.length-1 &&
+       this.aGrid[row+1][column] >= this.gridValues.EMPTY) {
+        directions.push("down");
+    }
+    if(column > 0 && this.aGrid[row][column-1] >= this.gridValues.EMPTY) {
+        directions.push("left");
+    }
+    if(column < this.aGrid[0].length-1 &&
+       this.aGrid[row][column+1] >= this.gridValues.EMPTY) {
+        directions.push("right");
+    }
+
+    return directions;
+}
+
+// Every value in the render array and it's meaning
+Maze.prototype.renderValues = {
+    ERROR: 5,
+    SPECIAL_CAPSULE: 2,
+    CAPSULE: 1,
+    EMPTY: 0,
     RIGHT: -1,
     LEFT: -2,
     UP: -3,
@@ -59,67 +89,142 @@ Maze.prototype.directions = {
     GHOST_WALL: -22
 };
 
+// Every value possible in the input grid and it's meaning
+Maze.prototype.gridValues = {
+    INKY: 7,
+    CLYDE: 6,
+    PINKY: 5,
+    BLINKY: 4,
+    PACMAN: 3,
+    SPECIAL_CAPSULE: 2,
+    CAPSULE: 1,
+    EMPTY: 0,
+    WALL: -1,
+    GHOST_WALL: -2,
+    DOUBLE_WALL: -3,
+    GHOST_SPAWN: -4
+};
+
 // for normal double lines
 Maze.prototype.DOUBLE_LINE_OFFSET = -100;
-Maze.prototype.WALL = -1;
-Maze.prototype.GHOST_WALL = -2;
-Maze.prototype.DOUBLE_WALL = -3;
 
 Maze.prototype._generateWall = function() {
-    // TODO gera render wall byggt a neighboring cells
+    for (var row = 0; row < this.nRows; row++) {
+        for (var column = 0; column < this.nColumns; column++) {
+            if (util.inArray([this.gridValues.PINKY, this.gridValues.INKY, this.gridValues.CLYDE], 
+                     this.aGrid[row][column])) {
+                this.aGrid[row][column] = this.gridValues.GHOST_SPAWN;
+            }
+        }
+    }
+    
     this.aRenderingWall = [];
-    for(var i = 0; i < this.nRows; i++) {
+    for (var i = 0; i < this.nRows; i++) {
         this.aRenderingWall.push([]);
-        for(var j = 0; j < this.nColumns; j++) {
+        for (var j = 0; j < this.nColumns; j++) {
             var value = this._getRenderValue(i, j);
             this.aRenderingWall[i].push(value);
         }
     }
-
-    console.log(this.aRenderingWall);
 };
 
+Maze.prototype.getEntityPos = function(gridValue) {
+    for (var row = 0; row < this.nRows; row++) {
+        for (var column = 0; column < this.nColumns; column++) {
+            if (gridValue === this.aGrid[row][column]) {
+                return {row: row, column: column};
+            }
+        }
+    }
+}
+
+Maze.prototype.update = function(du) {
+    var KEY_WALL = keyCode('1');
+    var KEY_EMPTY = keyCode('2');
+    var KEY_CAPSULE = keyCode('3');
+    if (eatKey(KEY_WALL)) {
+        this.selectedBlock = this.gridValues.WALL;
+    }
+    if (eatKey(KEY_EMPTY)) {
+        this.selectedBlock = this.gridValues.EMPTY;
+    }
+    if (eatKey(KEY_CAPSULE)) {
+        this.selectedBlock = this.gridValues.CAPSULE;
+    }
+    return;
+};
+
+Maze.prototype.editGrid = function(pos) {
+    if (this.selectedBlock === Infinity) {
+        return;
+    }
+    this.aGrid[pos.row][pos.column] = this.selectedBlock;
+    this.image = -1;
+    this._generateWall();
+
+    entityManager.regenerateCapsules(this.aGrid);
+}
+
 Maze.prototype.render = function(ctx) {
-    for(var i = 0; i < this.aRenderingWall.length; i++) {
-        for(var j = 0; j < this.aRenderingWall[i].length; j++) {
-            var renderValue = this.aRenderingWall[i][j];
-            var pos = util.getCoordsFromBox(i, j);
+    if (this.image == -1) {
+        var buffer = document.createElement('canvas');
+        buffer.width = g_canvas.width;
+        buffer.height = g_canvas.height;
+        this.renderAll(buffer.getContext('2d'));
+
+        this.image = buffer;
+    }
+
+    ctx.drawImage(this.image, 0, 0);
+};
+
+Maze.prototype.renderAll = function(ctx) {
+    var renderValue, pos, i, j;
+    ctx.strokeStyle = '#ff0000';
+    for (i = 0; i < this.aRenderingWall.length; i++) {
+        for (j = 0; j < this.aRenderingWall[i].length; j++) {
+            renderValue = this.aRenderingWall[i][j];
+            pos = util.getCoordsFromBox(i, j);
             this._drawPart(ctx, renderValue, pos.xPos, pos.yPos);
         }
     }
-};
+}
 
 Maze.prototype._getRenderValue = function(row, column) {
-    if(this.aGrid[row][column] == this.GHOST_WALL) {
-        return this.directions.GHOST_WALL;
-    } else if(this.aGrid[row][column] < 0) {
-        return this._adjecentCount(row, column);
+    if (this.aGrid[row][column] == this.gridValues.GHOST_WALL) {
+        return this.renderValues.GHOST_WALL;
+    } else if (this.aGrid[row][column] < this.gridValues.EMPTY) {
+        return this._adjecentCheck(row, column);
     }
-    if(this.aGrid[row][column] == 1) return 1;
-    if(this.aGrid[row][column] == 2) return 2;
-    return 0;
+    if (this.aGrid[row][column] == this.gridValues.CAPSULE) {
+        return this.renderValues.CAPSULE;
+    }
+    if (this.aGrid[row][column] == this.gridValues.SPECIAL_CAPSULE) {
+        return this.renderValues.SPECIAL_CAPSULE;
+    }
+    return this.renderValues.EMPTY;
 };
 
 Maze.prototype._getRotation = function(direction) {
     switch(direction) {
-        case this.directions.RIGHT:
-        case this.directions.BOTTOM_RIGHT:
-        case this.directions.LONG_TOP_LEFT:
+        case this.renderValues.RIGHT:
+        case this.renderValues.BOTTOM_RIGHT:
+        case this.renderValues.LONG_TOP_LEFT:
             return Math.PI;
             break;
-        case this.directions.LEFT:
-        case this.directions.TOP_LEFT:
-        case this.directions.LONG_BOTTOM_RIGHT:
+        case this.renderValues.LEFT:
+        case this.renderValues.TOP_LEFT:
+        case this.renderValues.LONG_BOTTOM_RIGHT:
             return 0;
             break;
-        case this.directions.UP:
-        case this.directions.TOP_RIGHT:
-        case this.directions.LONG_BOTTOM_LEFT:
+        case this.renderValues.UP:
+        case this.renderValues.TOP_RIGHT:
+        case this.renderValues.LONG_BOTTOM_LEFT:
             return Math.PI/2;
             break;
-        case this.directions.BOTTOM:
-        case this.directions.BOTTOM_LEFT:
-        case this.directions.LONG_TOP_RIGHT:
+        case this.renderValues.BOTTOM:
+        case this.renderValues.BOTTOM_LEFT:
+        case this.renderValues.LONG_TOP_RIGHT:
             return -Math.PI/2;
             break;
             
@@ -141,184 +246,205 @@ Maze.prototype._drawPart = function(ctx, renderValue, x, y, isDouble) {
     // special case for double lines where one needs to be curved 
     // and one straight
     switch(renderValue) {
-        case this.directions.DOUBLE_LONG_BOTTOM_LEFT_TOP:
-            this._drawPart(ctx, this.directions.LONG_BOTTOM_LEFT, x, y);
-            this._drawPart(ctx, this.directions.UP, x, y, true);
+        case this.renderValues.DOUBLE_LONG_BOTTOM_LEFT_TOP:
+            this._drawPart(ctx, this.renderValues.LONG_BOTTOM_LEFT, x, y);
+            this._drawPart(ctx, this.renderValues.UP, x, y, true);
             return;
-        case this.directions.DOUBLE_LONG_BOTTOM_LEFT_RIGHT:
-            this._drawPart(ctx, this.directions.LONG_BOTTOM_LEFT, x, y);
-            this._drawPart(ctx, this.directions.RIGHT, x, y, true);
+        case this.renderValues.DOUBLE_LONG_BOTTOM_LEFT_RIGHT:
+            this._drawPart(ctx, this.renderValues.LONG_BOTTOM_LEFT, x, y);
+            this._drawPart(ctx, this.renderValues.RIGHT, x, y, true);
             return;
-        case this.directions.DOUBLE_LONG_BOTTOM_RIGHT_TOP:
-            this._drawPart(ctx, this.directions.LONG_BOTTOM_RIGHT, x, y);
-            this._drawPart(ctx, this.directions.UP, x, y, true);
+        case this.renderValues.DOUBLE_LONG_BOTTOM_RIGHT_TOP:
+            this._drawPart(ctx, this.renderValues.LONG_BOTTOM_RIGHT, x, y);
+            this._drawPart(ctx, this.renderValues.UP, x, y, true);
             return;
-        case this.directions.DOUBLE_LONG_BOTTOM_RIGHT_LEFT:
-            this._drawPart(ctx, this.directions.LONG_BOTTOM_RIGHT, x, y);
-            this._drawPart(ctx, this.directions.LEFT, x, y, true);
+        case this.renderValues.DOUBLE_LONG_BOTTOM_RIGHT_LEFT:
+            this._drawPart(ctx, this.renderValues.LONG_BOTTOM_RIGHT, x, y);
+            this._drawPart(ctx, this.renderValues.LEFT, x, y, true);
             return;
-        case this.directions.DOUBLE_LONG_TOP_LEFT_RIGHT:
-            this._drawPart(ctx, this.directions.LONG_TOP_LEFT, x, y);
-            this._drawPart(ctx, this.directions.RIGHT, x, y, true);
+        case this.renderValues.DOUBLE_LONG_TOP_LEFT_RIGHT:
+            this._drawPart(ctx, this.renderValues.LONG_TOP_LEFT, x, y);
+            this._drawPart(ctx, this.renderValues.RIGHT, x, y, true);
             return;
-        case this.directions.DOUBLE_LONG_TOP_LEFT_BOTTOM:
-            this._drawPart(ctx, this.directions.LONG_TOP_LEFT, x, y);
-            this._drawPart(ctx, this.directions.BOTTOM, x, y, true);
+        case this.renderValues.DOUBLE_LONG_TOP_LEFT_BOTTOM:
+            this._drawPart(ctx, this.renderValues.LONG_TOP_LEFT, x, y);
+            this._drawPart(ctx, this.renderValues.BOTTOM, x, y, true);
             return;
-        case this.directions.DOUBLE_LONG_TOP_RIGHT_BOTTOM:
-            this._drawPart(ctx, this.directions.LONG_TOP_RIGHT, x, y);
-            this._drawPart(ctx, this.directions.BOTTOM, x, y, true);
+        case this.renderValues.DOUBLE_LONG_TOP_RIGHT_BOTTOM:
+            this._drawPart(ctx, this.renderValues.LONG_TOP_RIGHT, x, y);
+            this._drawPart(ctx, this.renderValues.BOTTOM, x, y, true);
             return;
-        case this.directions.DOUBLE_LONG_TOP_RIGHT_LEFT:
-            this._drawPart(ctx, this.directions.LONG_TOP_RIGHT, x, y);
-            this._drawPart(ctx, this.directions.LEFT, x, y, true);
+        case this.renderValues.DOUBLE_LONG_TOP_RIGHT_LEFT:
+            this._drawPart(ctx, this.renderValues.LONG_TOP_RIGHT, x, y);
+            this._drawPart(ctx, this.renderValues.LEFT, x, y, true);
             return;
     }
 
     rotation = this._getRotation(renderValue);
     
-    var style = "blue"
-    if(util.inArray([this.directions.RIGHT, 
-                     this.directions.LEFT, 
-                     this.directions.UP, 
-                     this.directions.BOTTOM], renderValue)) {
+    var style = "blue";
+    if(util.inArray([this.renderValues.RIGHT, 
+                     this.renderValues.LEFT, 
+                     this.renderValues.UP, 
+                     this.renderValues.BOTTOM], renderValue)) {
         util.drawLine(ctx, x, y, rotation, style, doubleLine, isDouble);
-    } else if(util.inArray([this.directions.BOTTOM_LEFT, 
-                            this.directions.BOTTOM_RIGHT, 
-                            this.directions.TOP_RIGHT, 
-                            this.directions.TOP_LEFT], renderValue)) {
+    } else if(util.inArray([this.renderValues.BOTTOM_LEFT, 
+                            this.renderValues.BOTTOM_RIGHT, 
+                            this.renderValues.TOP_RIGHT, 
+                            this.renderValues.TOP_LEFT], renderValue)) {
         util.drawCurve(ctx, x, y, rotation, style, doubleLine);
-    } else if(util.inArray([this.directions.LONG_BOTTOM_LEFT, 
-                            this.directions.LONG_BOTTOM_RIGHT, 
-                            this.directions.LONG_TOP_RIGHT, 
-                            this.directions.LONG_TOP_LEFT], renderValue)) {
+    } else if(util.inArray([this.renderValues.LONG_BOTTOM_LEFT, 
+                            this.renderValues.LONG_BOTTOM_RIGHT, 
+                            this.renderValues.LONG_TOP_RIGHT, 
+                            this.renderValues.LONG_TOP_LEFT], renderValue)) {
         util.drawLongCurve(ctx, x, y, rotation, style, doubleLine);
-    } else if(renderValue == 5) {
-        util.fillCenteredSquare(ctx, x, y, consts.SCALING*consts.BOX_DIMENSION/2, "green");
-    } else if(renderValue == 1) {
-        util.fillCircle(ctx, x, y, consts.SCALING*consts.BOX_DIMENSION/8, "#FBB382");
-    } else if(renderValue == 2) {
-        util.fillCircle(ctx, x, y, consts.SCALING*consts.BOX_DIMENSION/2.5, "#FBB382");
-    } else if(renderValue == this.directions.GHOST_WALL) {
-        var halfDimension = consts.SCALING*consts.BOX_DIMENSION/2;
-        util.fillBox(ctx, x-halfDimension, y+halfDimension/2.5, halfDimension*2, halfDimension/2, "#FBB382")
-//        util.fillCenteredSquare(ctx, x, y, consts.SCALING*consts.BOX_DIMENSION/2, "#FBB382");
+    } else if(renderValue == this.renderValues.ERROR) {
+        util.fillCenteredSquare(ctx, x, y, consts.BOX_DIMENSION/2, "green");
+    } else if(renderValue == this.renderValues.GHOST_WALL) {
+        var halfDimension = consts.BOX_DIMENSION/2;
+        util.fillBox(ctx, x-halfDimension, y+halfDimension/2.5,
+                     halfDimension*2, halfDimension/2, "#FBB382");
     }
 };
 
-Maze.prototype._adjecentCount = function(row, column) {
+Maze.prototype._adjecentCheck = function(row, column) {
     var count = 0;
     var sides = {right: false, down: false, left: false, up: false};
     var offset = 0;
 
-    if(this.aGrid[row][column] == this.DOUBLE_WALL) {
+    if(this.aGrid[row][column] == this.gridValues.DOUBLE_WALL) {
         offset = this.DOUBLE_LINE_OFFSET;
     }
 
-    if(row > 0 && this.aGrid[row-1][column] > -1) {
+    if(row > 0 && this.aGrid[row-1][column] >= this.gridValues.EMPTY) {
         count++;
         sides.up = true;
     }
-    if(row < this.aGrid.length-1 && this.aGrid[row+1][column] > -1) {
+    if(row < this.aGrid.length-1 &&
+       this.aGrid[row+1][column] >= this.gridValues.EMPTY) {
         count++;
         sides.down = true;
     }
-    if(column > 0 && this.aGrid[row][column-1] > -1) {
+    if(column > 0 && this.aGrid[row][column-1] >= this.gridValues.EMPTY) {
         count++;
         sides.left = true;
     }
-    if(column < this.aGrid[0].length-1 && this.aGrid[row][column+1] > -1) {
+    if(column < this.aGrid[0].length-1 &&
+       this.aGrid[row][column+1] >= this.gridValues.EMPTY) {
         count++;
         sides.right = true;
     }
 
     if(count == 1) {
-        if(sides.right) return this.directions.RIGHT + offset;
-        if(sides.left) return this.directions.LEFT + offset;
-        if(sides.up) return this.directions.UP + offset;
-        if(sides.down) return this.directions.BOTTOM + offset;
+        if(sides.right) return this.renderValues.RIGHT + offset;
+        if(sides.left) return this.renderValues.LEFT + offset;
+        if(sides.up) return this.renderValues.UP + offset;
+        if(sides.down) return this.renderValues.BOTTOM + offset;
     } else if(count == 2) {
-        if(sides.right && sides.up) return this.directions.TOP_RIGHT + offset;
-        if(sides.left && sides.up) return this.directions.TOP_LEFT + offset;
-        if(sides.right && sides.down) return this.directions.BOTTOM_RIGHT + offset;
-        if(sides.left && sides.down) return this.directions.BOTTOM_LEFT + offset;
+        if(sides.right && sides.up)
+            return this.renderValues.TOP_RIGHT + offset;
+        if(sides.left && sides.up)
+            return this.renderValues.TOP_LEFT + offset;
+        if(sides.right && sides.down)
+            return this.renderValues.BOTTOM_RIGHT + offset;
+        if(sides.left && sides.down)
+            return this.renderValues.BOTTOM_LEFT + offset;
 
 
     } else if(count == 0) {
-        // if we are drawing double lines we might want to not do a curved one for the outer line
+        // if we are drawing double lines we might want to not do a
+        // curved one for the outer line
         var horizontal = false;
         var vertical = false;
         if(offset == this.DOUBLE_LINE_OFFSET) {
-            if(row > 0 && row < this.aGrid.length-1 && this.aGrid[row-1][column] == -3 && this.aGrid[row+1][column] == -3) {
+            if(row > 0 && row < this.aGrid.length-1 &&
+               this.aGrid[row-1][column] == this.gridValues.DOUBLE_WALL &&
+               this.aGrid[row+1][column] == this.gridValues.DOUBLE_WALL) {
                 vertical = true;
-            } else if(column > 0 && column < this.aGrid[0].length-1 && this.aGrid[row][column-1] == -3 && this.aGrid[row][column+1] == -3) {
+            } else if(column > 0 && column < this.aGrid[0].length-1 && 
+                      this.aGrid[row][column-1] == this.gridValues.DOUBLE_WALL &&
+                      this.aGrid[row][column+1] == this.gridValues.DOUBLE_WALL) {
                 horizontal = true;
             }
         }
 
-        if(row > 0 && column > 0 && this.aGrid[row-1][column-1] > -1) {
-            if(vertical) return this.directions.DOUBLE_LONG_TOP_LEFT_RIGHT;
-            else if(horizontal) return this.directions.DOUBLE_LONG_TOP_LEFT_BOTTOM;
-            return this.directions.LONG_TOP_LEFT + offset;
+        if(row > 0 && column > 0 &&
+           this.aGrid[row-1][column-1] >= this.gridValues.EMPTY) {
+            if(vertical)
+                return this.renderValues.DOUBLE_LONG_TOP_LEFT_RIGHT;
+            else if(horizontal)
+                return this.renderValues.DOUBLE_LONG_TOP_LEFT_BOTTOM;
+            return this.renderValues.LONG_TOP_LEFT + offset;
         }
-        if(row < this.aGrid.length-1 && column > 0 && this.aGrid[row+1][column-1] > -1) {
-            if(vertical) return this.directions.DOUBLE_LONG_BOTTOM_LEFT_RIGHT;
-            else if(horizontal) return this.directions.DOUBLE_LONG_BOTTOM_LEFT_TOP;
-            return this.directions.LONG_BOTTOM_LEFT + offset;
+        
+        if(row < this.aGrid.length-1 && column > 0 &&
+           this.aGrid[row+1][column-1] >= this.gridValues.EMPTY) {
+            if(vertical)
+                return this.renderValues.DOUBLE_LONG_BOTTOM_LEFT_RIGHT;
+            else if(horizontal)
+                return this.renderValues.DOUBLE_LONG_BOTTOM_LEFT_TOP;
+            return this.renderValues.LONG_BOTTOM_LEFT + offset;
         }
-        if(column < this.aGrid[0].length-1 && row > 0 && this.aGrid[row-1][column+1] > -1) {
-            if(vertical) return this.directions.DOUBLE_LONG_TOP_RIGHT_LEFT;
-            else if(horizontal) return this.directions.DOUBLE_LONG_TOP_RIGHT_BOTTOM;
-            return this.directions.LONG_TOP_RIGHT + offset;
+        if(column < this.aGrid[0].length-1 && row > 0 &&
+           this.aGrid[row-1][column+1] >= this.gridValues.EMPTY) {
+            if(vertical)
+                return this.renderValues.DOUBLE_LONG_TOP_RIGHT_LEFT;
+            else if(horizontal)
+                return this.renderValues.DOUBLE_LONG_TOP_RIGHT_BOTTOM;
+            return this.renderValues.LONG_TOP_RIGHT + offset;
         }
-        if(column < this.aGrid[0].length-1 && row < this.aGrid.length-1 && this.aGrid[row+1][column+1] > -1) {
-            if(vertical) return this.directions.DOUBLE_LONG_BOTTOM_RIGHT_LEFT;
-            else if(horizontal) return this.directions.DOUBLE_LONG_BOTTOM_RIGHT_TOP;
-            return this.directions.LONG_BOTTOM_RIGHT + offset;
+        if(column < this.aGrid[0].length-1 &&
+           row < this.aGrid.length-1 &&
+           this.aGrid[row+1][column+1] >= this.gridValues.EMPTY) {
+            if(vertical)
+                return this.renderValues.DOUBLE_LONG_BOTTOM_RIGHT_LEFT;
+            else if(horizontal)
+                return this.renderValues.DOUBLE_LONG_BOTTOM_RIGHT_TOP;
+            return this.renderValues.LONG_BOTTOM_RIGHT + offset;
         }
-        return this.directions.NONE;
+        return this.renderValues.NONE;
     }
 
-    return 5;
-}
+    return this.renderValues.ERROR;
+};
 
-Maze.prototype._getDefaultMazeArray = function() {
-    return [
-            [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],
-            [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],
-            [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],
-            [-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3],
-            [-3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,-1,-1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,-3],
-            [-3, 1,-1,-1,-1,-1, 1,-1,-1,-1,-1,-1, 1,-1,-1, 1,-1,-1,-1,-1,-1, 1,-1,-1,-1,-1, 1,-3],
-            [-3, 2,-1,-1,-1,-1, 1,-1,-1,-1,-1,-1, 1,-1,-1, 1,-1,-1,-1,-1,-1, 1,-1,-1,-1,-1, 2,-3],
-            [-3, 1,-1,-1,-1,-1, 1,-1,-1,-1,-1,-1, 1,-1,-1, 1,-1,-1,-1,-1,-1, 1,-1,-1,-1,-1, 1,-3],
-            [-3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,-3],
-            [-3, 1,-1,-1,-1,-1, 1,-1,-1, 1,-1,-1,-1,-1,-1,-1,-1,-1, 1,-1,-1, 1,-1,-1,-1,-1, 1,-3],
-            [-3, 1,-1,-1,-1,-1, 1,-1,-1, 1,-1,-1,-1,-1,-1,-1,-1,-1, 1,-1,-1, 1,-1,-1,-1,-1, 1,-3],
-            [-3, 1, 1, 1, 1, 1, 1,-1,-1, 1, 1, 1, 1,-1,-1, 1, 1, 1, 1,-1,-1, 1, 1, 1, 1, 1, 1,-3],
-            [-3,-3,-3,-3,-3,-3, 1,-1,-1,-1,-1,-1, 0,-1,-1, 0,-1,-1,-1,-1,-1, 1,-3,-3,-3,-3,-3,-3],
-            [-1,-1,-1,-1,-1,-3, 1,-1,-1,-1,-1,-1, 0,-1,-1, 0,-1,-1,-1,-1,-1, 1,-3,-1,-1,-1,-1,-1],
-            [-1,-1,-1,-1,-1,-3, 1,-1,-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1,-1, 1,-3,-1,-1,-1,-1,-1],
-            [-1,-1,-1,-1,-1,-3, 1,-1,-1, 0,-3,-3,-3,-2,-2,-3,-3,-3, 0,-1,-1, 1,-3,-1,-1,-1,-1,-1],
-            [-3,-3,-3,-3,-3,-3, 1,-1,-1, 0,-3,-4,-4,-4,-4,-4,-4,-3, 0,-1,-1, 1,-3,-3,-3,-3,-3,-3],            
-            [ 0, 0, 0, 0, 0, 0, 1, 0, 0, 0,-3,-4,-4,-4,-4,-4,-4,-3, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
-            [-3,-3,-3,-3,-3,-3, 1,-1,-1, 0,-3,-4,-4,-4,-4,-4,-4,-3, 0,-1,-1, 1,-3,-3,-3,-3,-3,-3],
-            [-1,-1,-1,-1,-1,-3, 1,-1,-1, 0,-3,-3,-3,-3,-3,-3,-3,-3, 0,-1,-1, 1,-3,-1,-1,-1,-1,-1],
-            [-1,-1,-1,-1,-1,-3, 1,-1,-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1,-1, 1,-3,-1,-1,-1,-1,-1],
-            [-1,-1,-1,-1,-1,-3, 1,-1,-1, 0,-1,-1,-1,-1,-1,-1,-1,-1, 0,-1,-1, 1,-3,-1,-1,-1,-1,-1],
-            [-3,-3,-3,-3,-3,-3, 1,-1,-1, 0,-1,-1,-1,-1,-1,-1,-1,-1, 0,-1,-1, 1,-3,-3,-3,-3,-3,-3],
-            [-3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,-1,-1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,-3],
-            [-3, 1,-1,-1,-1,-1, 1,-1,-1,-1,-1,-1, 1,-1,-1, 1,-1,-1,-1,-1,-1, 1,-1,-1,-1,-1, 1,-3],
-            [-3, 1,-1,-1,-1,-1, 1,-1,-1,-1,-1,-1, 1,-1,-1, 1,-1,-1,-1,-1,-1, 1,-1,-1,-1,-1, 1,-3],
-            [-3, 2, 1, 1,-1,-1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,-1,-1, 1, 1, 2,-3],
-            [-3,-1,-1, 1,-1,-1, 1,-1,-1, 1,-1,-1,-1,-1,-1,-1,-1,-1, 1,-1,-1, 1,-1,-1, 1,-1,-1,-3],
-            [-3,-1,-1, 1,-1,-1, 1,-1,-1, 1,-1,-1,-1,-1,-1,-1,-1,-1, 1,-1,-1, 1,-1,-1, 1,-1,-1,-3],
-            [-3, 1, 1, 1, 1, 1, 1,-1,-1, 1, 1, 1, 1,-1,-1, 1, 1, 1, 1,-1,-1, 1, 1, 1, 1, 1, 1,-3],
-            [-3, 1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1, 1,-1,-1, 1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1, 1,-3],
-            [-3, 1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1, 1,-1,-1, 1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1, 1,-3],
-            [-3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,-3],
-            [-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3],
-            [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],
-            [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]
-        ]
-}
+//~ Maze.prototype._getDefaultMazeArray = function() {
+    //~ return [
+            //~ [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],
+            //~ [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],
+            //~ [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],
+            //~ [-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3],
+            //~ [-3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,-1,-1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,-3],
+            //~ [-3, 1,-1,-1,-1,-1, 1,-1,-1,-1,-1,-1, 1,-1,-1, 1,-1,-1,-1,-1,-1, 1,-1,-1,-1,-1, 1,-3],
+            //~ [-3, 2,-1,-1,-1,-1, 1,-1,-1,-1,-1,-1, 1,-1,-1, 1,-1,-1,-1,-1,-1, 1,-1,-1,-1,-1, 2,-3],
+            //~ [-3, 1,-1,-1,-1,-1, 1,-1,-1,-1,-1,-1, 1,-1,-1, 1,-1,-1,-1,-1,-1, 1,-1,-1,-1,-1, 1,-3],
+            //~ [-3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,-3],
+            //~ [-3, 1,-1,-1,-1,-1, 1,-1,-1, 1,-1,-1,-1,-1,-1,-1,-1,-1, 1,-1,-1, 1,-1,-1,-1,-1, 1,-3],
+            //~ [-3, 1,-1,-1,-1,-1, 1,-1,-1, 1,-1,-1,-1,-1,-1,-1,-1,-1, 1,-1,-1, 1,-1,-1,-1,-1, 1,-3],
+            //~ [-3, 1, 1, 1, 1, 1, 1,-1,-1, 1, 1, 1, 1,-1,-1, 1, 1, 1, 1,-1,-1, 1, 1, 1, 1, 1, 1,-3],
+            //~ [-3,-3,-3,-3,-3,-3, 1,-1,-1,-1,-1,-1, 0,-1,-1, 0,-1,-1,-1,-1,-1, 1,-3,-3,-3,-3,-3,-3],
+            //~ [-1,-1,-1,-1,-1,-3, 1,-1,-1,-1,-1,-1, 0,-1,-1, 0,-1,-1,-1,-1,-1, 1,-3,-1,-1,-1,-1,-1],
+            //~ [-1,-1,-1,-1,-1,-3, 1,-1,-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1,-1, 1,-3,-1,-1,-1,-1,-1],
+            //~ [-1,-1,-1,-1,-1,-3, 1,-1,-1, 0,-3,-3,-3,-2,-2,-3,-3,-3, 0,-1,-1, 1,-3,-1,-1,-1,-1,-1],
+            //~ [-3,-3,-3,-3,-3,-3, 1,-1,-1, 0,-3,-4,-4,-4,-4,-4,-4,-3, 0,-1,-1, 1,-3,-3,-3,-3,-3,-3],
+            //~ [ 0, 0, 0, 0, 0, 0, 1, 0, 0, 0,-3,-4,-4,-4,-4,-4,-4,-3, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+            //~ [-3,-3,-3,-3,-3,-3, 1,-1,-1, 0,-3,-4,-4,-4,-4,-4,-4,-3, 0,-1,-1, 1,-3,-3,-3,-3,-3,-3],
+            //~ [-1,-1,-1,-1,-1,-3, 1,-1,-1, 0,-3,-3,-3,-3,-3,-3,-3,-3, 0,-1,-1, 1,-3,-1,-1,-1,-1,-1],
+            //~ [-1,-1,-1,-1,-1,-3, 1,-1,-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1,-1, 1,-3,-1,-1,-1,-1,-1],
+            //~ [-1,-1,-1,-1,-1,-3, 1,-1,-1, 0,-1,-1,-1,-1,-1,-1,-1,-1, 0,-1,-1, 1,-3,-1,-1,-1,-1,-1],
+            //~ [-3,-3,-3,-3,-3,-3, 1,-1,-1, 0,-1,-1,-1,-1,-1,-1,-1,-1, 0,-1,-1, 1,-3,-3,-3,-3,-3,-3],
+            //~ [-3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,-1,-1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,-3],
+            //~ [-3, 1,-1,-1,-1,-1, 1,-1,-1,-1,-1,-1, 1,-1,-1, 1,-1,-1,-1,-1,-1, 1,-1,-1,-1,-1, 1,-3],
+            //~ [-3, 1,-1,-1,-1,-1, 1,-1,-1,-1,-1,-1, 1,-1,-1, 1,-1,-1,-1,-1,-1, 1,-1,-1,-1,-1, 1,-3],
+            //~ [-3, 2, 1, 1,-1,-1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,-1,-1, 1, 1, 2,-3],
+            //~ [-3,-1,-1, 1,-1,-1, 1,-1,-1, 1,-1,-1,-1,-1,-1,-1,-1,-1, 1,-1,-1, 1,-1,-1, 1,-1,-1,-3],
+            //~ [-3,-1,-1, 1,-1,-1, 1,-1,-1, 1,-1,-1,-1,-1,-1,-1,-1,-1, 1,-1,-1, 1,-1,-1, 1,-1,-1,-3],
+            //~ [-3, 1, 1, 1, 1, 1, 1,-1,-1, 1, 1, 1, 1,-1,-1, 1, 1, 1, 1,-1,-1, 1, 1, 1, 1, 1, 1,-3],
+            //~ [-3, 1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1, 1,-1,-1, 1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1, 1,-3],
+            //~ [-3, 1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1, 1,-1,-1, 1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1, 1,-3],
+            //~ [-3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,-3],
+            //~ [-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3],
+            //~ [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],
+            //~ [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]
+        //~ ];
+//~ };

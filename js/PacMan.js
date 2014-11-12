@@ -17,6 +17,9 @@ function PacMan(descr) {
 
     // Common inherited setup logic from Entity
     this.setup(descr);
+    
+    // Used in collision logic in spatialManager.js
+    this.entityType = entityManager.entityTypes["PacMan"];
 
     this.rememberResets();
 
@@ -40,59 +43,39 @@ PacMan.prototype.KEY_LEFT   = 'A'.charCodeAt(0);
 PacMan.prototype.KEY_RIGHT  = 'D'.charCodeAt(0);
 
 // Initial, inheritable, default values
-PacMan.prototype.direction = 0;
 PacMan.prototype.lives = 3;
 PacMan.prototype.score = 0;
-
-//TODO: FIX
-
-// HACKED-IN AUDIO (no preloading)
-//TODO: Change audio
-PacMan.prototype.eatSound = new Audio("sounds/pacman_chomp.wav");
-PacMan.prototype.warpSound = new Audio("sounds/pacman_death.wav");
-PacMan.prototype.eatFruit = new Audio("sounds/pacman_eatfruit.wav");
-PacMan.prototype.eatGhost = new Audio("sounds/pacman_eatghost.wav");
-PacMan.prototype.newLive = new Audio("sounds/pacman_extrapac.wav");
-PacMan.prototype.intermission = new Audio("sounds/pacman_intermission.wav");
-//TODO: Move to better place!
-PacMan.prototype.introSound = new Audio("sounds/pacman_beginning.wav");
 
 PacMan.prototype.reset = function () {
     this.setPos(this.reset_row, this.reset_column);
     this.direction = this.reset_direction;
-
-    this.halt();
+    this._isDeadNow = false;
 };
 
-//When PacMan dies we warp him to his original place
-PacMan.prototype.warp = function (ctx){
-    //TODO: Move to original place with animation
-    this.warpSound.play();
-    this.reset();
+// When PacMan dies we warp him to his original place
+PacMan.prototype.kill = function (ctx) {
+    warpSound.play();
+    this._isDeadNow = true;
 };
 
-// Time to next is the remaining proportion of the distance traveled
-// to next cell
-PacMan.prototype.timeToNext = 1;
-
-PacMan.prototype.getNextPos = function(direction) {
-    var row = this.row,
-        column = this.column;
-    
-    if (direction === "up") {
-        row -= 1;
-    } else if (direction === "down") {
-        row += 1;
-    } else if (direction === "left") {
-        column -= 1;
-    } else if (direction === "right") {
-        column += 1;
-    }
-
-    return util.wrapPosition(row, column);
+PacMan.prototype._keyMove = function() {
+    return keys[this.KEY_UP] || keys[this.KEY_DOWN] || 
+           keys[this.KEY_LEFT] || keys[this.KEY_RIGHT];
 };
 
+PacMan.prototype._dyingProp = 0;
+PacMan.prototype._dyingSpeed = 0.2; // fps
 PacMan.prototype.update = function (du) {
+    // Special logic for dying behaviour
+    if (this._isDeadNow) {
+        if (this._dyingProp > 1) {
+            this._dyingProp = 0;
+            this.reset();
+        }
+        this._dyingProp += this._dyingSpeed * (du/NOMINAL_UPDATE_INTERVAL);
+        return;
+    }
+    
     if (keys[this.KEY_UP]) {
         this.nextDirection = "up";
     }
@@ -106,119 +89,66 @@ PacMan.prototype.update = function (du) {
         this.nextDirection = "right";
     }
 
-    this.timeToNext -= this.speed;
-    if (this.timeToNext <= 0) {
-
-        var oldPos = this.getPos();
-
-        // First try the the key pressed
-        var nextPos = this.getNextPos(this.nextDirection);
-
-        if (!g_maze.penetrable(nextPos.row, nextPos.column)) {
-            // Not allowed to go there, Try the old direction
-            nextPos = this.getNextPos(this.direction);
-        } else {
-            // We can move into the new direction. For now just make
-            // that our future direction, and move later.
-            this.direction = this.nextDirection;
-        }
-        
-        if (!g_maze.penetrable(nextPos.row, nextPos.column)) {
-            // Still not allowed, so just stop
-            this.direction = 0;
-        } else {
-            // we can move!!
-            this.setPos(nextPos.row, nextPos.column);
-        }
-
-        // Make the distance to next cell positive again
-        this.timeToNext += 1;
+    if (this._keyMove() && this.direction === 0) {
+        this.timeToNext = 0;
     }
 
     // TODO: Unregister and check for death
     spatialManager.unregister(this);
-
-    // TODO: Warp if isColliding, otherwise Register
-
-    // TODO: If going through "tunnel", handle
+    
+    // mutates the direction of pacman
+    this.move(du, this.direction, this.nextDirection);
+    
     spatialManager.register(this);
 };
 
-PacMan.prototype._mouthOpenProp = 0.1;
-PacMan.prototype._mouthSpeed = 0.02;
-PacMan.prototype._mouthOpening = false;
-PacMan.prototype.drawCentredAt = function(ctx, cx, cy, rotation) {
-    var boxDim = consts.BOX_DIMENSION;
-    var startMouth = this._mouthOpenProp*2*Math.PI,
-        endMouth = (1-this._mouthOpenProp)*2*Math.PI,
-        r = consts.SCALING*boxDim/1.5;
+PacMan.prototype._animProp = 0;    //proportion of the animation cycle
+PacMan.prototype._animSpeed = 0.1; //frames per second
 
-    var draw = function(cx, cy) {
-        ctx.save();
-
-        ctx.fillStyle = "#EBFC00";
-        ctx.translate(cx, cy);
-        ctx.rotate(rotation);
-        
-        ctx.beginPath();
-        ctx.moveTo(0, 0);
-        ctx.arc(0, 0, r, startMouth, endMouth);
-        ctx.lineTo(0, 0);
-        ctx.fill();
-    
-        ctx.restore();
-  
-    };
-
-    draw(cx, cy);
-    draw(cx + 2*boxDim*g_maze.nColumns, cy);
-    draw(cx - 2*boxDim*g_maze.nColumns, cy);
-    draw(cx, cy + 2*boxDim*g_maze.nRows);
-    draw(cx, cy - 2*boxDim*g_maze.nRows);
+PacMan.prototype.hitMe = function (aggressor) {
+    if (aggressor.entityType === entityManager.entityTypes["Ghost"]) {
+        console.log("Ghost hit PacMan");
+        //TODO: Temp, will be something else
+        entityManager.resetGhosts();
+        //~ Implement "ghost-maniac-mode" with Boolean value?
+        //~ [But wheeere?]
+        this.kill();
+    } 
 };
 
 PacMan.prototype.render = function (ctx) {
-    var rotation = 0;
     var boxDim = consts.BOX_DIMENSION;
     var pos = util.getCoordsFromBox(this.row, this.column);
+    var animFrame;
 
+    //~ TODO: change logic when PacMan dies
+    if (this._isDeadNow) {
+        animFrame = Math.round((this._dyingProp)*10); // 0-10 frames of dying
+        if (animFrame > 10) { animFrame=10; }
+        //~ console.log(animFrame);
+        this.sprite["dying"][animFrame].drawCentredAt(ctx, pos.xPos, pos.yPos);
+        return;
+    }
+    
     var dir = this.direction;
     var going = this.nextDirection;
     if (dir === "up") {
-        pos.yPos += (this.timeToNext)*boxDim*2;
-        rotation = 3*Math.PI/2;
+        pos.yPos += (this.timeToNext)*boxDim;
     } else if (dir === "down") {
-        pos.yPos -= (this.timeToNext)*boxDim*2;
-        rotation = 1*Math.PI/2;
+        pos.yPos -= (this.timeToNext)*boxDim;
     } else if (dir === "left") {
-        pos.xPos += (this.timeToNext)*boxDim*2;
-        rotation = 2*Math.PI/2;
+        pos.xPos += (this.timeToNext)*boxDim;
     } else if (dir === "right") {
-        pos.xPos -= (this.timeToNext)*boxDim*2;
+        pos.xPos -= (this.timeToNext)*boxDim;
     }
 
-    if (!dir) {
-        if (going === "up") {
-            rotation = 3*Math.PI/2;
-        } else if (going === "down") {
-            rotation = 1*Math.PI/2;
-        } else if (going === "left") {
-            rotation = 2*Math.PI/2;
-        }
-    }
-
-    this.drawCentredAt(ctx, pos.xPos, pos.yPos, rotation);
+    // update animationFrame
     if (this.direction) {
-        if (this._mouthOpenProp > 0.1) {
-            this._mouthOpening = false;
-        } else if (this._mouthOpenProp <= 0) {
-            this._mouthOpening = true;
-        }
-        if (this._mouthOpening) {
-            this._mouthOpenProp += this._mouthSpeed;
-        } else {
-            this._mouthOpenProp -= this._mouthSpeed;
+        this._animProp += this._animSpeed;
+        if (this._animProp > 1) {
+            this._animProp -= 1;
         }
     }
-    // this.sprite.drawCentredAt(ctx, pos.xPos, pos.yPos, rotation);
+    animFrame =  Math.round(this._animProp*2);
+    this.sprite[dir||going||"left"][animFrame].drawWrapedCentredAt(ctx, pos.xPos, pos.yPos);
 };

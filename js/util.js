@@ -38,11 +38,11 @@ var util = {
 
     wrapPosition: function(row, column) {
         var pos = {row: row, column: column};
-        if (column >= g_maze.nColumns) { pos.column -= g_maze.nColumns; }
-        else if (column < 0) { pos.column += g_maze.nColumns; }
+        if (column >= entityManager.getMazeColumns()) { pos.column -= entityManager.getMazeColumns(); }
+        else if (column < 0) { pos.column += entityManager.getMazeColumns(); }
 
-        if (row >= g_maze.nRows) { pos.row -= g_maze.nRows; }
-        else if (row < 0) { pos.row += g_maze.nRows; }
+        if (row >= entityManager.getMazeRows()) { pos.row -= entityManager.getMazeRows(); }
+        else if (row < 0) { pos.row += entityManager.getMazeRows(); }
 
         return pos;
     },
@@ -101,15 +101,16 @@ var util = {
     },
 
     fillCircle: function (ctx, x, y, r, style) {
-        if(style === undefined) {
-            style = ctx.fillStyle;
+        if(style !== undefined) {
+            var oldStyle = ctx.fillStyle;
+            ctx.fillStyle = style;
         }
-        var oldStyle = ctx.fillStyle;
-        ctx.fillStyle = style;
         ctx.beginPath();
         ctx.arc(x, y, r, 0, Math.PI * 2);
         ctx.fill();
-        ctx.fillStyle = oldStyle;
+        if(style !== undefined) {
+            ctx.fillStyle = oldStyle;
+        }
     },
 
     fillBox: function (ctx, x, y, w, h, style) {
@@ -135,7 +136,7 @@ var util = {
         ctx.beginPath();
     },
 
-    finishLine: function(oldStyle) {
+    finishLine: function(ctx, oldStyle) {
         ctx.stroke();
         ctx.fillStyle = oldStyle;
         ctx.restore();
@@ -149,8 +150,8 @@ var util = {
 
         var oldStyle = this.prepareLine(ctx, x, y, rotation, style);
 
-        var xOffset = 0.1 * consts.BOX_DIMENSION * consts.SCALING;
-        var yOffset = 0.5 * consts.BOX_DIMENSION * consts.SCALING;
+        var xOffset = 0.1 * consts.BOX_DIMENSION;
+        var yOffset = 0.5 * consts.BOX_DIMENSION;
         ctx.moveTo(xOffset, -yOffset);
         ctx.lineTo(xOffset, yOffset);
 
@@ -159,23 +160,23 @@ var util = {
             ctx.lineTo(yOffset, yOffset);
         }
 
-        this.finishLine(oldStyle);
+        this.finishLine(ctx, oldStyle);
     },
 
     drawDoubleLine: function(ctx, x, y, rotation, style) {
         var oldStyle = this.prepareLine(ctx, x, y, rotation, style);
 
-        var offset = 0.5 * consts.BOX_DIMENSION * consts.SCALING;
+        var offset = 0.5 * consts.BOX_DIMENSION;
         ctx.moveTo(-offset, -offset);
         ctx.lineTo(-offset, offset);
 
-        this.finishLine(oldStyle);
+        this.finishLine(ctx, oldStyle);
     },
 
     drawCurve: function(ctx, x, y, rotation, style, doubleLine) {
         var oldStyle = this.prepareLine(ctx, x, y, rotation, style);
 
-        var dimension = consts.BOX_DIMENSION * consts.SCALING;
+        var dimension = consts.BOX_DIMENSION;
         var offset = 0.1 * dimension;
         var centerOffset = 0.5 * dimension;
         ctx.moveTo(offset, centerOffset);
@@ -186,14 +187,14 @@ var util = {
             ctx.quadraticCurveTo(centerOffset, centerOffset, centerOffset+offset, centerOffset);
         }
 */
-        this.finishLine(oldStyle);
+        this.finishLine(ctx, oldStyle);
     },
 
     drawLongCurve: function(ctx, x, y, rotation, style, doubleLine) {
         var oldStyle = this.prepareLine(ctx, x, y, rotation, style);
 
-        var offset = 0.1 * consts.BOX_DIMENSION * consts.SCALING;
-        var centerOffset = 0.5 * consts.BOX_DIMENSION * consts.SCALING;
+        var offset = 0.1 * consts.BOX_DIMENSION;
+        var centerOffset = 0.5 * consts.BOX_DIMENSION;
         ctx.moveTo(-offset, centerOffset);
         ctx.quadraticCurveTo(0, 0, centerOffset, -offset);
 
@@ -202,21 +203,21 @@ var util = {
             ctx.quadraticCurveTo(-centerOffset, -centerOffset, centerOffset, -centerOffset);
         }
         
-        this.finishLine(oldStyle);
+        this.finishLine(ctx, oldStyle);
     },
-
 
     //EXTRAS WITH NO HOME
 
     getCoordsFromBox: function(row, column) {
-        var dimension = consts.BOX_DIMENSION * consts.SCALING;
+        var dimension = consts.BOX_DIMENSION;
         var xPos = column * dimension + dimension / 2;
         var yPos = row * dimension + dimension / 2;
         return {xPos: xPos, yPos: yPos};
     },
 
     getBoxFromCoord: function(x, y) {
-        var dimension = consts.BOX_DIMENSION * consts.SCALING;
+        var dimension = consts.BOX_DIMENSION;
+        var dimension = consts.BOX_DIMENSION;
         var column = (x - dimension/2) / dimension;
         var row = (y - dimension/2) / dimension;
 
@@ -225,6 +226,11 @@ var util = {
 
     inArray: function(arr, value) {
         return arr.indexOf(value) > -1;
+    },
+
+    arrayRemove: function(arr, value) {
+        var i = arr.indexOf(value);
+        arr.splice(i, 1);
     }
 
 };
