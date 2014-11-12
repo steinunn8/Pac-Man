@@ -108,7 +108,8 @@ PacMan.prototype._animSpeed = 0.1; //frames per second
 PacMan.prototype.hitMe = function (aggressor) {
     if (aggressor.entityType === entityManager.entityTypes["Ghost"]) {
         console.log("Ghost hit PacMan");
-        
+        //TODO: Temp, will be something else
+        entityManager.resetGhosts();
         //~ Implement "ghost-maniac-mode" with Boolean value?
         //~ [But wheeere?]
         this.kill();
@@ -122,7 +123,6 @@ PacMan.prototype.render = function (ctx) {
 
     //~ TODO: change logic when PacMan dies
     if (this._isDeadNow) {
-        entityManager.resetGhosts();
         animFrame = Math.round((this._dyingProp)*10); // 0-10 frames of dying
         if (animFrame > 10) { animFrame=10; }
         //~ console.log(animFrame);
