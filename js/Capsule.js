@@ -48,7 +48,9 @@ Capsule.prototype.hitMe = function(aggressor) {
 };
 
 Capsule.prototype.update = function(du) {
-    return;
+    if(!this.isAlive) {
+        return entityManager.KILL_ME_NOW;
+    }
 };
 
 Capsule.prototype.render = function(ctx) {

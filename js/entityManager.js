@@ -311,7 +311,8 @@ var entityManager = {
         }
 
         var KEY_NEXT_LEVEL = keyCode('N');
-        if (eatKey(KEY_NEXT_LEVEL)) {
+        console.log(this._capsules.length);
+        if (this._capsules.length == 0 || eatKey(KEY_NEXT_LEVEL)) {
             console.log("Next level");
             this.setLevel(this.level + 1);
         }

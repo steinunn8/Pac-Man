@@ -89,6 +89,12 @@ Ghost.prototype.hitMe = function (aggressor) {
     } 
 };
 
+Ghost.prototype.kill = function () {
+    this._isDeadNow = true;
+    this.isAlive = false;
+    spatialManager.unregister(this);
+};
+
 Ghost.prototype.update = function (du) {
     spatialManager.unregister(this);
 

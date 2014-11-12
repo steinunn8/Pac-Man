@@ -47,7 +47,9 @@ SpecialCapsule.prototype.hitMe = function(aggressor) {
     }};
 
 SpecialCapsule.prototype.update = function(du) {
-    return;
+    if(!this.isAlive) {
+        return entityManager.KILL_ME_NOW;
+    }
 };
 
 SpecialCapsule.prototype.render = function(ctx) {
