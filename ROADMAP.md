@@ -12,10 +12,10 @@ Week 1
 Week 2
 ------
 
-* Impelment "Ghosts"
+* ~~Impelment "Ghosts"~~
 * Sprites
-* Collition detections for ghosts
-* "Capsules" for pac-man to eat
+* ~~Collision detections for ghosts~~
+* ~~"Capsules" for pac-man to eat~~
 
 Week 3
 ------
