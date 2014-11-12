@@ -91,6 +91,11 @@ Maze.prototype.renderValues = {
 
 // Every value possible in the input grid and it's meaning
 Maze.prototype.gridValues = {
+    INKY: 7,
+    CLYDE: 6,
+    PINKY: 5,
+    BLINKY: 4,
+    PACMAN: 3,
     SPECIAL_CAPSULE: 2,
     CAPSULE: 1,
     EMPTY: 0,
@@ -104,6 +109,15 @@ Maze.prototype.gridValues = {
 Maze.prototype.DOUBLE_LINE_OFFSET = -100;
 
 Maze.prototype._generateWall = function() {
+    for (var row = 0; row < this.nRows; row++) {
+        for (var column = 0; column < this.nColumns; column++) {
+            if (util.inArray([this.gridValues.PINKY, this.gridValues.INKY, this.gridValues.CLYDE], 
+                     this.aGrid[row][column])) {
+                this.aGrid[row][column] = this.gridValues.GHOST_SPAWN;
+            }
+        }
+    }
+    
     this.aRenderingWall = [];
     for (var i = 0; i < this.nRows; i++) {
         this.aRenderingWall.push([]);
@@ -113,6 +127,16 @@ Maze.prototype._generateWall = function() {
         }
     }
 };
+
+Maze.prototype.getEntityPos = function(gridValue) {
+    for (var row = 0; row < this.nRows; row++) {
+        for (var column = 0; column < this.nColumns; column++) {
+            if (gridValue === this.aGrid[row][column]) {
+                return {row: row, column: column};
+            }
+        }
+    }
+}
 
 Maze.prototype.update = function(du) {
     var KEY_WALL = keyCode('1');
