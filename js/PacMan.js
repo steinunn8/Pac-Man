@@ -58,6 +58,7 @@ PacMan.prototype.reset = function () {
 PacMan.prototype.kill = function (ctx) {
     warpSound.play();
     this._isDeadNow = true;
+    spatialManager.unregister(this);
 };
 
 PacMan.prototype._keyMove = function() {

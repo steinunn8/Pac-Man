@@ -38,6 +38,7 @@ var entityManager = {
 
     editingEnabled: false,
     level: 1,
+    levels: [],
     
     
     // PUBLIC DATA
@@ -72,22 +73,20 @@ var entityManager = {
         this._categories = [this._maze, this._capsules, this._ghosts, this._pacMans];
     },
 
-    init: function(grids) {
-        var grid = grids[this.level-1];
-        this._generateMaze(grid);
-        this._generateCapsules(grid);
-        this._generatePacMan(grid); //use the grid to initialise Pac-Man (position etc.)
-        this._generateGhosts(grid); //use the grid to initialise Ghosts
+    init: function(levels) {
+        this.levels = levels;
+        this.setLevel(1);
     },
 
-    setLevel: function(level) {
-        if (consts.LEVEL_ARRAY.length < level) {
+    setLevel: function(levelNumber) {
+        if (consts.LEVEL_ARRAY.length < levelNumber) {
             return;
         }
-        this.level = level;
-        var grid = consts.LEVEL_ARRAY[this.level-1];
+        this.level = levelNumber;
+        var level = this.levels[this.level-1];
+        var grid = level.grid;
         this.killAll();
-        this._generateMaze(grid);
+        this._generateMaze(level);
         this._generateCapsules(grid);
         this._generatePacMan(grid); //use the grid to initialise Pac-Man (position etc.)
         this._generateGhosts(grid); //use the grid to initialise Ghosts
@@ -102,8 +101,8 @@ var entityManager = {
         }
     },
     
-    _generateMaze : function(grid) {
-        this._maze.push(new Maze({ aGrid : grid }));
+    _generateMaze : function(level) {
+        this._maze.push(new Maze({ aGrid : level.grid, color : level.color }));
     },
     
     _generateCapsules : function(grid) {
@@ -311,7 +310,6 @@ var entityManager = {
         }
 
         var KEY_NEXT_LEVEL = keyCode('N');
-        console.log(this._capsules.length);
         if (this._capsules.length == 0 || eatKey(KEY_NEXT_LEVEL)) {
             console.log("Next level");
             this.setLevel(this.level + 1);

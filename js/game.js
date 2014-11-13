@@ -84,10 +84,16 @@ function processDiagnostics() {
 
     if (eatKey(KEY_SPATIAL)) g_renderSpatialDebug = !g_renderSpatialDebug;
 
-    // prints level data to console
+    // prints pretty level data to console
     if (eatKey(KEY_LOG_MAZE)) {
-//        window.prompt("Level array: ", JSON.stringify(entityManager.getMazeGrid()));
-        console.log(JSON.stringify(entityManager.getMazeGrid()));
+        var levelArray = [];
+        var maze = entityManager.getMazeGrid();
+        for(var i = 0; i < maze.length; i++) {
+            levelArray.push(JSON.stringify(maze[i]).replace(/\-?\d+/g, function(x) {
+                return (" " + x).slice(-2);
+            }));
+        }
+        console.log(JSON.stringify(levelArray, undefined, 4).replace(/"/g, ""));
     }
 }
 
