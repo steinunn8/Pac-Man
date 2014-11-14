@@ -300,6 +300,20 @@ var entityManager = {
         }
     },
 
+    score: 0,
+    updateScore: function(points) {
+        this.score += points;
+    },
+    renderScore: function(ctx) {
+        var scoreStr = this.score + "";
+        Array.prototype.forEach.call(scoreStr, function(c, i) {
+            // Points are drawn starting at row 1 column 5
+            var pos = util.getCoordsFromBox(1, 5+i);
+            g_sprites.extras.points[+c]
+                .drawCentredAt(ctx, pos.xPos, pos.yPos);
+        });
+    },
+
     update: function(du) {
         var TOGGLE_LEVEL_EDIT = keyCode('L');
         if (eatKey(TOGGLE_LEVEL_EDIT)) this.editingEnabled = !this.editingEnabled;
@@ -317,7 +331,8 @@ var entityManager = {
 
         this._modeTimer += du;
 
-        if(this._modes.length > 0 && this._modeTimer >= this._modes[0].duration * SECS_TO_NOMINALS) {
+        if(this._modes.length > 0 &&
+           this._modeTimer >= this._modes[0].duration * SECS_TO_NOMINALS) {
             this._modes.splice(0, 1);
             this._modeTimer = 0;
             if(this._modes.length > 0) {
@@ -349,6 +364,8 @@ var entityManager = {
     render: function(ctx) {
 
         var debugX = 10, debugY = 100;
+
+        this.renderScore(ctx);
 
         for (var c = 0; c < this._categories.length; ++c) {
 

@@ -217,7 +217,6 @@ var util = {
 
     getBoxFromCoord: function(x, y) {
         var dimension = consts.BOX_DIMENSION;
-        var dimension = consts.BOX_DIMENSION;
         var column = (x - dimension/2) / dimension;
         var row = (y - dimension/2) / dimension;
 

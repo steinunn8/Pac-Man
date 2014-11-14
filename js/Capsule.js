@@ -29,6 +29,8 @@ Capsule.prototype = new Entity();
 Capsule.prototype.row = -1;
 Capsule.prototype.column = -1;
 
+Capsule.prototype.points = 10;
+
 Capsule.prototype.kill = function () {
     this._isDeadNow = true;
     this.isAlive = false;
@@ -49,6 +51,7 @@ Capsule.prototype.hitMe = function(aggressor) {
 
 Capsule.prototype.update = function(du) {
     if(!this.isAlive) {
+        entityManager.updateScore(this.points);
         return entityManager.KILL_ME_NOW;
     }
 };
