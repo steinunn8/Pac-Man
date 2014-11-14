@@ -121,7 +121,7 @@ var entityManager = {
     },
 
     _generateFruits : function(grid){
-        this._fruits.push(new Fruit({row : 20, column : 14}))
+        this._fruits.push(new Fruit({row : 20, column : 14, type : 0}))
     },
 
     regenerateCapsules : function(grid) {
