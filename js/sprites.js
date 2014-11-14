@@ -79,14 +79,35 @@ var sprites = function() {
 
     var makeExtras = function(){
         makeFruits();
+        makePoints();
+        addText();
+        addLives();
     };
 
     var makeFruits = function(){
         var col = 8.5;
-        extras = { fruits:[]}
+        extras = { fruits:[], points:[]}
         for(var i = 8; i < 12; i++){
             cutExtrasSprite("fruits", col, i, 2);
         }
+    };
+
+    var makePoints = function(){
+        var row = 11;
+        for(var i = 0; i < 4; i++){
+            cutExtrasSprite("points", i, row, 1.2);
+        }
+    };
+
+    var addText = function(){
+        extras["gameOver"] = new Sprite(g_images, 0.5*20, 9.5 * 20, 90, 10, 90, 10, 1);
+        extras["ready"] = new Sprite(g_images, 10*20, 0, 60, 10, 60, 10, 1);
+        extras["1up"] = new Sprite(g_images, 10.5*20, 3.5*20, 30, 10, 30, 10, 1);
+        extras["2up"] = new Sprite(g_images, 10.5*20, 4*20, 30, 10, 30, 10, 1);
+    };
+
+    var addLives = function(){
+
     };
 
     var cutExtrasSprite = function(attr, x, y, scale){
