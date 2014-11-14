@@ -305,10 +305,11 @@ var entityManager = {
         this.score += points;
     },
     renderScore: function(ctx) {
-        var scoreStr = this.score + "";
+        var scoreStr = (this.score || "00") + "";
+        var margin = 7-scoreStr.length;
         Array.prototype.forEach.call(scoreStr, function(c, i) {
-            // Points are drawn starting at row 1 column 5
-            var pos = util.getCoordsFromBox(1, 5+i);
+            // Points are drawn at row 1 ending at column 7
+            var pos = util.getCoordsFromBox(1, margin+i);
             g_sprites.extras.points[+c]
                 .drawCentredAt(ctx, pos.xPos, pos.yPos);
         });
