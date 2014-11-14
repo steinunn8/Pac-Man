@@ -31,6 +31,7 @@ var entityManager = {
     _ghosts   : [],
     _maze     : [],
     _capsules : [],
+    _fruits   : [],
     _modeTimer: 0,
     _modes: [{duration: 7, mode: "scatter"}, {duration: 20, mode: "chase"}, 
              {duration: 7, mode: "scatter"}, {duration: 20, mode: "chase"},
@@ -47,7 +48,8 @@ var entityManager = {
         PacMan : "PacMan",
         Ghost : "Ghost",
         Capsule : "Capsule",
-        SpecialCapsule : "Special Capsule"
+        SpecialCapsule : "Special Capsule",
+        Fruits : "Fruits"
     },
     
 
@@ -70,7 +72,7 @@ var entityManager = {
     // i.e. thing which need `this` to be defined.
     //
     deferredSetup : function () {
-        this._categories = [this._maze, this._capsules, this._ghosts, this._pacMans];
+        this._categories = [this._maze, this._capsules, this._ghosts, this._pacMans, this._fruits];
     },
 
     init: function(levels) {
@@ -90,6 +92,7 @@ var entityManager = {
         this._generateCapsules(grid);
         this._generatePacMan(grid); //use the grid to initialise Pac-Man (position etc.)
         this._generateGhosts(grid); //use the grid to initialise Ghosts
+        this._generateFruits(grid);
     },
 
     killAll: function() {
@@ -115,6 +118,10 @@ var entityManager = {
                 }
             }
         }
+    },
+
+    _generateFruits : function(grid){
+        this._fruits.push(new Fruit({row : 20, column : 14}))
     },
 
     regenerateCapsules : function(grid) {
@@ -315,6 +322,15 @@ var entityManager = {
         });
     },
 
+    mouseClick: function(x, y) {
+        var pos = util.getBoxFromCoord(x + consts.BOX_DIMENSION/2, y + consts.BOX_DIMENSION/2);
+        pos.row = Math.floor(pos.row);
+        pos.column = Math.floor(pos.column);
+        if (this.editingEnabled) {
+            this._maze[0].editGrid(pos);
+        }
+    },
+
     update: function(du) {
         var TOGGLE_LEVEL_EDIT = keyCode('L');
         if (eatKey(TOGGLE_LEVEL_EDIT)) this.editingEnabled = !this.editingEnabled;
@@ -379,15 +395,6 @@ var entityManager = {
 
             }
             debugY += 10;
-        }
-    },
-
-    mouseClick: function(x, y) {
-        var pos = util.getBoxFromCoord(x + consts.BOX_DIMENSION/2, y + consts.BOX_DIMENSION/2);
-        pos.row = Math.floor(pos.row);
-        pos.column = Math.floor(pos.column);
-        if (this.editingEnabled) {
-            this._maze[0].editGrid(pos);
         }
     }
 
