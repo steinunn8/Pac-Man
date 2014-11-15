@@ -386,8 +386,10 @@ var entityManager = {
                 }
         }
 
-        if (this.getGhostMode() !== "frightened") {
+        if (this._modeFrightened.timer > this._modeFrightened.duration) {
             audioManager.play(siren);
+        } else {
+            
         }
 
         audioManager.update(du);
