@@ -118,6 +118,9 @@ Ghost.prototype.kill = function () {
     audioManager.play(eatGhost);
     this.isAlive = false;
     this.mode = "dead";
+
+    entityManager.ghostDies(this);
+
     spatialManager.unregister(this);
 };
 
@@ -234,7 +237,8 @@ Ghost.prototype.bounceSpeed = 0.1;
 Ghost.prototype.bouncingUp = true;
 Ghost.prototype.render = function (ctx) {
 
-    if (!entityManager.shouldRenderGhosts) {
+    if (!entityManager.shouldRenderGhosts ||
+        this.shouldSkipRender) {
         return;
     }
     

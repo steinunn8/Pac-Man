@@ -116,7 +116,7 @@ var sprites = function() {
     var makeGhostPoints = function(){
         var row = 11;
         for(var i = 0; i < 4; i++){
-            cutExtrasSprite("ghostPoints", i, row, 1.2);
+            cutExtrasSprite("ghostPoints", i, row, 2);
         }
     };
 

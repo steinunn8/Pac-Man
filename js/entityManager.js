@@ -436,6 +436,26 @@ var entityManager = {
         };
     })(),
 
+    ghostDies: function(ghost) {
+        var pacManPos = this.getPacmanPos();
+        var pos = util.getCoordsFromBox(pacManPos.row, pacManPos.column);
+        this._pacMans[0].shouldSkipRender = true;
+        ghost.shouldSkipRender = true;
+        var pointIndex = this._extras.length;
+        this._extras.push({
+            render: function(ctx) {
+                g_sprites.extras.ghostPoints[0]
+                    .drawCentredAt(ctx, pos.xPos, pos.yPos);
+            },
+            update: function() {}
+        });
+        util.setFreezeTimer(0.5, function() {
+            this._pacMans[0].shouldSkipRender = false;
+            ghost.shouldSkipRender = false;
+            this.renderingPoints = 0;
+            this._extras.splice(pointIndex, 1);
+        }.bind(this));
+    },
     pacmanDead: function() {
         util.setFreezeTimer(0.8, function() {
             audioManager.play(warpSound);

@@ -30,12 +30,14 @@ function PacMan(descr) {
 
 PacMan.prototype = new Entity();
 
+PacMan.prototype.timeToNext = 0.75;
 PacMan.prototype.rememberResets = function () {
     // Remember my reset positions
     this.reset_row = this.row;
     this.reset_column = this.column;
     this.reset_direction = this.direction;
     this.reset_nextDirection = this.nextDirection;
+    this.reset_timeToNext = this.timeToNext;
 };
 
 PacMan.prototype.KEY_UP = 'W'.charCodeAt(0);
@@ -51,6 +53,8 @@ PacMan.prototype.reset = function () {
     this.setPos(this.reset_row, this.reset_column);
     this.direction = this.reset_direction;
     this.nextDirection = this.reset_nextDirection;
+    this.timeToNext = this.reset_timeToNext;
+    this._animProp = 0;
     this.isAlive = true;
 };
 
@@ -129,6 +133,9 @@ PacMan.prototype.hitMe = function (aggressor) {
 };
 
 PacMan.prototype.render = function (ctx) {
+    if (this.shouldSkipRender) {
+        return;
+    }
     var boxDim = consts.BOX_DIMENSION;
     var pos = util.getCoordsFromBox(this.row, this.column);
     var animFrame;
