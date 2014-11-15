@@ -19,6 +19,14 @@ var audioManager = {
         this.muted = !this.muted
     },
 
+    getMuted: function() {
+        return this.muted;
+    },
+
+    setMuted: function(muted) {
+        this.muted = muted;
+    },
+
     play: function(sound) {
         if (sound === eatSound) {
             this.chomp = true;

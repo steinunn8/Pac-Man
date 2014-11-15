@@ -50,6 +50,10 @@ Ghost.prototype.rememberResets = function () {
     this.reset_homeTime = this.homeTime;
 };
 
+Ghost.prototype.getStartPosition = function() {
+    return {row: this.reset_row, column: this.reset_column};
+};
+
 Ghost.prototype.resetTarget = function() {
     this.target_.row = this.startTarget.row;
     this.target_.column = this.startTarget.column;
@@ -97,18 +101,19 @@ Ghost.prototype.hitMe = function (aggressor) {
         //~ Implement "ghost-maniac-mode" with Boolean value?
         //~ [But wheeere?]
         if (this.mode === "frightened") {
-            this.kill();
+      this.kill();
         } else if (this.mode === "dead") {
             // Pass
             // don't do anything
         } else {
             aggressor.kill();
-            entityManager.resetGhosts();
+            entityManager.pacmanDead();
         }
     } 
 };
 
 Ghost.prototype.kill = function () {
+    audioManager.play(eatGhost);
     this.isAlive = false;
     this.mode = "dead";
     spatialManager.unregister(this);
@@ -142,17 +147,22 @@ Ghost.prototype.update = function (du) {
         }
 
         if (this.mode === "movingOut") {
-            if (this.column == 14 && this.row == 14) {
+            var exitPos = entityManager.getGhostExitPosition();
+            if (this.column == exitPos.column && this.row == exitPos.row) {
                 this.mode = entityManager.getGhostMode();
                 this.homeTime = 0;
-            } else if(this.column != 14) {
-                if(this.column > 14) {
+            } else if(this.column != exitPos.column) {
+                if(this.column > exitPos.column) {
                     this.nextDirection = "left";
                 } else {
                     this.nextDirection = "right";
                 }
             } else {
-                this.nextDirection = "up";
+                if(this.row > exitPos.row) {
+                    this.nextDirection = "up";
+                } else {
+                    this.nextDirection = "down"
+                }
             }
             return;
         }
@@ -220,16 +230,23 @@ Ghost.prototype.render = function (ctx) {
     var boxDim = consts.BOX_DIMENSION;
     var dir = this.direction;
 
-    
     // Ghosts at home just bounce up and down
+    // only change if not paused/frozen
+    var shouldChange = entityManager.shouldChange();
+
+    // when home they are between 2 tiles
     if (this.mode === "home") {
         pos.xPos -= 0.5*boxDim;
+    }
+
+    // Ghosts at home just bounce up and down
+    if (this.mode === "home" && shouldChange) {
         pos.yPos -= this.bounceProp*boxDim;
         this.bounceProp += (this.bouncingUp ? 1 : -1) * this.bounceSpeed;
         if (Math.abs(this.bounceProp) > 0.5) {
             this.bouncingUp = !this.bouncingUp;
         }
-    } else {
+    } else if (this.mode !== "home") {
         if (dir === "up") {
             pos.yPos += (this.timeToNext)*boxDim;
         } else if (dir === "down") {
@@ -261,8 +278,19 @@ Ghost.prototype.render = function (ctx) {
     }
     
     if (this._isFrightened) {
-        g_sprites.ghosts.frightened.white[animFrame]
-            .drawCentredAt(ctx, pos.xPos, pos.yPos);
+        var mf = entityManager.getFrightenedMode();
+        var steps = 5;
+        var ratioLeftTime = 1 - (mf.timer/(mf.duration*SECS_TO_NOMINALS));
+        var ratioLeftStep = Math.floor(ratioLeftTime*mf.duration*steps);
+        //~ console.log("ratio left steps:", ratioLeftStep);
+        
+        if (ratioLeftStep<=10 && ratioLeftStep%2===0) {
+            g_sprites.ghosts.frightened.white[animFrame]
+                .drawCentredAt(ctx, pos.xPos, pos.yPos);
+        } else {
+            g_sprites.ghosts.frightened.blue[animFrame]
+                .drawCentredAt(ctx, pos.xPos, pos.yPos);            
+        }
     } else {
         this.sprite[dir || "up"][animFrame]
             .drawCentredAt(ctx, pos.xPos, pos.yPos);

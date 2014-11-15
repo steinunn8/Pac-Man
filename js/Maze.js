@@ -92,7 +92,8 @@ Maze.prototype.renderValues = {
     DOUBLE_LONG_BOTTOM_RIGHT_TOP: -19,
     DOUBLE_LONG_BOTTOM_LEFT_RIGHT: -20,
     DOUBLE_LONG_BOTTOM_LEFT_TOP: -21,
-    GHOST_WALL: -22
+    GHOST_WALL: -22,
+    GHOST_WALL_DOWN: -23
 };
 
 // Every value possible in the input grid and it's meaning
@@ -208,7 +209,11 @@ Maze.prototype.renderAll = function(ctx) {
 
 Maze.prototype._getRenderValue = function(row, column) {
     if (this.aGrid[row][column] == this.gridValues.GHOST_WALL) {
-        return this.renderValues.GHOST_WALL;
+        if(this.aGrid[row-1][column] == this.gridValues.GHOST_SPAWN) {
+            return this.renderValues.GHOST_WALL_DOWN;
+        } else {
+            return this.renderValues.GHOST_WALL;
+        }
     } else if (this.aGrid[row][column] < this.gridValues.EMPTY) {
         return this._adjecentCheck(row, column);
     }
@@ -319,6 +324,10 @@ Maze.prototype._drawPart = function(ctx, renderValue, x, y, isDouble) {
     } else if(renderValue == this.renderValues.GHOST_WALL) {
         var halfDimension = consts.BOX_DIMENSION/2;
         util.fillBox(ctx, x-halfDimension, y+halfDimension/2.5,
+                     halfDimension*2, halfDimension/2, "#FBB382");
+    } else if(renderValue == this.renderValues.GHOST_WALL_DOWN) {
+        var halfDimension = consts.BOX_DIMENSION/2;
+        util.fillBox(ctx, x-halfDimension, y-halfDimension/1.3,
                      halfDimension*2, halfDimension/2, "#FBB382");
     }
 };

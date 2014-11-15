@@ -41,6 +41,9 @@ var entityManager = {
     editingEnabled: false,
     level: 1,
     levels: [],
+    freeze: false,
+    freezeTimer: 0,
+    shouldResetGhosts: false,
     
     
     // PUBLIC DATA
@@ -79,6 +82,8 @@ var entityManager = {
     init: function(levels) {
         this.levels = levels;
         this.setLevel(1);
+        audioManager.play(introSound);
+        this.setFreezeTimer(4);
     },
 
     setLevel: function(levelNumber) {
@@ -90,12 +95,20 @@ var entityManager = {
         this.level = levelNumber;
         var level = this.levels[this.level-1];
         var grid = level.grid;
+
+        // prevent all killing sounds
+        var muted = audioManager.getMuted();
+        audioManager.setMuted(true);
         this.killAll();
+        audioManager.setMuted(muted);
+        
         this._generateMaze(level);
         this._generateCapsules(grid);
         this._generatePacMan(grid); //use the grid to initialise Pac-Man (position etc.)
         this._generateGhosts(grid); //use the grid to initialise Ghosts
         this._generateFruits(grid);
+
+        this.setFreezeTimer(2);
     },
 
     killAll: function() {
@@ -123,8 +136,14 @@ var entityManager = {
         }
     },
 
+    _generateFruit : function(type){
+        this._fruits.push(new Fruit({row : 20, column : 14, type : type}))
+    },
+
     _generateFruits : function(grid){
-        this._fruits.push(new Fruit({row : 20, column : 14, type : 0}))
+        if(this.level == 2)
+            this._fruits.push(new Fruit({row : 34.5, column : 23.5, type : 1}))
+        this._fruits.push(new Fruit({row : 34.5, column : 25, type : 0}))
     },
 
     regenerateCapsules : function(grid) {
@@ -296,8 +315,12 @@ var entityManager = {
         this.setGhostMode("frightened");
     },
     
+    getFrightenedMode : function() {
+        return this._modeFrightened;
+    },
+    
     setGhostMode : function(mode) {
-        console.log("setting mode: " + mode);
+        //~ console.log("setting mode: " + mode);
         for (var i = 0; i < this._ghosts.length; i++) {
             this._ghosts[i].changeMode(mode);
         }
@@ -314,6 +337,14 @@ var entityManager = {
     resetGhosts : function() {
         for (var i=0; i<this._ghosts.length; i++){
             this._ghosts[i].reset();
+        }
+    },
+
+    getGhostExitPosition : function() {
+        for (var i=0; i<this._ghosts.length; i++){
+            if (this._ghosts[i].name === "blinky") {
+                return this._ghosts[i].getStartPosition();
+            }
         }
     },
 
@@ -348,6 +379,15 @@ var entityManager = {
         });
     },
 
+    setFreezeTimer: function(duration) {
+        this.freezeTimer = duration * SECS_TO_NOMINALS;
+    },
+
+    pacmanDead: function() {
+        this.setFreezeTimer(1.4);
+        this.shouldResetGhosts = true;
+    },
+
     mouseClick: function(x, y) {
         var pos = util.getBoxFromCoord(x + consts.BOX_DIMENSION/2, y + consts.BOX_DIMENSION/2);
         pos.row = Math.floor(pos.row);
@@ -355,6 +395,10 @@ var entityManager = {
         if (this.editingEnabled) {
             this._maze[0].editGrid(pos);
         }
+    },
+
+    shouldChange: function() {
+        return !g_isUpdatePaused && !this.freeze;
     },
 
     update: function(du) {
@@ -377,6 +421,31 @@ var entityManager = {
             this.setFrightenedMode();
         }
 
+        if (!this._modeFrightened.isOn) {
+            audioManager.play(siren);
+        } else {
+            audioManager.play(frightened);
+        }
+
+        this.freezeTimer -= du;
+        if (this.freezeTimer <= 0) {
+            this.freeze = false;
+        } else {
+            this.freeze = true;
+        }
+
+        // don't move anything when frozen
+        if (this.freeze) {
+            // update pacman dying even if frozen
+            if (this.shouldResetGhosts) {
+                this._pacMans[0].update(du);
+            }
+            return;
+        } else if(this.shouldResetGhosts) {
+            this.resetGhosts();
+            this.shouldResetGhosts = false;
+        }
+
         this._modeTimer += du;
         this._modeFrightened.timer += du;
         if (this._modeFrightened.isOn &&
@@ -395,14 +464,6 @@ var entityManager = {
                     this.setGhostMode(this._modes[0].mode);
                 }
         }
-
-        if (!this._modeFrightened.isOn) {
-            audioManager.play(siren);
-        } else {
-            audioManager.play(frightened);
-        }
-
-        audioManager.update(du);
 
         for (var c = 0; c < this._categories.length; ++c) {
 
