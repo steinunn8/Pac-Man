@@ -33,7 +33,7 @@ var entityManager = {
     _capsules : [],
     _fruits   : [],
     _modeTimer: 0,
-    _modeFrightened: {duration: 7, timer: 0},
+    _modeFrightened: {duration: 2, timer: 0, isOn: false},
     _modes: [{duration: 7, mode: "scatter"}, {duration: 20, mode: "chase"}, 
              {duration: 7, mode: "scatter"}, {duration: 20, mode: "chase"},
              {duration: 5, mode: "scatter"}, {duration: Infinity, mode: "chase"}],
@@ -260,11 +260,11 @@ var entityManager = {
     getMazeRows : function() {
         return this._maze[0].aGrid.length;
     },
-
+    
     getMazeGrid : function() {
         return this._maze[0].aGrid;
     },
-
+    
     getMazeDirections : function(row, column) {
         return this._maze[0].getDirections(row, column);
     },
@@ -272,15 +272,15 @@ var entityManager = {
     penetrable : function(row, column) {
         return this._maze[0].penetrable(row, column);
     },
-
+    
     getPacmanPos : function() {
         return this._pacMans[0].getPos();
     },
-
+    
     getPacmanDirection : function() {
         return this._pacMans[0].getDirection();
     },
-
+    
     getBlinkyPos : function() {
         for (var i = 0; i < this._ghosts.length; i++) {
             if (this._ghosts[i].name == "blinky") {
@@ -292,6 +292,7 @@ var entityManager = {
     setFrightenedMode : function() {
         console.log("setFrightenedMode");
         this._modeFrightened.timer = 0;
+        this._modeFrightened.isOn = true;
         this.setGhostMode("frightened");
     },
     
@@ -374,15 +375,20 @@ var entityManager = {
 
         this._modeTimer += du;
         this._modeFrightened.timer += du;
+        if (this._modeFrightened.isOn &&
+            this._modeFrightened.timer >
+            this._modeFrightened.duration * SECS_TO_NOMINALS) {
+                this._modeFrightened.isOn = false;
+                this.setGhostMode(this._modes[0].mode);
+        }
         
         if (this._modes.length > 0 &&
             this._modeTimer >= this._modes[0].duration * SECS_TO_NOMINALS) {
                 this._modes.splice(0, 1);
                 this._modeTimer = 0;
-                if (this._modes.length > 0 &&
-                    this._modeFrightened.timer > this._modeFrightened.duration) {
-                        //~ Changing mode
-                        this.setGhostMode(this._modes[0].mode);
+                if (this._modes.length > 0 && !this._modeFrightened.isOn) {
+                    //~ Changing mode
+                    this.setGhostMode(this._modes[0].mode);
                 }
         }
 
