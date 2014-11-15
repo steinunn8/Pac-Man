@@ -347,6 +347,11 @@ var entityManager = {
             console.log("Next level");
             this.setLevel(this.level + 1);
         }
+        
+        var KEY_E = keyCode('E');
+        if (eatKey(KEY_E)) {
+            this.setGhostMode("frightened");
+        }
 
         this._modeTimer += du;
 
