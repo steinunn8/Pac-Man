@@ -45,30 +45,26 @@ var spatialManager = {
         delete this._entities[spatialID];
     },
     
-    _findEntityAt: function(row, column) {
-        //~ XXX: More than one entity can be on the same (row,column),
-        //~      this implemention finds the first and returns it.
-        //~      PacMan and Ghosts get higher priority than capsules
-        //~      because capsules are registered once but PacMan and
-        //~      Ghosts keep unregistering and registering
-        for (var ID = this._entities.length-1; ID >= 0; ID--) {            
+    _findEntitiesAt: function(row, column) {
+        var entities = [];
+        for (var ID in this._entities) {
             var e = this._entities[ID];
-            if (!e) continue;
+            if (!e || !e.isAlive) continue;
             
             var pos = e.getPos();
             if (pos.row===row && pos.column===column)
-                return e;
+                entities.push(e);
         }
-        return null;
+        return entities;
     }, 
     
     imGoingHere: function(aggressor, row, column) {
         //~ console.log("spatialManager reckons that " + myEntityType +
         //~ " is going to (row,column)=(" + row + "," + column + ").");
         
-        var entity = this._findEntityAt(row, column);
-        if (entity) {
-            //~ console.log(myEntityType + " ran into " + entity.entityType);
+        var entities = this._findEntitiesAt(row, column);
+        for (var i=0; i<entities.length; i++) {
+            var entity = entities[i];
             entity.hitMe(aggressor);
         }
     },

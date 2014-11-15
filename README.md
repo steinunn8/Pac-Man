@@ -10,6 +10,7 @@ Entity-manager
   * Pac-Man
   * Ghosts
   * Maze
+  * Capsules
   * Fruit
   * (Score)
 

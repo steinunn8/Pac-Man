@@ -118,7 +118,7 @@ var sprites = function() {
         extras["highScore"] = new Sprite(
             g_images, 200, 26, 80, 8, 160, 14, 1
         );
-        extras["gameOver"] = new Sprite(g_images, 0.5*20, 9.5 * 20, 90, 10, 90, 10, 1);
+        extras["gameOver"] = new Sprite(g_images, 0.5*20, 9.5 * 20, 90, 10, 90, 10, 2);
         extras["ready"] = new Sprite(g_images, 10*20, 0, 60, 10, 60, 10, 1);
         extras["1up"] = new Sprite(g_images, 10.5*20, 3.5*20, 30, 10, 30, 10, 1);
         extras["2up"] = new Sprite(g_images, 10.5*20, 4*20, 30, 10, 30, 10, 1);
