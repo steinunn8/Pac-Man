@@ -22,6 +22,7 @@ function SpecialCapsule(descr) {
     this.entityType = entityManager.entityTypes["SpecialCapsule"];
     
     this.isAlive = true;
+    this.frame = 1;
 };
 
 SpecialCapsule.prototype = new Entity();
@@ -37,15 +38,10 @@ SpecialCapsule.prototype.kill = function () {
 };
 
 SpecialCapsule.prototype.hitMe = function(aggressor) {
-    //~ console.log("Special Capsule under attack!");
     if (aggressor.entityType === entityManager.entityTypes["PacMan"]) {
-        //~ console.log("Special Capsule eaten by PacMan");
         
         entityManager.setFrightenedMode();
-        
-        //~ Implement "ghost-maniac-mode" with Boolean value?
-        //~ [But wheeere?]
-        //~ this._animProp = 0;
+
         this.kill();
     }
 };
@@ -55,18 +51,18 @@ SpecialCapsule.prototype.update = function(du) {
         entityManager.updateScore(this.points);
         return entityManager.KILL_ME_NOW;
     }
+    this.frame -= du / NOMINAL_UPDATE_INTERVAL;
+    if(this.frame <= 0){this.frame = 1;}
 };
 
 SpecialCapsule.prototype.render = function(ctx) {
-    //~ console.log("Capsule rendering!");
-    
+
     if (!this.isAlive) return;
-    
+    if (this.frame < 0.5) return;
     var oldStyle = ctx.fillStyle;
     ctx.fillStyle = "#FBB382";
     
     var pos = util.getCoordsFromBox(this.row, this.column);
-    //~ console.log("special capsule pos", pos);
     util.fillCircle(ctx, pos.xPos, pos.yPos, consts.BOX_DIMENSION/2.5);
 
     ctx.fillStyle = oldStyle; 

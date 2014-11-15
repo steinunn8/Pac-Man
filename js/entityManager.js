@@ -403,7 +403,7 @@ var entityManager = {
         } else {
             this.freeze = true;
         }
-        console.log(this.freezeTimer + " " + this.freeze);
+        //console.log(this.freezeTimer + " " + this.freeze);
         // don't move anything when frozen
         if (this.freeze) {
             return;
