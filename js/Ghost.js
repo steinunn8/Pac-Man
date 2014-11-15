@@ -202,6 +202,7 @@ Ghost.prototype.render = function (ctx) {
     
     var pos = util.getCoordsFromBox(this.row, this.column);
     var boxDim = consts.BOX_DIMENSION;
+    var dir = this.direction;
 
     // Ghosts at home just bounce up and down
     if (this.mode === "home") {
@@ -212,7 +213,6 @@ Ghost.prototype.render = function (ctx) {
             this.bouncingUp = !this.bouncingUp;
         }
     } else {
-        var dir = this.direction;
         if (dir === "up") {
             pos.yPos += (this.timeToNext)*boxDim;
         } else if (dir === "down") {
@@ -235,11 +235,12 @@ Ghost.prototype.render = function (ctx) {
 
      // full animation circle frames per cell traverse
     var animFrame = Math.round(this.timeToNext);
-    var dir = this.direction;
     
     if (this._isFrightened) {
-        util.fillCenteredSquare(ctx, pos.xPos, pos.yPos, consts.BOX_DIMENSION/2, "red");
+        g_sprites.ghosts.frightened.white[animFrame]
+            .drawCentredAt(ctx, pos.xPos, pos.yPos);
     } else {
-        this.sprite[dir || "up"][animFrame].drawCentredAt(ctx, pos.xPos, pos.yPos);
+        this.sprite[dir || "up"][animFrame]
+            .drawCentredAt(ctx, pos.xPos, pos.yPos);
     }
 };
