@@ -113,6 +113,7 @@ var sprites = function() {
         extras["ready"] = new Sprite(g_images, 10*20, 0, 60, 10, 60, 10, 1);
         extras["1up"] = new Sprite(g_images, 10.5*20, 3.5*20, 30, 10, 30, 10, 1);
         extras["2up"] = new Sprite(g_images, 10.5*20, 4*20, 30, 10, 30, 10, 1);
+        extras["extraLive"] = new Sprite(g_images, 4*20, 8*20, 20, 20, 16, 16, 2);
     };
 
     var makePoints = function() {

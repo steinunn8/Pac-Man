@@ -7,11 +7,13 @@ var newLive = new Audio("sounds/pacman_extrapac.wav");
 var intermission = new Audio("sounds/pacman_intermission.wav");
 var introSound = new Audio("sounds/pacman_beginning.wav");
 var siren = new Audio("sounds/pacman_siren.mp3");
+var frightened = new Audio("sounds/pacman_frightened.wav");
 
 var audioManager = {
     muted: false,
     chomp: false,
     siren: false,
+    frightened: false,
 
     toggleMute: function() {
         this.muted = !this.muted
@@ -48,5 +50,8 @@ var audioManager = {
 
         this.handleLoop(siren, 0.35, 0, 0.4, this.siren);
         this.siren = false;
+
+        this.handleLoop(frightened, 0.2, 0, 0.3, this.frightened);
+        this.frightened = false;
     }
 }
