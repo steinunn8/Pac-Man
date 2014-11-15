@@ -90,8 +90,8 @@ var entityManager = {
         var pacLives = 3;
         if(levelNumber > 1)
             pacLives = this._pacMans[0].lives;
-        if (consts.LEVEL_ARRAY.length < levelNumber) {
-            console.log("All levels won by player. Starting again.");
+        if ((levelNumber - 1) % consts.LEVEL_ARRAY.length == 0) {
+            console.log("Another round of levels starting.");
         }
 
         this.level = levelNumber;
