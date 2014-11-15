@@ -42,6 +42,8 @@ SpecialCapsule.prototype.hitMe = function(aggressor) {
     if (aggressor.entityType === entityManager.entityTypes["PacMan"]) {
         //~ console.log("Special Capsule eaten by PacMan");
         
+        entityManager.setGhostMode("frightened");
+        
         //~ Implement "ghost-maniac-mode" with Boolean value?
         //~ [But wheeere?]
         //~ this._animProp = 0;

@@ -112,10 +112,16 @@ PacMan.prototype.hitMe = function (aggressor) {
     if (aggressor.entityType === entityManager.entityTypes["Ghost"]) {
         console.log("Ghost hit PacMan");
         //TODO: Temp, will be something else
-        entityManager.resetGhosts();
+        //~ entityManager.resetGhosts();
         //~ Implement "ghost-maniac-mode" with Boolean value?
         //~ [But wheeere?]
-        this.kill();
+        //~ this.kill();
+        if (aggressor._isFrightened) {
+            aggressor.kill();
+        } else {
+            this.kill();
+            entityManager.resetGhosts();
+        }
     } 
 };
 

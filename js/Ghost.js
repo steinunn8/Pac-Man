@@ -57,6 +57,7 @@ Ghost.prototype.resetTarget = function() {
 Ghost.prototype.changeMode = function(mode) {
     // can't change the mode from home with this method
     if (this.mode === "home") {
+        this._isFrightened = false;
         return;
     }
     
@@ -78,6 +79,7 @@ Ghost.prototype.changeMode = function(mode) {
 };
 
 Ghost.prototype.reset = function () {
+    this._isDeadNow = false;
     this.setPos(this.reset_row, this.reset_column);
     this.mode = this.reset_mode;
     this.homeTime = this.reset_homeTime;
@@ -93,7 +95,12 @@ Ghost.prototype.hitMe = function (aggressor) {
         
         //~ Implement "ghost-maniac-mode" with Boolean value?
         //~ [But wheeere?]
-        aggressor.kill();
+        if (this._isFrightened) {
+            this.kill();
+        } else {
+            aggressor.kill();
+            entityManager.resetGhosts();
+        }
     } 
 };
 
@@ -104,6 +111,7 @@ Ghost.prototype.kill = function () {
 };
 
 Ghost.prototype.update = function (du) {
+    if (this._isDeadNow) return;
     spatialManager.unregister(this);
 
     // moves the ghost
@@ -190,6 +198,8 @@ Ghost.prototype.bounceProp = 0;
 Ghost.prototype.bounceSpeed = 0.1;
 Ghost.prototype.bouncingUp = true;
 Ghost.prototype.render = function (ctx) {
+    if (this._isDeadNow) return;
+    
     var pos = util.getCoordsFromBox(this.row, this.column);
     var boxDim = consts.BOX_DIMENSION;
 
