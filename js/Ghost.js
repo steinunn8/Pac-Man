@@ -36,6 +36,7 @@ Ghost.prototype.nextDirection = "left";
 
 // possible modes: chase, scatter, frightened, home, movingOut
 Ghost.prototype.mode = "chase";
+Ghost.prototype._homeTarget = {row: 14, column: 14};
 
 Ghost.prototype.rememberResets = function () {
     // Remember my reset positions and home corner (starting target)
@@ -56,7 +57,7 @@ Ghost.prototype.resetTarget = function() {
 
 Ghost.prototype.changeMode = function(mode) {
     // can't change the mode from home with this method
-    if (this.mode === "home" || this.mode === "movingOut") {
+    if (util.inArray(["home", "movingOut", "dead"], this.mode)) {
         this._isFrightened = false;
         return;
     }
@@ -95,8 +96,11 @@ Ghost.prototype.hitMe = function (aggressor) {
         
         //~ Implement "ghost-maniac-mode" with Boolean value?
         //~ [But wheeere?]
-        if (this._isFrightened) {
+        if (this.mode === "frightened") {
             this.kill();
+        } else if (this.mode === "dead") {
+            // Pass
+            // don't do anything
         } else {
             aggressor.kill();
             entityManager.resetGhosts();
@@ -105,17 +109,25 @@ Ghost.prototype.hitMe = function (aggressor) {
 };
 
 Ghost.prototype.kill = function () {
-    this.reset();
     this.isAlive = false;
+    this.mode = "dead";
     spatialManager.unregister(this);
 };
 
 Ghost.prototype.update = function (du) {
-    if (!this.isAlive) return;
+    if (this.mode === "dead") {
+        if (this.row === this._homeTarget.row &&
+            this.column === this._homeTarget.column) {
+            this.reset();
+            return;
+        }
+    }
     spatialManager.unregister(this);
 
     // moves the ghost
-    this._hasMoved = this.move(du, this.direction, this.nextDirection, this.mode === "movingOut");
+    this._hasMoved = this.move(
+        du, this.direction, this.nextDirection, this.mode === "movingOut"
+    );
 
     // If we're about to move, make decision
     if (this._hasMoved) {
@@ -137,7 +149,7 @@ Ghost.prototype.update = function (du) {
                 if(this.column > 14) {
                     this.nextDirection = "left";
                 } else {
-                    this.nextDirection = "right"
+                    this.nextDirection = "right";
                 }
             } else {
                 this.nextDirection = "up";
@@ -158,6 +170,11 @@ Ghost.prototype.update = function (du) {
                 this.updateTarget();
             } else if(this.mode === "scatter") {
                 this.resetTarget();
+            } else if(this.mode === "dead") {
+                this.target_ = {
+                    row: this._homeTarget.row,
+                    column: this._homeTarget.column
+                };
             }
             this.nextDirection = this.getNextDirection(directions);
         }
@@ -198,12 +215,12 @@ Ghost.prototype.bounceProp = 0;
 Ghost.prototype.bounceSpeed = 0.1;
 Ghost.prototype.bouncingUp = true;
 Ghost.prototype.render = function (ctx) {
-    if (!this.isAlive) return;
     
     var pos = util.getCoordsFromBox(this.row, this.column);
     var boxDim = consts.BOX_DIMENSION;
     var dir = this.direction;
 
+    
     // Ghosts at home just bounce up and down
     if (this.mode === "home") {
         pos.xPos -= 0.5*boxDim;
@@ -235,6 +252,13 @@ Ghost.prototype.render = function (ctx) {
 
      // full animation circle frames per cell traverse
     var animFrame = Math.round(this.timeToNext);
+
+    if (this.mode === "dead") {
+        g_sprites.ghosts.dead.down.drawCentredAt(
+            ctx, pos.xPos, pos.yPos
+        );
+        return;
+    }
     
     if (this._isFrightened) {
         g_sprites.ghosts.frightened.white[animFrame]

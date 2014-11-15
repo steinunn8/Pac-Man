@@ -36,11 +36,20 @@ var sprites = function() {
     };
 
     var addDead = function(){
-        ghosts["dead"] = {eyes:[]};
+        ghosts["dead"] = {};
         var row = 10;
-        for(var i = 0; i < 4; i++){
-            cutGhostSprite("dead", "eyes", i, row, 2);
-        }
+        ghosts.dead.up = new Sprite(
+            g_images, 0*20, row*20, 20, 20, 16, 16, 2
+        );
+        ghosts.dead.down = new Sprite(
+            g_images, 1*20, row*20, 20, 20, 16, 16, 2
+        );
+        ghosts.dead.left = new Sprite(
+            g_images, 2*20, row*20, 20, 20, 16, 16, 2
+        );
+        ghosts.dead.right = new Sprite(
+            g_images, 3*20, row*20, 20, 20, 16, 16, 2
+        );
     };
 
     var cutGhostSprite = function(attr, attrAttr, x, y, scale){

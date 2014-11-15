@@ -117,8 +117,11 @@ PacMan.prototype.hitMe = function (aggressor) {
         //~ Implement "ghost-maniac-mode" with Boolean value?
         //~ [But wheeere?]
         //~ this.kill();
-        if (aggressor._isFrightened) {
+        if (aggressor.mode === "frightened") {
             aggressor.kill();
+        } else if (aggressor.mode === "dead") {
+            // pass
+            // don't do anything
         } else {
             this.kill();
             entityManager.resetGhosts();
