@@ -52,15 +52,20 @@ var sprites = function() {
     var makePacMan = function(){
         var row = 0;
         var col = 0;
-        pacMans = {left:[], right:[], up:[], down:[], dying:[]};
+        pacMans = {left:[], right:[], up:[], down:[]};
         for(var attr in pacMans){
-            if(attr == "dying"){ continue; }
             cutPacManSprite(attr, col, row, 2);
             cutPacManSprite(attr, col + 1, row, 2);
             cutPacManSprite(attr, col + 2, row, 2);
             row++;
         }
         addDying();
+        addLives();
+    };
+
+    var addLives = function(){
+        pacMans["lives"] = [];
+        pacMans["lives"].push(pacMans.left[0]);
     };
 
     var addDying = function(){
@@ -70,6 +75,7 @@ var sprites = function() {
             cutPacManSprite("dying", i, row, 2);
         }
     };
+
 
     var cutPacManSprite = function(attr, x, y, scale){
         var sprite;
@@ -104,10 +110,6 @@ var sprites = function() {
         extras["ready"] = new Sprite(g_images, 10*20, 0, 60, 10, 60, 10, 1);
         extras["1up"] = new Sprite(g_images, 10.5*20, 3.5*20, 30, 10, 30, 10, 1);
         extras["2up"] = new Sprite(g_images, 10.5*20, 4*20, 30, 10, 30, 10, 1);
-    };
-
-    var addLives = function(){
-
     };
 
     var makePoints = function() {

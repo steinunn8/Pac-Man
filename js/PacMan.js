@@ -58,6 +58,7 @@ PacMan.prototype.reset = function () {
 PacMan.prototype.kill = function (ctx) {
     audioManager.play(warpSound);
     this._isDeadNow = true;
+    this.lives -= 1;
     spatialManager.unregister(this);
 };
 
@@ -129,6 +130,12 @@ PacMan.prototype.render = function (ctx) {
     var boxDim = consts.BOX_DIMENSION;
     var pos = util.getCoordsFromBox(this.row, this.column);
     var animFrame;
+
+    //Lives
+    var livePos = util.getCoordsFromBox(34.5, 5);
+    for (var i = 0; i < this.lives; i++){
+        this.sprite.lives[0].drawCentredAt(ctx, livePos.xPos + (i*30), livePos.yPos);
+    }
 
     //~ TODO: change logic when PacMan dies
     if (this._isDeadNow) {
