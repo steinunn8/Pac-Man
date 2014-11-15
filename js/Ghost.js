@@ -36,6 +36,8 @@ Ghost.prototype.nextDirection = "left";
 
 // possible modes: chase, scatter, frightened, home, movingOut
 Ghost.prototype.mode = "chase";
+Ghost.prototype._frightenedSpeed = 1;
+Ghost.prototype._deadSpeed = 4;
 Ghost.prototype._homeTarget = {row: 14, column: 14};
 
 Ghost.prototype.rememberResets = function () {
@@ -43,6 +45,7 @@ Ghost.prototype.rememberResets = function () {
     this.reset_row = this.row;
     this.reset_column = this.column;
     this.reset_mode = this.mode;
+    this.reset_speed = this.speed;
     this.startTarget = {
         row: this.target_.row,
         column: this.target_.column
@@ -130,8 +133,12 @@ Ghost.prototype.update = function (du) {
     spatialManager.unregister(this);
 
     // moves the ghost
+    var speed = this.mode === "frightened" ? this._frightenedSpeed :
+            this.mode === "dead" ? this._deadSpeed :
+            this.speed;
     this._hasMoved = this.move(
-        du, this.direction, this.nextDirection, this.mode === "movingOut"
+        du, this.direction, this.nextDirection,
+        this.mode === "movingOut", speed
     );
 
     // If we're about to move, make decision
@@ -272,13 +279,9 @@ Ghost.prototype.render = function (ctx) {
     var animFrame = Math.round(this.timeToNext);
 
     if (this.mode === "dead") {
-        g_sprites.ghosts.dead.down.drawCentredAt(
-            ctx, pos.xPos, pos.yPos
-        );
-        return;
-    }
-    
-    if (this._isFrightened) {
+        g_sprites.ghosts.dead[dir || "up"]
+            .drawCentredAt(ctx, pos.xPos, pos.yPos);
+    } else if (this.mode === "frightened") {
         var mf = entityManager.getFrightenedMode();
         var steps = 5;
         var ratioLeftTime = 1 - (mf.timer/(mf.duration*SECS_TO_NOMINALS));

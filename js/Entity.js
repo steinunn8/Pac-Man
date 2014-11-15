@@ -72,11 +72,14 @@ Entity.prototype.getNextPos = function(direction) {
     return util.wrapPosition(row, column);
 };
 
-Entity.prototype.move = function(du, direction, nextDirection, force) {
+Entity.prototype.move = function(du, direction, nextDirection, force, speed) {
     if (force === undefined) {
         force = false;
     }
-    this.timeToNext -= this.speed * du / NOMINAL_UPDATE_INTERVAL;
+    if (speed === undefined) {
+        speed = this.speed;
+    }
+    this.timeToNext -= speed * du / NOMINAL_UPDATE_INTERVAL;
     // When our center is in a new cell, we let spatial manager know
     if (this.timeToNext < 0.5) {
         spatialManager.imGoingHere(this, this.row, this.column);
