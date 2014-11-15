@@ -105,6 +105,7 @@ Ghost.prototype.hitMe = function (aggressor) {
 };
 
 Ghost.prototype.kill = function () {
+    audioManager.play(eatGhost);
     this._isDeadNow = true;
     this.isAlive = false;
     spatialManager.unregister(this);

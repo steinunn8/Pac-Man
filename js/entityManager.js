@@ -41,6 +41,8 @@ var entityManager = {
     editingEnabled: false,
     level: 1,
     levels: [],
+    freeze: false,
+    freezeTimer: 0,
     
     
     // PUBLIC DATA
@@ -79,6 +81,8 @@ var entityManager = {
     init: function(levels) {
         this.levels = levels;
         this.setLevel(1);
+        audioManager.play(introSound);
+        this.setFreezeTimer(4);
     },
 
     setLevel: function(levelNumber) {
@@ -344,6 +348,10 @@ var entityManager = {
         });
     },
 
+    setFreezeTimer: function(duration) {
+        this.freezeTimer = duration * SECS_TO_NOMINALS;
+    },
+
     mouseClick: function(x, y) {
         var pos = util.getBoxFromCoord(x + consts.BOX_DIMENSION/2, y + consts.BOX_DIMENSION/2);
         pos.row = Math.floor(pos.row);
@@ -373,6 +381,26 @@ var entityManager = {
             this.setFrightenedMode();
         }
 
+        if (!this._modeFrightened.isOn) {
+            audioManager.play(siren);
+        } else {
+            audioManager.play(frightened);
+        }
+
+        audioManager.update(du);
+
+        this.freezeTimer -= du;
+        if (this.freezeTimer <= 0) {
+            this.freeze = false;
+        } else {
+            this.freeze = true;
+        }
+        console.log(this.freezeTimer + " " + this.freeze);
+        // don't move anything when frozen
+        if (this.freeze) {
+            return;
+        }
+
         this._modeTimer += du;
         this._modeFrightened.timer += du;
         if (this._modeFrightened.isOn &&
@@ -391,14 +419,6 @@ var entityManager = {
                     this.setGhostMode(this._modes[0].mode);
                 }
         }
-
-        if (!this._modeFrightened.isOn) {
-            audioManager.play(siren);
-        } else {
-            audioManager.play(frightened);
-        }
-
-        audioManager.update(du);
 
         for (var c = 0; c < this._categories.length; ++c) {
 
