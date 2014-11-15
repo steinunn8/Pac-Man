@@ -31,7 +31,6 @@ Fruit.prototype.points = 200;
 Fruit.prototype.type = 0;
 
 Fruit.prototype.kill = function () {
-    this._isDeadNow = true;
     this.isAlive = false;
     audioManager.play(eatFruit);
     spatialManager.unregister(this);

@@ -32,7 +32,6 @@ SpecialCapsule.prototype.column = -1;
 SpecialCapsule.prototype.points = 50;
 
 SpecialCapsule.prototype.kill = function () {
-    this._isDeadNow = true;
     this.isAlive = false;
     spatialManager.unregister(this);
 };

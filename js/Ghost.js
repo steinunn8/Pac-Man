@@ -79,7 +79,7 @@ Ghost.prototype.changeMode = function(mode) {
 };
 
 Ghost.prototype.reset = function () {
-    this._isDeadNow = false;
+    this.isAlive = true;
     this.setPos(this.reset_row, this.reset_column);
     this.mode = this.reset_mode;
     this.homeTime = this.reset_homeTime;
@@ -105,13 +105,13 @@ Ghost.prototype.hitMe = function (aggressor) {
 };
 
 Ghost.prototype.kill = function () {
-    this._isDeadNow = true;
+    this.reset();
     this.isAlive = false;
     spatialManager.unregister(this);
 };
 
 Ghost.prototype.update = function (du) {
-    if (this._isDeadNow) return;
+    if (!this.isAlive) return;
     spatialManager.unregister(this);
 
     // moves the ghost
@@ -198,7 +198,7 @@ Ghost.prototype.bounceProp = 0;
 Ghost.prototype.bounceSpeed = 0.1;
 Ghost.prototype.bouncingUp = true;
 Ghost.prototype.render = function (ctx) {
-    if (this._isDeadNow) return;
+    if (!this.isAlive) return;
     
     var pos = util.getCoordsFromBox(this.row, this.column);
     var boxDim = consts.BOX_DIMENSION;
