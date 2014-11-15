@@ -73,14 +73,15 @@ var g_allowMixedActions = true;
 var g_useAveVel = true;
 var g_renderSpatialDebug = false;
 
-var KEY_MIXED   = keyCode('M');
+// var KEY_MIXED   = keyCode('M');
+var KEY_MUTE   = keyCode('M');
 var KEY_SPATIAL = keyCode('X');
 var KEY_LOG_MAZE = keyCode('V');
 
 function processDiagnostics() {
 
-    if (eatKey(KEY_MIXED))
-        g_allowMixedActions = !g_allowMixedActions;
+//    if (eatKey(KEY_MIXED))
+//        g_allowMixedActions = !g_allowMixedActions;
 
     if (eatKey(KEY_SPATIAL)) g_renderSpatialDebug = !g_renderSpatialDebug;
 
@@ -94,6 +95,10 @@ function processDiagnostics() {
             }));
         }
         console.log(JSON.stringify(levelArray, undefined, 4).replace(/"/g, ""));
+    }
+
+    if (eatKey(KEY_MUTE)) {
+        audioManager.toggleMute();
     }
 }
 
