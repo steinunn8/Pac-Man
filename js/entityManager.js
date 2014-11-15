@@ -94,12 +94,20 @@ var entityManager = {
         this.level = levelNumber;
         var level = this.levels[this.level-1];
         var grid = level.grid;
+
+        // prevent all killing sounds
+        var muted = audioManager.getMuted();
+        audioManager.setMuted(true);
         this.killAll();
+        audioManager.setMuted(muted);
+        
         this._generateMaze(level);
         this._generateCapsules(grid);
         this._generatePacMan(grid); //use the grid to initialise Pac-Man (position etc.)
         this._generateGhosts(grid); //use the grid to initialise Ghosts
         this._generateFruits(grid);
+
+        this.setFreezeTimer(2);
     },
 
     killAll: function() {
