@@ -121,7 +121,7 @@ PacMan.prototype.hitMe = function (aggressor) {
             aggressor.kill();
         } else {
             this.kill();
-            entityManager.resetGhosts();
+            entityManager.pacmanDead();
         }
     } 
 };

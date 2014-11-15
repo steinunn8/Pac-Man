@@ -99,7 +99,7 @@ Ghost.prototype.hitMe = function (aggressor) {
             this.kill();
         } else {
             aggressor.kill();
-            entityManager.resetGhosts();
+            entityManager.pacmanDead();
         }
     } 
 };

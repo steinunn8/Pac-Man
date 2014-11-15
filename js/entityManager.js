@@ -43,6 +43,7 @@ var entityManager = {
     levels: [],
     freeze: false,
     freezeTimer: 0,
+    shouldResetGhosts: false,
     
     
     // PUBLIC DATA
@@ -372,6 +373,11 @@ var entityManager = {
         this.freezeTimer = duration * SECS_TO_NOMINALS;
     },
 
+    pacmanDead: function() {
+        this.setFreezeTimer(1.4);
+        this.shouldResetGhosts = true;
+    },
+
     mouseClick: function(x, y) {
         var pos = util.getBoxFromCoord(x + consts.BOX_DIMENSION/2, y + consts.BOX_DIMENSION/2);
         pos.row = Math.floor(pos.row);
@@ -420,7 +426,14 @@ var entityManager = {
 
         // don't move anything when frozen
         if (this.freeze) {
+            // update pacman dying even if frozen
+            if (this.shouldResetGhosts) {
+                this._pacMans[0].update(du);
+            }
             return;
+        } else if(this.shouldResetGhosts) {
+            this.resetGhosts();
+            this.shouldResetGhosts = false;
         }
 
         this._modeTimer += du;
