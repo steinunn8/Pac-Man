@@ -32,6 +32,7 @@ var entityManager = {
     _maze     : [],
     _capsules : [],
     _fruits   : [],
+    _extras   : [],
     _modeTimer: 0,
     _modeFrightened: {duration: 6, timer: 0, isOn: false},
     _modes: [{duration: 7, mode: "scatter"}, {duration: 20, mode: "chase"}, 
@@ -75,14 +76,15 @@ var entityManager = {
     // i.e. thing which need `this` to be defined.
     //
     deferredSetup : function () {
-        this._categories = [this._maze, this._capsules, this._ghosts, this._pacMans, this._fruits];
+        this._categories = [this._maze, this._capsules, this._ghosts, this._pacMans, this._fruits, this._extras];
     },
 
     init: function(levels) {
         this.levels = levels;
         this.setLevel(1);
         audioManager.play(introSound);
-        util.setFreezeTimer(4);
+        this._extras.push({ update: function(du){return;}, render: this.renderReady });
+        util.setFreezeTimer(4, function(){entityManager._extras.splice(0,1);});
     },
 
     setLevel: function(levelNumber) {
@@ -395,7 +397,11 @@ var entityManager = {
         });
     },
 
-    renderGameOver: function(ctx){
+    renderReady: function(ctx) {
+        g_sprites.extras["ready"].drawCentredAt(ctx, 14.5*16, 20.5*16);
+    },
+    
+    renderGameOver: function(ctx) {
         if (this._pacMans[0].lives == 0){
             g_sprites.extras["gameOver"].drawCentredAt(ctx, 14.5*16, 20.5*16);
         }
@@ -518,6 +524,7 @@ var entityManager = {
         var debugX = 10, debugY = 100;
 
         this.renderScore(ctx);
+        //~ this.renderReady(ctx);
         this.renderGameOver(ctx);
 
         for (var c = 0; c < this._categories.length; ++c) {
