@@ -56,13 +56,13 @@ Ghost.prototype.resetTarget = function() {
 
 Ghost.prototype.changeMode = function(mode) {
     // can't change the mode from home with this method
-    if (this.mode === "home") {
+    if (this.mode === "home" || this.mode === "movingOut") {
         this._isFrightened = false;
         return;
     }
     
     if (mode === "frightened") {
-        console.log(this.name, "is frightened")
+        //~ console.log(this.name, "is frightened")
         this._isFrightened = true;
     } else {
         this._isFrightened = false;
@@ -244,13 +244,3 @@ Ghost.prototype.render = function (ctx) {
             .drawCentredAt(ctx, pos.xPos, pos.yPos);
     }
 };
-
-
-
-
-
-
-
-
-
-
