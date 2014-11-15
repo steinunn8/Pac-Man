@@ -208,6 +208,29 @@ var util = {
 
     //EXTRAS WITH NO HOME
 
+    _freeze: false,
+    _freezeTimer: 0,
+    _freezeFn: function() {},
+    setFreezeTimer: function(duration, fn) {
+        fn = typeof fn === "function" ? fn : function() {};
+        this._freezeTimer = duration * SECS_TO_NOMINALS;
+        this._freezeFn = fn;
+    },
+    updateFreezeTimer: function(du) {
+        this._freezeTimer -= du;
+        if (this._freezeTimer <= 0) {
+            if (this._freeze) {
+                this._freezeFn();
+            }
+            this._freeze = false;
+        } else {
+            this._freeze = true;
+        }
+    },
+    isFrozen: function() {
+        return this._freeze;
+    },
+
     getCoordsFromBox: function(row, column) {
         var dimension = consts.BOX_DIMENSION;
         var xPos = column * dimension + dimension / 2;

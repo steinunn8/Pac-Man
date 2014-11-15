@@ -41,9 +41,8 @@ var entityManager = {
     editingEnabled: false,
     level: 1,
     levels: [],
-    freeze: false,
-    freezeTimer: 0,
-    shouldResetGhosts: false,
+    shouldRenderGhosts: true,
+    pacManFreezeException: false,
     
     
     // PUBLIC DATA
@@ -83,7 +82,7 @@ var entityManager = {
         this.levels = levels;
         this.setLevel(1);
         audioManager.play(introSound);
-        this.setFreezeTimer(4);
+        util.setFreezeTimer(4);
     },
 
     setLevel: function(levelNumber) {
@@ -108,7 +107,7 @@ var entityManager = {
         this._generateGhosts(grid); //use the grid to initialise Ghosts
         this._generateFruits(grid);
 
-        this.setFreezeTimer(2);
+        util.setFreezeTimer(2);
     },
 
     killAll: function() {
@@ -389,13 +388,16 @@ var entityManager = {
         }
     },
 
-    setFreezeTimer: function(duration) {
-        this.freezeTimer = duration * SECS_TO_NOMINALS;
-    },
-
     pacmanDead: function() {
-        this.setFreezeTimer(1.4);
-        this.shouldResetGhosts = true;
+        util.setFreezeTimer(0.8, function() {
+            this.shouldRenderGhosts = false;
+            this.pacManFreezeException = true;
+            util.setFreezeTimer(1.4, function() {
+                this.pacManFreezeException = false;
+                this.shouldRenderGhosts = true;
+                this.resetGhosts();
+            }.bind(this));
+        }.bind(this));
     },
 
     mouseClick: function(x, y) {
@@ -408,7 +410,7 @@ var entityManager = {
     },
 
     shouldChange: function() {
-        return !g_isUpdatePaused && !this.freeze;
+        return !g_isUpdatePaused && !util.isFrozen();
     },
 
     update: function(du) {
@@ -441,23 +443,15 @@ var entityManager = {
             audioManager.play(frightened);
         }
 
-        this.freezeTimer -= du;
-        if (this.freezeTimer <= 0) {
-            this.freeze = false;
-        } else {
-            this.freeze = true;
-        }
+        util.updateFreezeTimer(du);
 
         // don't move anything when frozen
-        if (this.freeze) {
+        if (util.isFrozen()) {
             // update pacman dying even if frozen
-            if (this.shouldResetGhosts) {
+            if (this.pacManFreezeException) {
                 this._pacMans[0].update(du);
             }
             return;
-        } else if(this.shouldResetGhosts) {
-            this.resetGhosts();
-            this.shouldResetGhosts = false;
         }
 
         this._modeTimer += du;

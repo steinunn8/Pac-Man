@@ -232,6 +232,10 @@ Ghost.prototype.bounceProp = 0;
 Ghost.prototype.bounceSpeed = 0.1;
 Ghost.prototype.bouncingUp = true;
 Ghost.prototype.render = function (ctx) {
+
+    if (!entityManager.shouldRenderGhosts) {
+        return;
+    }
     
     var pos = util.getCoordsFromBox(this.row, this.column);
     var boxDim = consts.BOX_DIMENSION;
