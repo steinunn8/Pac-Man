@@ -296,8 +296,12 @@ var entityManager = {
         this.setGhostMode("frightened");
     },
     
+    getFrightenedMode : function() {
+        return this._modeFrightened;
+    },
+    
     setGhostMode : function(mode) {
-        console.log("setting mode: " + mode);
+        //~ console.log("setting mode: " + mode);
         for (var i = 0; i < this._ghosts.length; i++) {
             this._ghosts[i].changeMode(mode);
         }
