@@ -32,6 +32,7 @@ var entityManager = {
     _maze     : [],
     _capsules : [],
     _fruits   : [],
+    _extras   : [],
     _modeTimer: 0,
     _modeFrightened: {duration: 6, timer: 0, isOn: false},
     _modes: [{duration: 7, mode: "scatter"}, {duration: 20, mode: "chase"}, 
@@ -75,7 +76,7 @@ var entityManager = {
     // i.e. thing which need `this` to be defined.
     //
     deferredSetup : function () {
-        this._categories = [this._maze, this._capsules, this._ghosts, this._pacMans, this._fruits];
+        this._categories = [this._maze, this._capsules, this._ghosts, this._pacMans, this._fruits, this._extras];
     },
 
     init: function(levels) {
@@ -155,17 +156,37 @@ var entityManager = {
     },
 
     _generateFruit : function(type){
-        this._fruits.push(new Fruit({row : 20, column : 14, type : type}))
+        this._fruits.push(new Fruit({row : 20, column : 14, type : type}));
     },
 
     _generateFruits : function(grid){
         if(this.level > 3)
-            this._fruits.push(new Fruit({row : 34.5, column : 20.5, type : 3, timer: Infinity}))
+            this._fruits.push(new Fruit({
+                row : 34.5,
+                column : 20.5,
+                type : 3,
+                timer: Infinity
+            }));
         if(this.level > 2)
-            this._fruits.push(new Fruit({row : 34.5, column : 22, type : 2, timer: Infinity}))
+            this._fruits.push(new Fruit({
+                row : 34.5,
+                column : 22,
+                type : 2,
+                timer: Infinity
+            }));
         if(this.level > 1)
-            this._fruits.push(new Fruit({row : 34.5, column : 23.5, type : 1, timer: Infinity}))
-        this._fruits.push(new Fruit({row : 34.5, column : 25, type : 0, timer: Infinity}))
+            this._fruits.push(new Fruit({
+                row : 34.5,
+                column : 23.5,
+                type : 1,
+                timer: Infinity
+            }));
+        this._fruits.push(new Fruit({
+            row : 34.5,
+            column : 25,
+            type : 0,
+            timer: Infinity
+        }));
     },
 
     regenerateCapsules : function(grid) {
@@ -400,8 +421,8 @@ var entityManager = {
                 .drawCentredAt(ctx, pos.xPos, pos.yPos);
         });
     },
-
-    renderGameOver: function(ctx){
+    
+    renderGameOver: function(ctx) {
         if (this._pacMans[0].lives == 0){
             g_sprites.extras["gameOver"].drawCentredAt(ctx, 14.5*16, 20.5*16);
         }

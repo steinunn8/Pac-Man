@@ -24,3 +24,6 @@ Week 3
 * ~~Connect "special capsules" for eating ghosts~~
 * ~~Sound~~
 * ~~Scoring system~~
+* Points render for ghosts and fruits
+* Add right amount of points when ghost is eaten
+* Fix audio bug
