@@ -56,7 +56,7 @@ Ghost.prototype.resetTarget = function() {
 
 Ghost.prototype.changeMode = function(mode) {
     // can't change the mode from home with this method
-    if (this.mode === "home") {
+    if (this.mode === "home" || this.mode === "movingOut") {
         this._isFrightened = false;
         return;
     }
