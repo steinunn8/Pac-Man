@@ -33,6 +33,7 @@ var entityManager = {
     _capsules : [],
     _fruits   : [],
     _modeTimer: 0,
+    _modeFrightened: {duration: 7, timer: 0},
     _modes: [{duration: 7, mode: "scatter"}, {duration: 20, mode: "chase"}, 
              {duration: 7, mode: "scatter"}, {duration: 20, mode: "chase"},
              {duration: 5, mode: "scatter"}, {duration: Infinity, mode: "chase"}],
@@ -287,7 +288,13 @@ var entityManager = {
             }
         }
     },
-
+    
+    setFrightenedMode : function() {
+        console.log("setFrightenedMode");
+        this._modeFrightened.timer = 0;
+        this.setGhostMode("frightened");
+    },
+    
     setGhostMode : function(mode) {
         console.log("setting mode: " + mode);
         for (var i = 0; i < this._ghosts.length; i++) {
@@ -362,20 +369,23 @@ var entityManager = {
         
         var KEY_E = keyCode('E');
         if (eatKey(KEY_E)) {
-            this.setGhostMode("frightened");
+            this.setFrightenedMode();
         }
 
         this._modeTimer += du;
-
-        if(this._modes.length > 0 &&
-           this._modeTimer >= this._modes[0].duration * SECS_TO_NOMINALS) {
-            this._modes.splice(0, 1);
-            this._modeTimer = 0;
-            if(this._modes.length > 0) {
-                this.setGhostMode(this._modes[0].mode);
-            }
+        this._modeFrightened.timer += du;
+        
+        if (this._modes.length > 0 &&
+            this._modeTimer >= this._modes[0].duration * SECS_TO_NOMINALS) {
+                this._modes.splice(0, 1);
+                this._modeTimer = 0;
+                if (this._modes.length > 0 &&
+                    this._modeFrightened.timer > this._modeFrightened.duration) {
+                        //~ Changing mode
+                        this.setGhostMode(this._modes[0].mode);
+                }
         }
-
+        
         for (var c = 0; c < this._categories.length; ++c) {
 
             var aCategory = this._categories[c];
