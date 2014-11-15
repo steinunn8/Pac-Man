@@ -87,11 +87,14 @@ var entityManager = {
     },
 
     setLevel: function(levelNumber) {
+        var pacLives = 3;
+        if(levelNumber > 1)
+            pacLives = this._pacMans[0].lives;
         if (consts.LEVEL_ARRAY.length < levelNumber) {
-            //~ return;
             console.log("All levels won by player. Starting again.");
             levelNumber = 1;
         }
+
         this.level = levelNumber;
         var level = this.levels[this.level-1];
         var grid = level.grid;
@@ -104,7 +107,7 @@ var entityManager = {
         
         this._generateMaze(level);
         this._generateCapsules(grid);
-        this._generatePacMan(grid); //use the grid to initialise Pac-Man (position etc.)
+        this._generatePacMan(grid, pacLives); //use the grid to initialise Pac-Man (position etc.)
         this._generateGhosts(grid); //use the grid to initialise Ghosts
         this._generateFruits(grid);
 
@@ -264,15 +267,15 @@ var entityManager = {
         }));
     },
 
-    _generatePacMan : function(grid) {
+    _generatePacMan : function(grid, pacLives) {
         var pos = this._maze[0].getEntityPos(this._maze[0].gridValues.PACMAN);
         this._pacMans.push(new PacMan({
-
             sprite: g_sprites.pacMans,
             column: pos.column,
             row: pos.row,
             speed: 2, // columns per second
-            direction: "left"
+            direction: "left",
+            lives: pacLives
         }));
     },
     
