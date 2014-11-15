@@ -399,8 +399,6 @@ var entityManager = {
             audioManager.play(frightened);
         }
 
-        audioManager.update(du);
-
         this.freezeTimer -= du;
         if (this.freezeTimer <= 0) {
             this.freeze = false;
