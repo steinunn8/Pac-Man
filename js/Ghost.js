@@ -205,15 +205,22 @@ Ghost.prototype.render = function (ctx) {
     var boxDim = consts.BOX_DIMENSION;
     var dir = this.direction;
 
-    // Ghosts at home just bounce up and down
+    // only change if not paused/frozen
+    var shouldChange = entityManager.shouldChange();
+
+    // when home they are between 2 tiles
     if (this.mode === "home") {
         pos.xPos -= 0.5*boxDim;
+    }
+
+    // Ghosts at home just bounce up and down
+    if (this.mode === "home" && shouldChange) {
         pos.yPos -= this.bounceProp*boxDim;
         this.bounceProp += (this.bouncingUp ? 1 : -1) * this.bounceSpeed;
         if (Math.abs(this.bounceProp) > 0.5) {
             this.bouncingUp = !this.bouncingUp;
         }
-    } else {
+    } else if (this.mode !== "home") {
         if (dir === "up") {
             pos.yPos += (this.timeToNext)*boxDim;
         } else if (dir === "down") {
@@ -238,8 +245,19 @@ Ghost.prototype.render = function (ctx) {
     var animFrame = Math.round(this.timeToNext);
     
     if (this._isFrightened) {
-        g_sprites.ghosts.frightened.white[animFrame]
-            .drawCentredAt(ctx, pos.xPos, pos.yPos);
+        var mf = entityManager.getFrightenedMode();
+        var steps = 5;
+        var ratioLeftTime = 1 - (mf.timer/(mf.duration*SECS_TO_NOMINALS));
+        var ratioLeftStep = Math.floor(ratioLeftTime*mf.duration*steps);
+        //~ console.log("ratio left steps:", ratioLeftStep);
+        
+        if (ratioLeftStep<=10 && ratioLeftStep%2===0) {
+            g_sprites.ghosts.frightened.white[animFrame]
+                .drawCentredAt(ctx, pos.xPos, pos.yPos);
+        } else {
+            g_sprites.ghosts.frightened.blue[animFrame]
+                .drawCentredAt(ctx, pos.xPos, pos.yPos);            
+        }
     } else {
         this.sprite[dir || "up"][animFrame]
             .drawCentredAt(ctx, pos.xPos, pos.yPos);

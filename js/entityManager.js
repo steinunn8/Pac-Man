@@ -304,8 +304,12 @@ var entityManager = {
         this.setGhostMode("frightened");
     },
     
+    getFrightenedMode : function() {
+        return this._modeFrightened;
+    },
+    
     setGhostMode : function(mode) {
-        console.log("setting mode: " + mode);
+        //~ console.log("setting mode: " + mode);
         for (var i = 0; i < this._ghosts.length; i++) {
             this._ghosts[i].changeMode(mode);
         }
@@ -369,6 +373,10 @@ var entityManager = {
         }
     },
 
+    shouldChange: function() {
+        return !g_isUpdatePaused && !this.freeze;
+    },
+
     update: function(du) {
         var TOGGLE_LEVEL_EDIT = keyCode('L');
         if (eatKey(TOGGLE_LEVEL_EDIT)) this.editingEnabled = !this.editingEnabled;
@@ -403,7 +411,7 @@ var entityManager = {
         } else {
             this.freeze = true;
         }
-        //console.log(this.freezeTimer + " " + this.freeze);
+
         // don't move anything when frozen
         if (this.freeze) {
             return;
