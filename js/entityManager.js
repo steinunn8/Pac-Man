@@ -128,8 +128,11 @@ var entityManager = {
     },
 
     killCategorie: function(aCategory){
+        var entity;
         while (aCategory.length > 0) {
-            aCategory.pop().kill();
+            entity = aCategory.pop();
+            if (entity.kill)
+                entity.kill();
         }
     },
     
