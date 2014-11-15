@@ -442,6 +442,7 @@ var entityManager = {
         this._pacMans[0].shouldSkipRender = true;
         ghost.shouldSkipRender = true;
         var pointIndex = this._extras.length;
+        this.updateScore(200);
         this._extras.push({
             render: function(ctx) {
                 g_sprites.extras.ghostPoints[0]
