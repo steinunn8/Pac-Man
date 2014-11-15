@@ -245,8 +245,19 @@ Ghost.prototype.render = function (ctx) {
     var animFrame = Math.round(this.timeToNext);
     
     if (this._isFrightened) {
-        g_sprites.ghosts.frightened.white[animFrame]
-            .drawCentredAt(ctx, pos.xPos, pos.yPos);
+        var mf = entityManager.getFrightenedMode();
+        var steps = 5;
+        var ratioLeftTime = 1 - (mf.timer/(mf.duration*SECS_TO_NOMINALS));
+        var ratioLeftStep = Math.floor(ratioLeftTime*mf.duration*steps);
+        //~ console.log("ratio left steps:", ratioLeftStep);
+        
+        if (ratioLeftStep<=10 && ratioLeftStep%2===0) {
+            g_sprites.ghosts.frightened.white[animFrame]
+                .drawCentredAt(ctx, pos.xPos, pos.yPos);
+        } else {
+            g_sprites.ghosts.frightened.blue[animFrame]
+                .drawCentredAt(ctx, pos.xPos, pos.yPos);            
+        }
     } else {
         this.sprite[dir || "up"][animFrame]
             .drawCentredAt(ctx, pos.xPos, pos.yPos);
