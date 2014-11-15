@@ -33,7 +33,6 @@ Capsule.prototype.points = 10;
 
 Capsule.prototype.kill = function () {
     audioManager.play(eatSound);
-    this._isDeadNow = true;
     this.isAlive = false;
     spatialManager.unregister(this);
 };

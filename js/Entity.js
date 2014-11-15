@@ -46,7 +46,7 @@ Entity.prototype.setup = function (descr) {
     this._spatialID = spatialManager.getNewSpatialID();
     
     // I am not dead yet!
-    this._isDeadNow = false;
+    this.isAlive = true;
     // Time to next is the remaining proportion of the distance traveled
     // to next cell
     this.timeToNext = 0;
@@ -172,7 +172,7 @@ Entity.prototype.getSpatialID = function () {
 };
 
 Entity.prototype.kill = function () {
-    this._isDeadNow = true;
+    this.isAlive = false;
 };
 
 Entity.prototype.findHitEntity = function () {

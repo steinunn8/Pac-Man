@@ -323,6 +323,7 @@ var entityManager = {
 
     score: 0,
     highScore: localStorage.highScore || 0,
+    _highScorePos: util.getCoordsFromBox(0, 14),
     updateScore: function(points) {
         this.score += points;
         if (this.score > this.highScore) {
@@ -341,6 +342,9 @@ var entityManager = {
         });
         var highScoreStr = (this.highScore + "") || "";
         var highScoreMargin = 17-highScoreStr.length;
+        g_sprites.extras.highScore
+            .drawCentredAt(ctx, this._highScorePos.xPos - 8,
+                           this._highScorePos.yPos);
         Array.prototype.forEach.call(highScoreStr, function(digit, i) {
             var pos = util.getCoordsFromBox(1, highScoreMargin+i);
             g_sprites.extras.points[+digit]

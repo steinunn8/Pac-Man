@@ -51,13 +51,13 @@ PacMan.prototype.reset = function () {
     this.setPos(this.reset_row, this.reset_column);
     this.direction = this.reset_direction;
     this.nextDirection = this.reset_nextDirection;
-    this._isDeadNow = false;
+    this.isAlive = true;
 };
 
 // When PacMan dies we warp him to his original place
 PacMan.prototype.kill = function (ctx) {
     audioManager.play(warpSound);
-    this._isDeadNow = true;
+    this.isAlive = false;
     this.lives -= 1;
     spatialManager.unregister(this);
 };
@@ -71,7 +71,7 @@ PacMan.prototype._dyingProp = 0;
 PacMan.prototype._dyingSpeed = 0.2; // fps
 PacMan.prototype.update = function (du) {
     // Special logic for dying behaviour
-    if (this._isDeadNow) {
+    if (!this.isAlive) {
         if (this._dyingProp > 1) {
             this._dyingProp = 0;
             this.reset();
@@ -132,13 +132,13 @@ PacMan.prototype.render = function (ctx) {
     var animFrame;
 
     //Lives
-    var livePos = util.getCoordsFromBox(34.5, 5);
+    var livePos = util.getCoordsFromBox(34.5, 3);
     for (var i = 0; i < this.lives; i++){
         this.sprite.lives[0].drawCentredAt(ctx, livePos.xPos + (i*30), livePos.yPos);
     }
 
     //~ TODO: change logic when PacMan dies
-    if (this._isDeadNow) {
+    if (!this.isAlive) {
         animFrame = Math.round((this._dyingProp)*10); // 0-10 frames of dying
         if (animFrame > 10) { animFrame=10; }
         //~ console.log(animFrame);
