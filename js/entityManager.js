@@ -358,6 +358,7 @@ var entityManager = {
         console.log("setFrightenedMode");
         this._modeFrightened.timer = 0;
         this._modeFrightened.isOn = true;
+        this._modeFrightened.ghostsEaten = 0;
         this.setGhostMode("frightened");
     },
     
@@ -440,15 +441,19 @@ var entityManager = {
     })(),
 
     ghostDies: function(ghost) {
+        var self = this;
         var pacManPos = this.getPacmanPos();
         var pos = util.getCoordsFromBox(pacManPos.row, pacManPos.column);
         this._pacMans[0].shouldSkipRender = true;
         ghost.shouldSkipRender = true;
         var pointIndex = this._extras.length;
-        this.updateScore(200);
+        this._modeFrightened.ghostsEaten += 1;
+        var points = 200*this._modeFrightened.ghostsEaten;
+        this.updateScore(points);
         this._extras.push({
             render: function(ctx) {
-                g_sprites.extras.ghostPoints[0]
+                g_sprites.extras
+                    .ghostPoints[self._modeFrightened.ghostsEaten-1]
                     .drawCentredAt(ctx, pos.xPos, pos.yPos);
             },
             update: function() {}
