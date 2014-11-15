@@ -29,23 +29,26 @@ Fruit.prototype.row = 15;
 Fruit.prototype.column = 9;
 Fruit.prototype.points = 200;
 Fruit.prototype.type = 0;
+Fruit.prototype.timer = 10;
 
 Fruit.prototype.kill = function () {
     this.isAlive = false;
-    audioManager.play(eatFruit);
     spatialManager.unregister(this);
+    return entityManager.KILL_ME_NOW;
 };
 
 Fruit.prototype.hitMe = function(aggressor) {
     if (aggressor.entityType === entityManager.entityTypes["PacMan"]) {
+        audioManager.play(eatFruit);
+        entityManager.updateScore(this.points);
         this.kill();
     }
 };
 
 Fruit.prototype.update = function(du) {
-    if(!this.isAlive) {
-        entityManager.updateScore(this.points);
-        return entityManager.KILL_ME_NOW;
+    this.timer -= du/SECS_TO_NOMINALS;
+    if (this.timer < 0) {
+        return this.kill();
     }
 };
 

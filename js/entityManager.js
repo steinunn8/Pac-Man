@@ -86,13 +86,16 @@ var entityManager = {
     },
 
     setLevel: function(levelNumber) {
-        if (consts.LEVEL_ARRAY.length < levelNumber) {
-            //~ return;
-            console.log("All levels won by player. Starting again.");
-            levelNumber = 1;
+        var pacLives = 3;
+        if(levelNumber > 1)
+            pacLives = this._pacMans[0].lives;
+        if ((levelNumber - 1) % consts.LEVEL_ARRAY.length == 0) {
+            console.log("Another round of levels starting.");
         }
+
         this.level = levelNumber;
-        var level = this.levels[this.level-1];
+        var gridNumber = (levelNumber - 1) % consts.LEVEL_ARRAY.length;
+        var level = this.levels[gridNumber];
         var grid = level.grid;
 
         // prevent all killing sounds
@@ -103,7 +106,7 @@ var entityManager = {
         
         this._generateMaze(level);
         this._generateCapsules(grid);
-        this._generatePacMan(grid); //use the grid to initialise Pac-Man (position etc.)
+        this._generatePacMan(grid, pacLives); //use the grid to initialise Pac-Man (position etc.)
         this._generateGhosts(grid); //use the grid to initialise Ghosts
         this._generateFruits(grid);
 
@@ -127,16 +130,22 @@ var entityManager = {
         this._maze.push(new Maze({ aGrid : level.grid, color : level.color }));
     },
     
+    _totalCapsulesCount : 0,
     _generateCapsules : function(grid) {
+        this._totalCapsulesCount = 0;
         for (var i=0; i<grid.length; i++) {
             for (var j=0; j<grid[i].length; j++) {
                 if (grid[i][j] === this._maze[0].gridValues.CAPSULE) {
                     this._capsules.push(new Capsule({ row : i , column : j }));
+                    this._totalCapsulesCount++;
                 } else if (grid[i][j] === this._maze[0].gridValues.SPECIAL_CAPSULE) {
                     this._capsules.push(new SpecialCapsule({ row : i , column : j }));
                 }
             }
         }
+    },
+    _getEatenCapsulesCount : function() {
+        return this._totalCapsulesCount - this._capsules.length;
     },
 
     _generateFruit : function(type){
@@ -144,9 +153,13 @@ var entityManager = {
     },
 
     _generateFruits : function(grid){
-        if(this.level == 2)
-            this._fruits.push(new Fruit({row : 34.5, column : 23.5, type : 1}))
-        this._fruits.push(new Fruit({row : 34.5, column : 25, type : 0}))
+        if(this.level > 3)
+            this._fruits.push(new Fruit({row : 34.5, column : 20.5, type : 3, timer: Infinity}))
+        if(this.level > 2)
+            this._fruits.push(new Fruit({row : 34.5, column : 22, type : 2, timer: Infinity}))
+        if(this.level > 1)
+            this._fruits.push(new Fruit({row : 34.5, column : 23.5, type : 1, timer: Infinity}))
+        this._fruits.push(new Fruit({row : 34.5, column : 25, type : 0, timer: Infinity}))
     },
 
     regenerateCapsules : function(grid) {
@@ -263,15 +276,15 @@ var entityManager = {
         }));
     },
 
-    _generatePacMan : function(grid) {
+    _generatePacMan : function(grid, pacLives) {
         var pos = this._maze[0].getEntityPos(this._maze[0].gridValues.PACMAN);
         this._pacMans.push(new PacMan({
-
             sprite: g_sprites.pacMans,
             column: pos.column,
             row: pos.row,
             speed: 2, // columns per second
-            direction: "left"
+            direction: "left",
+            lives: pacLives
         }));
     },
     
@@ -453,7 +466,13 @@ var entityManager = {
             }
             return;
         }
-
+        
+        //~ Berries or not?
+        if (this._getEatenCapsulesCount() === 70 ||
+            this._getEatenCapsulesCount() === 170) {
+                this._generateFruit(this.level-1);
+        }
+        
         this._modeTimer += du;
         this._modeFrightened.timer += du;
         if (this._modeFrightened.isOn &&
