@@ -148,7 +148,9 @@ var entityManager = {
     },
 
     _generateFruits : function(grid){
-        if(this.level == 2)
+        if(this.level > 2)
+            this._fruits.push(new Fruit({row : 34.5, column : 22, type : 2}))
+        if(this.level > 1)
             this._fruits.push(new Fruit({row : 34.5, column : 23.5, type : 1}))
         this._fruits.push(new Fruit({row : 34.5, column : 25, type : 0}))
     },
