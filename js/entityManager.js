@@ -131,16 +131,22 @@ var entityManager = {
         this._maze.push(new Maze({ aGrid : level.grid, color : level.color }));
     },
     
+    _totalCapsulesCount : 0,
     _generateCapsules : function(grid) {
+        this._totalCapsulesCount = 0;
         for (var i=0; i<grid.length; i++) {
             for (var j=0; j<grid[i].length; j++) {
                 if (grid[i][j] === this._maze[0].gridValues.CAPSULE) {
                     this._capsules.push(new Capsule({ row : i , column : j }));
+                    this._totalCapsulesCount++;
                 } else if (grid[i][j] === this._maze[0].gridValues.SPECIAL_CAPSULE) {
                     this._capsules.push(new SpecialCapsule({ row : i , column : j }));
                 }
             }
         }
+    },
+    _getEatenCapsulesCount : function() {
+        return this._totalCapsulesCount - this._capsules.length;
     },
 
     _generateFruit : function(type){
@@ -149,8 +155,8 @@ var entityManager = {
 
     _generateFruits : function(grid){
         if(this.level == 2)
-            this._fruits.push(new Fruit({row : 34.5, column : 23.5, type : 1}))
-        this._fruits.push(new Fruit({row : 34.5, column : 25, type : 0}))
+            this._fruits.push(new Fruit({row : 34.5, column : 23.5, type : 1, timer: Infinity}))
+        this._fruits.push(new Fruit({row : 34.5, column : 25, type : 0, timer: Infinity}))
     },
 
     regenerateCapsules : function(grid) {
@@ -450,7 +456,7 @@ var entityManager = {
         } else {
             this.freeze = true;
         }
-
+        
         // don't move anything when frozen
         if (this.freeze) {
             // update pacman dying even if frozen
@@ -462,7 +468,13 @@ var entityManager = {
             this.resetGhosts();
             this.shouldResetGhosts = false;
         }
-
+        
+        //~ Berries or not?
+        if (this._getEatenCapsulesCount() === 70 ||
+            this._getEatenCapsulesCount() === 170) {
+                this._generateFruit(this.level-1);
+        }
+        
         this._modeTimer += du;
         this._modeFrightened.timer += du;
         if (this._modeFrightened.isOn &&
