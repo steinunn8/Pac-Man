@@ -134,9 +134,11 @@ PacMan.prototype.render = function (ctx) {
     var pos = util.getCoordsFromBox(this.row, this.column);
     var animFrame;
 
+    if(this.lives == 0) {return;}
+
     //Lives
     var livePos = util.getCoordsFromBox(34.5, 3);
-    for (var i = 0; i < this.lives; i++){
+    for (var i = 0; i < this.lives-1; i++){
         this.sprite.lives[0].drawCentredAt(ctx, livePos.xPos + (i*30), livePos.yPos);
     }
 

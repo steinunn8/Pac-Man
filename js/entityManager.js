@@ -114,9 +114,13 @@ var entityManager = {
     killAll: function() {
         for (var c = 0; c < this._categories.length; ++c) {
             var aCategory = this._categories[c];
-            while (aCategory.length > 0) {
-                aCategory.pop().kill();
-            }
+            this.killCategorie(aCategory);
+        }
+    },
+
+    killCategorie: function(aCategory){
+        while (aCategory.length > 0) {
+            aCategory.pop().kill();
         }
     },
     
@@ -379,6 +383,12 @@ var entityManager = {
         });
     },
 
+    renderGameOver: function(ctx){
+        if (this._pacMans[0].lives == 0){
+            g_sprites.extras["gameOver"].drawCentredAt(ctx, 14.5*16, 20.5*16);
+        }
+    },
+
     setFreezeTimer: function(duration) {
         this.freezeTimer = duration * SECS_TO_NOMINALS;
     },
@@ -402,6 +412,10 @@ var entityManager = {
     },
 
     update: function(du) {
+        if (this._pacMans[0].lives == 0){
+            this.killCategorie(this._ghosts);
+        }
+
         var TOGGLE_LEVEL_EDIT = keyCode('L');
         if (eatKey(TOGGLE_LEVEL_EDIT)) this.editingEnabled = !this.editingEnabled;
 
@@ -491,6 +505,7 @@ var entityManager = {
         var debugX = 10, debugY = 100;
 
         this.renderScore(ctx);
+        this.renderGameOver(ctx);
 
         for (var c = 0; c < this._categories.length; ++c) {
 
