@@ -6,37 +6,47 @@ var eatGhost = new Audio("sounds/pacman_eatghost.wav");
 var newLive = new Audio("sounds/pacman_extrapac.wav");
 var intermission = new Audio("sounds/pacman_intermission.wav");
 var introSound = new Audio("sounds/pacman_beginning.wav");
+var siren = new Audio("sounds/pacman_siren.mp3");
 
 var audioManager = {
     muted: false,
-    chompTimer: 0,
-    chompDuration: 0.1,
+    chomp: false,
+    siren: false,
 
     toggleMute: function() {
         this.muted = !this.muted
     },
 
     play: function(sound) {
-        if(sound === eatSound) {
-            this.chompTimer = this.chompDuration * SECS_TO_NOMINALS;
-        } else if(!this.muted) {
+        if (sound === eatSound) {
+            this.chomp = true;
+        } else if (sound === siren) {
+            this.siren = true;
+        } else if (!this.muted) {
             sound.play();
         }
     },
 
-    update: function(du) {
-        this.chompTimer -= du;
-        if(this.chompTimer > 0 && !this.muted) {
+    handleLoop: function(sound, loopTime, startTime, stopTime, shouldPlay) {
+        if(shouldPlay && !this.muted) {
             // loop at correct time
-            if(eatSound.currentTime > 0.28) {
-                eatSound.currentTime = 0;
+            if(sound.currentTime > loopTime) {
+                sound.currentTime = startTime;
             }
-            eatSound.play();
+            sound.play();
         }
 
         // don't play the whole sound
-        if (eatSound.currentTime > 0.4) {
-            eatSound.pause();
+        if (sound.currentTime > stopTime) {
+            sound.pause();
         }
+    },
+
+    update: function(du) {
+        this.handleLoop(eatSound, 0.28, 0.01, 0.4, this.chomp);
+        this.chomp = false;
+
+        this.handleLoop(siren, 0.35, 0, 0.4, this.siren);
+        this.siren = false;
     }
 }
