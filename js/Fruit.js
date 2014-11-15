@@ -33,7 +33,7 @@ Fruit.prototype.type = 0;
 Fruit.prototype.kill = function () {
     this._isDeadNow = true;
     this.isAlive = false;
-    eatFruit.play();
+    audioManager.play(eatFruit);
     spatialManager.unregister(this);
 };
 

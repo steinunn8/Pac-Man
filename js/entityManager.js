@@ -391,7 +391,13 @@ var entityManager = {
                     this.setGhostMode(this._modes[0].mode);
                 }
         }
-        
+
+        if (this.getGhostMode() !== "frightened") {
+            audioManager.play(siren);
+        }
+
+        audioManager.update(du);
+
         for (var c = 0; c < this._categories.length; ++c) {
 
             var aCategory = this._categories[c];
