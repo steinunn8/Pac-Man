@@ -57,6 +57,7 @@ Ghost.prototype.resetTarget = function() {
 Ghost.prototype.changeMode = function(mode) {
     // can't change the mode from home with this method
     if (this.mode === "home") {
+        this._isFrightened = false;
         return;
     }
     
@@ -78,6 +79,7 @@ Ghost.prototype.changeMode = function(mode) {
 };
 
 Ghost.prototype.reset = function () {
+    this._isDeadNow = false;
     this.setPos(this.reset_row, this.reset_column);
     this.mode = this.reset_mode;
     this.homeTime = this.reset_homeTime;
@@ -93,7 +95,12 @@ Ghost.prototype.hitMe = function (aggressor) {
         
         //~ Implement "ghost-maniac-mode" with Boolean value?
         //~ [But wheeere?]
-        aggressor.kill();
+        if (this._isFrightened) {
+            this.kill();
+        } else {
+            aggressor.kill();
+            entityManager.resetGhosts();
+        }
     } 
 };
 
@@ -104,6 +111,7 @@ Ghost.prototype.kill = function () {
 };
 
 Ghost.prototype.update = function (du) {
+    if (this._isDeadNow) return;
     spatialManager.unregister(this);
 
     // moves the ghost
@@ -190,8 +198,11 @@ Ghost.prototype.bounceProp = 0;
 Ghost.prototype.bounceSpeed = 0.1;
 Ghost.prototype.bouncingUp = true;
 Ghost.prototype.render = function (ctx) {
+    if (this._isDeadNow) return;
+    
     var pos = util.getCoordsFromBox(this.row, this.column);
     var boxDim = consts.BOX_DIMENSION;
+    var dir = this.direction;
 
     // Ghosts at home just bounce up and down
     if (this.mode === "home") {
@@ -202,7 +213,6 @@ Ghost.prototype.render = function (ctx) {
             this.bouncingUp = !this.bouncingUp;
         }
     } else {
-        var dir = this.direction;
         if (dir === "up") {
             pos.yPos += (this.timeToNext)*boxDim;
         } else if (dir === "down") {
@@ -225,11 +235,22 @@ Ghost.prototype.render = function (ctx) {
 
      // full animation circle frames per cell traverse
     var animFrame = Math.round(this.timeToNext);
-    var dir = this.direction;
     
     if (this._isFrightened) {
-        util.fillCenteredSquare(ctx, pos.xPos, pos.yPos, consts.BOX_DIMENSION/2, "red");
+        g_sprites.ghosts.frightened.white[animFrame]
+            .drawCentredAt(ctx, pos.xPos, pos.yPos);
     } else {
-        this.sprite[dir || "up"][animFrame].drawCentredAt(ctx, pos.xPos, pos.yPos);
+        this.sprite[dir || "up"][animFrame]
+            .drawCentredAt(ctx, pos.xPos, pos.yPos);
     }
 };
+
+
+
+
+
+
+
+
+
+

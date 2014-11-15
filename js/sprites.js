@@ -26,12 +26,12 @@ var sprites = function() {
     };
 
     var addEatable = function(){
-        ghosts["eatable"] = { blue:[], white:[] };
+        ghosts["frightened"] = { blue:[], white:[] };
         var color = "blue";
         var row = 8;
         for(var i = 0; i < 4; i++){
             if(i == 2){color = "white";}
-            cutGhostSprite("eatable", color, i, row, 2);
+            cutGhostSprite("frightened", color, i, row, 2);
         }
     };
 

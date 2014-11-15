@@ -33,6 +33,7 @@ var entityManager = {
     _capsules : [],
     _fruits   : [],
     _modeTimer: 0,
+    _modeFrightened: {duration: 7, timer: 0},
     _modes: [{duration: 7, mode: "scatter"}, {duration: 20, mode: "chase"}, 
              {duration: 7, mode: "scatter"}, {duration: 20, mode: "chase"},
              {duration: 5, mode: "scatter"}, {duration: Infinity, mode: "chase"}],
@@ -287,7 +288,13 @@ var entityManager = {
             }
         }
     },
-
+    
+    setFrightenedMode : function() {
+        console.log("setFrightenedMode");
+        this._modeFrightened.timer = 0;
+        this.setGhostMode("frightened");
+    },
+    
     setGhostMode : function(mode) {
         console.log("setting mode: " + mode);
         for (var i = 0; i < this._ghosts.length; i++) {
@@ -310,16 +317,28 @@ var entityManager = {
     },
 
     score: 0,
+    highScore: localStorage.highScore || 0,
     updateScore: function(points) {
         this.score += points;
+        if (this.score > this.highScore) {
+            this.highScore = this.score;
+            localStorage.highScore = this.highScore;
+        }
     },
     renderScore: function(ctx) {
         var scoreStr = (this.score || "00") + "";
-        var margin = 7-scoreStr.length;
-        Array.prototype.forEach.call(scoreStr, function(c, i) {
+        var scoreMargin = 7-scoreStr.length;
+        Array.prototype.forEach.call(scoreStr, function(digit, i) {
             // Points are drawn at row 1 ending at column 7
-            var pos = util.getCoordsFromBox(1, margin+i);
-            g_sprites.extras.points[+c]
+            var pos = util.getCoordsFromBox(1, scoreMargin+i);
+            g_sprites.extras.points[+digit]
+                .drawCentredAt(ctx, pos.xPos, pos.yPos);
+        });
+        var highScoreStr = (this.highScore + "") || "";
+        var highScoreMargin = 17-highScoreStr.length;
+        Array.prototype.forEach.call(highScoreStr, function(digit, i) {
+            var pos = util.getCoordsFromBox(1, highScoreMargin+i);
+            g_sprites.extras.points[+digit]
                 .drawCentredAt(ctx, pos.xPos, pos.yPos);
         });
     },
@@ -347,16 +366,24 @@ var entityManager = {
             console.log("Next level");
             this.setLevel(this.level + 1);
         }
+        
+        var KEY_E = keyCode('E');
+        if (eatKey(KEY_E)) {
+            this.setFrightenedMode();
+        }
 
         this._modeTimer += du;
-
-        if(this._modes.length > 0 &&
-           this._modeTimer >= this._modes[0].duration * SECS_TO_NOMINALS) {
-            this._modes.splice(0, 1);
-            this._modeTimer = 0;
-            if(this._modes.length > 0) {
-                this.setGhostMode(this._modes[0].mode);
-            }
+        this._modeFrightened.timer += du;
+        
+        if (this._modes.length > 0 &&
+            this._modeTimer >= this._modes[0].duration * SECS_TO_NOMINALS) {
+                this._modes.splice(0, 1);
+                this._modeTimer = 0;
+                if (this._modes.length > 0 &&
+                    this._modeFrightened.timer > this._modeFrightened.duration) {
+                        //~ Changing mode
+                        this.setGhostMode(this._modes[0].mode);
+                }
         }
 
         audioManager.update(du);
