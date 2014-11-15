@@ -49,6 +49,10 @@ Ghost.prototype.rememberResets = function () {
     this.reset_homeTime = this.homeTime;
 };
 
+Ghost.prototype.getStartPosition = function() {
+    return {row: this.reset_row, column: this.reset_column};
+};
+
 Ghost.prototype.resetTarget = function() {
     this.target_.row = this.startTarget.row;
     this.target_.column = this.startTarget.column;
@@ -131,17 +135,22 @@ Ghost.prototype.update = function (du) {
         }
 
         if (this.mode === "movingOut") {
-            if (this.column == 14 && this.row == 14) {
+            var exitPos = entityManager.getGhostExitPosition();
+            if (this.column == exitPos.column && this.row == exitPos.row) {
                 this.mode = entityManager.getGhostMode();
                 this.homeTime = 0;
-            } else if(this.column != 14) {
-                if(this.column > 14) {
+            } else if(this.column != exitPos.column) {
+                if(this.column > exitPos.column) {
                     this.nextDirection = "left";
                 } else {
                     this.nextDirection = "right"
                 }
             } else {
-                this.nextDirection = "up";
+                if(this.row > exitPos.row) {
+                    this.nextDirection = "up";
+                } else {
+                    this.nextDirection = "down"
+                }
             }
             return;
         }

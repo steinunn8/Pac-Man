@@ -340,6 +340,14 @@ var entityManager = {
         }
     },
 
+    getGhostExitPosition : function() {
+        for (var i=0; i<this._ghosts.length; i++){
+            if (this._ghosts[i].name === "blinky") {
+                return this._ghosts[i].getStartPosition();
+            }
+        }
+    },
+
     score: 0,
     highScore: localStorage.highScore || 0,
     _highScorePos: util.getCoordsFromBox(0, 14),
