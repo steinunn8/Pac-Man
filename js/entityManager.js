@@ -310,16 +310,28 @@ var entityManager = {
     },
 
     score: 0,
+    highScore: localStorage.highScore || 0,
     updateScore: function(points) {
         this.score += points;
+        if (this.score > this.highScore) {
+            this.highScore = this.score;
+            localStorage.highScore = this.highScore;
+        }
     },
     renderScore: function(ctx) {
         var scoreStr = (this.score || "00") + "";
-        var margin = 7-scoreStr.length;
-        Array.prototype.forEach.call(scoreStr, function(c, i) {
+        var scoreMargin = 7-scoreStr.length;
+        Array.prototype.forEach.call(scoreStr, function(digit, i) {
             // Points are drawn at row 1 ending at column 7
-            var pos = util.getCoordsFromBox(1, margin+i);
-            g_sprites.extras.points[+c]
+            var pos = util.getCoordsFromBox(1, scoreMargin+i);
+            g_sprites.extras.points[+digit]
+                .drawCentredAt(ctx, pos.xPos, pos.yPos);
+        });
+        var highScoreStr = (this.highScore + "") || "";
+        var highScoreMargin = 17-highScoreStr.length;
+        Array.prototype.forEach.call(highScoreStr, function(digit, i) {
+            var pos = util.getCoordsFromBox(1, highScoreMargin+i);
+            g_sprites.extras.points[+digit]
                 .drawCentredAt(ctx, pos.xPos, pos.yPos);
         });
     },

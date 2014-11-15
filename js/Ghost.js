@@ -244,3 +244,13 @@ Ghost.prototype.render = function (ctx) {
             .drawCentredAt(ctx, pos.xPos, pos.yPos);
     }
 };
+
+
+
+
+
+
+
+
+
+
