@@ -53,6 +53,4 @@ Fruit.prototype.render = function(ctx) {
     if (!this.isAlive) return;
     var pos = util.getCoordsFromBox(this.row, this.column);
     g_sprites.extras.fruits[this.type].drawCentredAt(ctx, pos.xPos, pos.yPos);
-    var extraPos = util.getCoordsFromBox(34.5, 25);
-    g_sprites.extras.fruits[0].drawCentredAt(ctx, extraPos.xPos, extraPos.yPos);
 };
