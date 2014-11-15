@@ -38,7 +38,6 @@ Ghost.prototype.nextDirection = "left";
 Ghost.prototype.mode = "chase";
 Ghost.prototype._frightenedSpeed = 1;
 Ghost.prototype._deadSpeed = 4;
-Ghost.prototype._homeTarget = {row: 14, column: 14};
 
 Ghost.prototype.rememberResets = function () {
     // Remember my reset positions and home corner (starting target)
@@ -104,7 +103,7 @@ Ghost.prototype.hitMe = function (aggressor) {
         //~ Implement "ghost-maniac-mode" with Boolean value?
         //~ [But wheeere?]
         if (this.mode === "frightened") {
-      this.kill();
+            this.kill();
         } else if (this.mode === "dead") {
             // Pass
             // don't do anything
@@ -124,8 +123,9 @@ Ghost.prototype.kill = function () {
 
 Ghost.prototype.update = function (du) {
     if (this.mode === "dead") {
-        if (this.row === this._homeTarget.row &&
-            this.column === this._homeTarget.column) {
+        var homeTarget = entityManager.getGhostExitPosition();
+        if (this.row === homeTarget.row &&
+            this.column === homeTarget.column) {
             this.reset();
             return;
         }
@@ -188,9 +188,10 @@ Ghost.prototype.update = function (du) {
             } else if(this.mode === "scatter") {
                 this.resetTarget();
             } else if(this.mode === "dead") {
+                var homeTarget = entityManager.getGhostExitPosition();
                 this.target_ = {
-                    row: this._homeTarget.row,
-                    column: this._homeTarget.column
+                    row: homeTarget.row,
+                    column: homeTarget.column
                 };
             }
             this.nextDirection = this.getNextDirection(directions);

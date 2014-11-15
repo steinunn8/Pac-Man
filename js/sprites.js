@@ -95,6 +95,8 @@ var sprites = function() {
     var makeExtras = function(){
         makeFruits();
         makePoints();
+        makeFruitPoints();
+        makeGhostPoints();
         addText();
         addLives();
     };
@@ -102,6 +104,10 @@ var sprites = function() {
     var makeFruits = function(){
         var col = 8.5;
         extras = { fruits:[], points:[], ghostPoints:[]};
+        for(var i = 8; i < 12; i++){
+            cutExtrasSprite("fruits", col, i, 2);
+        }
+        var col = 10.5;
         for(var i = 8; i < 12; i++){
             cutExtrasSprite("fruits", col, i, 2);
         }
@@ -114,10 +120,17 @@ var sprites = function() {
         }
     };
 
+    var makeFruitPoints = function(){
+        extras.fruitPoints = [];
+        var col = 8.25;
+        for(var i = 0; i < 8; i++){
+            extras.fruitPoints.push(
+                new Sprite(g_images, col*20, i*20, 30, 20, 20, 16, 1.5));
+        }
+    };
+
     var addText = function(){
-        extras["highScore"] = new Sprite(
-            g_images, 200, 26, 80, 8, 160, 14, 1
-        );
+        extras["highScore"] = new Sprite(g_images, 200, 26, 80, 8, 160, 14, 1);
         extras["gameOver"] = new Sprite(g_images, 0.5*20, 9.5 * 20, 90, 10, 90, 10, 2);
         extras["ready"] = new Sprite(g_images, 10*20, 0, 60, 10, 60, 10, 2);
         extras["1up"] = new Sprite(g_images, 10.5*20, 3.5*20, 30, 10, 30, 10, 1);
