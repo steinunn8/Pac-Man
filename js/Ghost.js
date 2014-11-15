@@ -105,6 +105,7 @@ Ghost.prototype.hitMe = function (aggressor) {
 };
 
 Ghost.prototype.kill = function () {
+    audioManager.play(eatGhost);
     this.reset();
     this.isAlive = false;
     spatialManager.unregister(this);
@@ -204,15 +205,22 @@ Ghost.prototype.render = function (ctx) {
     var boxDim = consts.BOX_DIMENSION;
     var dir = this.direction;
 
-    // Ghosts at home just bounce up and down
+    // only change if not paused/frozen
+    var shouldChange = entityManager.shouldChange();
+
+    // when home they are between 2 tiles
     if (this.mode === "home") {
         pos.xPos -= 0.5*boxDim;
+    }
+
+    // Ghosts at home just bounce up and down
+    if (this.mode === "home" && shouldChange) {
         pos.yPos -= this.bounceProp*boxDim;
         this.bounceProp += (this.bouncingUp ? 1 : -1) * this.bounceSpeed;
         if (Math.abs(this.bounceProp) > 0.5) {
             this.bouncingUp = !this.bouncingUp;
         }
-    } else {
+    } else if (this.mode !== "home") {
         if (dir === "up") {
             pos.yPos += (this.timeToNext)*boxDim;
         } else if (dir === "down") {

@@ -158,8 +158,8 @@ PacMan.prototype.render = function (ctx) {
         pos.xPos -= (this.timeToNext)*boxDim;
     }
 
-    // update animationFrame
-    if (this.direction) {
+    // update animationFrame if not paused/frozen
+    if (this.direction && entityManager.shouldChange()) {
         this._animProp += this._animSpeed;
         if (this._animProp > 1) {
             this._animProp -= 1;
