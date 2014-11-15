@@ -33,7 +33,7 @@ var entityManager = {
     _capsules : [],
     _fruits   : [],
     _modeTimer: 0,
-    _modeFrightened: {duration: 2, timer: 0, isOn: false},
+    _modeFrightened: {duration: 6, timer: 0, isOn: false},
     _modes: [{duration: 7, mode: "scatter"}, {duration: 20, mode: "chase"}, 
              {duration: 7, mode: "scatter"}, {duration: 20, mode: "chase"},
              {duration: 5, mode: "scatter"}, {duration: Infinity, mode: "chase"}],
@@ -392,10 +392,10 @@ var entityManager = {
                 }
         }
 
-        if (this._modeFrightened.timer > this._modeFrightened.duration) {
+        if (!this._modeFrightened.isOn) {
             audioManager.play(siren);
         } else {
-            
+            audioManager.play(frightened);
         }
 
         audioManager.update(du);
