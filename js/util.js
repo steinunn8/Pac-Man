@@ -210,17 +210,17 @@ var util = {
 
     _freeze: false,
     _freezeTimer: 0,
-    _freezeFn: function() {},
+    _freezeFns: [function() {}],
     setFreezeTimer: function(duration, fn) {
         fn = typeof fn === "function" ? fn : function() {};
         this._freezeTimer = duration * SECS_TO_NOMINALS;
-        this._freezeFn = fn;
+        this._freezeFns.push(fn);
     },
     updateFreezeTimer: function(du) {
         this._freezeTimer -= du;
         if (this._freezeTimer <= 0) {
             if (this._freeze) {
-                this._freezeFn();
+                this._freezeFns.pop()();
             }
             this._freeze = false;
         } else {
