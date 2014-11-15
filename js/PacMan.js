@@ -56,7 +56,6 @@ PacMan.prototype.reset = function () {
 
 // When PacMan dies we warp him to his original place
 PacMan.prototype.kill = function (ctx) {
-    audioManager.play(warpSound);
     this.isAlive = false;
     this.lives -= 1;
     spatialManager.unregister(this);

@@ -82,11 +82,11 @@ var entityManager = {
         this.levels = levels;
         this.setLevel(1);
         audioManager.play(introSound);
-        util.setFreezeTimer(4);
     },
 
     setLevel: function(levelNumber) {
         var pacLives = 3;
+        var timer = (levelNumber === 1) ? 4 : 2;
         if(levelNumber > 1)
             pacLives = this._pacMans[0].lives;
         if ((levelNumber - 1) % consts.LEVEL_ARRAY.length == 0) {
@@ -110,7 +110,13 @@ var entityManager = {
         this._generateGhosts(grid); //use the grid to initialise Ghosts
         this._generateFruits(grid);
 
-        util.setFreezeTimer(2);
+        this.startLevel(timer);
+    },
+    startLevel: function(timer) {
+        this.startingLevel = true,
+        util.setFreezeTimer(timer, function() {
+            this.startingLevel = false;
+        }.bind(this));
     },
 
     killAll: function() {
@@ -401,14 +407,24 @@ var entityManager = {
         }
     },
 
+    renderStartingLevel: (function() {
+        var readyPos = util.getCoordsFromBox(20, 14);
+        return function(ctx) {
+            g_sprites.extras.ready
+                .drawCentredAt(ctx, readyPos.xPos, readyPos.yPos);
+        };
+    })(),
+
     pacmanDead: function() {
         util.setFreezeTimer(0.8, function() {
+            audioManager.play(warpSound);
             this.shouldRenderGhosts = false;
             this.pacManFreezeException = true;
             util.setFreezeTimer(1.4, function() {
                 this.pacManFreezeException = false;
                 this.shouldRenderGhosts = true;
                 this.resetGhosts();
+                this.startLevel(2);
             }.bind(this));
         }.bind(this));
     },
@@ -518,6 +534,9 @@ var entityManager = {
         var debugX = 10, debugY = 100;
 
         this.renderScore(ctx);
+        if (this.startingLevel) {
+            this.renderStartingLevel(ctx);
+        }
         this.renderGameOver(ctx);
 
         for (var c = 0; c < this._categories.length; ++c) {

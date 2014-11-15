@@ -119,7 +119,7 @@ var sprites = function() {
             g_images, 200, 26, 80, 8, 160, 14, 1
         );
         extras["gameOver"] = new Sprite(g_images, 0.5*20, 9.5 * 20, 90, 10, 90, 10, 2);
-        extras["ready"] = new Sprite(g_images, 10*20, 0, 60, 10, 60, 10, 1);
+        extras["ready"] = new Sprite(g_images, 10*20, 0, 60, 10, 96, 16);
         extras["1up"] = new Sprite(g_images, 10.5*20, 3.5*20, 30, 10, 30, 10, 1);
         extras["2up"] = new Sprite(g_images, 10.5*20, 4*20, 30, 10, 30, 10, 1);
         extras["extraLive"] = new Sprite(g_images, 4*20, 8*20, 20, 20, 16, 16, 2);
