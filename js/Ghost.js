@@ -62,7 +62,7 @@ Ghost.prototype.changeMode = function(mode) {
     }
     
     if (mode === "frightened") {
-        console.log(this.name, "is frightened")
+        //~ console.log(this.name, "is frightened")
         this._isFrightened = true;
     } else {
         this._isFrightened = false;
@@ -244,13 +244,3 @@ Ghost.prototype.render = function (ctx) {
             .drawCentredAt(ctx, pos.xPos, pos.yPos);
     }
 };
-
-
-
-
-
-
-
-
-
-
