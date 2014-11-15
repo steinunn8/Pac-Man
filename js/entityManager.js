@@ -148,6 +148,8 @@ var entityManager = {
     },
 
     _generateFruits : function(grid){
+        if(this.level > 3)
+            this._fruits.push(new Fruit({row : 34.5, column : 20.5, type : 3}))
         if(this.level > 2)
             this._fruits.push(new Fruit({row : 34.5, column : 22, type : 2}))
         if(this.level > 1)
@@ -316,6 +318,8 @@ var entityManager = {
             }
         }
     },
+
+
     
     setFrightenedMode : function() {
         console.log("setFrightenedMode");

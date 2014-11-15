@@ -22,7 +22,7 @@ function SpecialCapsule(descr) {
     this.entityType = entityManager.entityTypes["SpecialCapsule"];
     
     this.isAlive = true;
-    this.frame = 1;
+    this.frame = 0.25;
 };
 
 SpecialCapsule.prototype = new Entity();
@@ -51,14 +51,14 @@ SpecialCapsule.prototype.update = function(du) {
         entityManager.updateScore(this.points);
         return entityManager.KILL_ME_NOW;
     }
-    this.frame -= du / NOMINAL_UPDATE_INTERVAL;
-    if(this.frame <= 0){this.frame = 1;}
+    this.frame -= du / SECS_TO_NOMINALS;
+    if(this.frame <= 0){this.frame = 0.25;}
 };
 
 SpecialCapsule.prototype.render = function(ctx) {
 
     if (!this.isAlive) return;
-    if (this.frame < 0.5) return;
+    if (this.frame < 0.125) return;
     var oldStyle = ctx.fillStyle;
     ctx.fillStyle = "#FBB382";
     
