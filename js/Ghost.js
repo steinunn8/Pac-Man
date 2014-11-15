@@ -204,7 +204,8 @@ Ghost.prototype.getNextDirection = function(directions) {
 
         var yPos = pos.row + offset.row;
         var xPos = pos.column + offset.column;
-        var dist = util.distSq(xPos, yPos, this.target_.column, this.target_.row);
+        var dist = util.wrappedDistSq(xPos, yPos, this.target_.column, this.target_.row, 
+            entityManager.getMazeColumns(), entityManager.getMazeRows());
 
         if (dist < minDist) {
             minDist = dist;
