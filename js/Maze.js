@@ -151,6 +151,8 @@ Maze.prototype.update = function(du) {
     var KEY_CAPSULE = keyCode('3');
     var KEY_SPECIAL_CAPSULE = keyCode('4');
     var KEY_DOUBLE_WALL = keyCode('5');
+    var KEY_MIRROR = keyCode('0');
+
     if (eatKey(KEY_WALL)) {
         this.selectedBlock = this.gridValues.WALL;
     }
@@ -166,6 +168,13 @@ Maze.prototype.update = function(du) {
     if (eatKey(KEY_DOUBLE_WALL)) {
         this.selectedBlock = this.gridValues.DOUBLE_WALL;
     }
+
+    if (eatKey(KEY_MIRROR)) {
+        this.mirrorMaze();
+        this.image = -1;
+        this._generateWall();
+        entityManager.regenerateCapsules(this.aGrid);
+    }
     return;
 };
 
@@ -180,6 +189,15 @@ Maze.prototype.editGrid = function(pos) {
     this._generateWall();
 
     entityManager.regenerateCapsules(this.aGrid);
+};
+
+// mirrors the maze by y axis
+Maze.prototype.mirrorMaze = function() {
+    for (var i = 0; i < this.nRows; i++) {
+        for (var j = Math.floor(this.nColumns/2)+1; j < this.nColumns; j++) {
+            this.aGrid[i][j] = this.aGrid[i][this.nColumns - j - 1];
+        }
+    }
 }
 
 Maze.prototype.render = function(ctx) {

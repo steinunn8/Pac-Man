@@ -90,13 +90,13 @@ var entityManager = {
         var pacLives = 3;
         if(levelNumber > 1)
             pacLives = this._pacMans[0].lives;
-        if (consts.LEVEL_ARRAY.length < levelNumber) {
-            console.log("All levels won by player. Starting again.");
-            levelNumber = 1;
+        if ((levelNumber - 1) % consts.LEVEL_ARRAY.length == 0) {
+            console.log("Another round of levels starting.");
         }
 
         this.level = levelNumber;
-        var level = this.levels[this.level-1];
+        var gridNumber = (levelNumber - 1) % consts.LEVEL_ARRAY.length
+        var level = this.levels[gridNumber];
         var grid = level.grid;
 
         // prevent all killing sounds
@@ -154,7 +154,11 @@ var entityManager = {
     },
 
     _generateFruits : function(grid){
-        if(this.level == 2)
+        if(this.level > 3)
+            this._fruits.push(new Fruit({row : 34.5, column : 20.5, type : 3, timer: Infinity}))
+        if(this.level > 2)
+            this._fruits.push(new Fruit({row : 34.5, column : 22, type : 2, timer: Infinity}))
+        if(this.level > 1)
             this._fruits.push(new Fruit({row : 34.5, column : 23.5, type : 1, timer: Infinity}))
         this._fruits.push(new Fruit({row : 34.5, column : 25, type : 0, timer: Infinity}))
     },
