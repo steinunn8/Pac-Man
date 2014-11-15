@@ -92,11 +92,11 @@ var entityManager = {
             pacLives = this._pacMans[0].lives;
         if (consts.LEVEL_ARRAY.length < levelNumber) {
             console.log("All levels won by player. Starting again.");
-            levelNumber = 1;
         }
 
         this.level = levelNumber;
-        var level = this.levels[this.level-1];
+        var gridNumber = levelNumber % consts.LEVEL_ARRAY.length
+        var level = this.levels[gridNumber];
         var grid = level.grid;
 
         // prevent all killing sounds
