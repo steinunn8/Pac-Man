@@ -237,7 +237,7 @@ Ghost.prototype.render = function (ctx) {
     var animFrame = Math.round(this.timeToNext);
     
     if (this._isFrightened) {
-        this.sprite.frightened.white[animFrame]
+        g_sprites.ghosts.frightened.white[animFrame]
             .drawCentredAt(ctx, pos.xPos, pos.yPos);
     } else {
         this.sprite[dir || "up"][animFrame]
