@@ -46,7 +46,8 @@ SpecialCapsule.prototype.hitMe = function(aggressor) {
         //~ [But wheeere?]
         //~ this._animProp = 0;
         this.kill();
-    }};
+    }
+};
 
 SpecialCapsule.prototype.update = function(du) {
     if(!this.isAlive) {

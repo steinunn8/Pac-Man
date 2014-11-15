@@ -26,13 +26,14 @@ function Ghost(descr) {
     // Set normal drawing scale, and warp state off
     this._scale = 1;
     this._isDead = false; //only eyes
-    this._isEatable = false;
+    this._isFrightened = false;
     this._hadMoved = false;
 };
 
 Ghost.prototype = new Entity();
 Ghost.prototype.direction = 0;
 Ghost.prototype.nextDirection = "left";
+
 // possible modes: chase, scatter, frightened, home, movingOut
 Ghost.prototype.mode = "chase";
 
@@ -55,14 +56,21 @@ Ghost.prototype.resetTarget = function() {
 
 Ghost.prototype.changeMode = function(mode) {
     // can't change the mode from home with this method
-    if(this.mode === "home") {
+    if (this.mode === "home") {
         return;
+    }
+    
+    if (mode === "frightened") {
+        console.log(this.name, "is frightened")
+        this._isFrightened = true;
+    } else {
+        this._isFrightened = false;
     }
 
     //Ghosts are forced to reverse direction by the system anytime the mode changes from: 
     //chase-to-scatter, chase-to-frightened, scatter-to-chase, and scatter-to-frightened. 
     //Ghosts do not reverse direction when changing back from frightened to chase or scatter modes.
-    if(this.mode !== "frightened") {
+    if (this.mode !== "frightened") {
         this.nextDirection = this.getOpposite(this.direction);
     }
 
@@ -170,7 +178,7 @@ Ghost.prototype.getNextDirection = function(directions) {
     }
 
     // if frightened we should random
-    if(this.mode === "frightened") {
+    if (this.mode === "frightened") {
         var randomValue = parseInt(Math.random()*directions.length);
         direction = directions[randomValue];
     }
@@ -218,5 +226,10 @@ Ghost.prototype.render = function (ctx) {
      // full animation circle frames per cell traverse
     var animFrame = Math.round(this.timeToNext);
     var dir = this.direction;
-    this.sprite[dir || "up"][animFrame].drawCentredAt(ctx, pos.xPos, pos.yPos);
+    
+    if (this._isFrightened) {
+        util.fillCenteredSquare(ctx, pos.xPos, pos.yPos, consts.BOX_DIMENSION/2, "red");
+    } else {
+        this.sprite[dir || "up"][animFrame].drawCentredAt(ctx, pos.xPos, pos.yPos);
+    }
 };

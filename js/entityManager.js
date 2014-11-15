@@ -82,7 +82,9 @@ var entityManager = {
 
     setLevel: function(levelNumber) {
         if (consts.LEVEL_ARRAY.length < levelNumber) {
-            return;
+            //~ return;
+            console.log("All levels won by player. Starting again.");
+            levelNumber = 1;
         }
         this.level = levelNumber;
         var level = this.levels[this.level-1];
@@ -297,12 +299,12 @@ var entityManager = {
         return this._modes[0].mode;
     },
     
-    generateCapsule : function(descr){
+    generateCapsule : function(descr) {
         this._capsules.push(new Capsule(descr));
     },
 
-    resetGhosts : function(){
-        for(var i = 0; i < this._ghosts.length; i++){
+    resetGhosts : function() {
+        for (var i=0; i<this._ghosts.length; i++){
             this._ghosts[i].reset();
         }
     },
