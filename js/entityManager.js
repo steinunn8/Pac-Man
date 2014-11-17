@@ -516,12 +516,6 @@ var entityManager = {
             this.setFrightenedMode();
         }
 
-        if (!this._modeFrightened.isOn) {
-            audioManager.play(siren);
-        } else {
-            audioManager.play(frightened);
-        }
-
         util.updateFreezeTimer(du);
 
         // don't move anything when frozen
@@ -531,6 +525,12 @@ var entityManager = {
                 this._pacMans[0].update(du);
             }
             return;
+        }
+
+        if (!this._modeFrightened.isOn) {
+            audioManager.play(siren);
+        } else {
+            audioManager.play(frightened);
         }
         
         //~ Berries or not?

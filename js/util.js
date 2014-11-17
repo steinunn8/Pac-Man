@@ -222,7 +222,9 @@ var util = {
             if (this._freeze) {
                 this._freezeFns.pop()();
             }
-            this._freeze = false;
+            if(this._freezeTimer <= 0) {
+                this._freeze = false;
+            }
         } else {
             this._freeze = true;
         }
