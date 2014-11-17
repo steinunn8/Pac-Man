@@ -155,7 +155,6 @@ Ghost.prototype.update = function (du) {
 
         if (this.mode === "movingIn") {
             var pos = entityManager.getGhostSpawnBoxPosition();
-            console.log(pos);
             if (this.column == pos.column && this.row == pos.row) {
                 this.mode = "movingOut";
                 this._isFrightened = false;
