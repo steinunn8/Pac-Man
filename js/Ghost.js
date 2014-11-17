@@ -80,6 +80,7 @@ Ghost.prototype.changeMode = function(mode) {
 };
 
 Ghost.prototype.reset = function () {
+    this._isFrightened = false;
     this.isAlive = true;
     this.setPos(this.reset_row, this.reset_column);
     this.mode = this.reset_mode;
@@ -153,7 +154,7 @@ Ghost.prototype.update = function (du) {
         if (this.mode === "movingOut") {
             var exitPos = entityManager.getGhostExitPosition();
             if (this.column == exitPos.column && this.row == exitPos.row) {
-                this.mode = entityManager.getGhostMode();
+                this.mode = this._isFrightened ? "frightened" : entityManager.getGhostMode();
                 this.homeTime = 0;
             } else if(this.column != exitPos.column) {
                 if(this.column > exitPos.column) {

@@ -252,7 +252,7 @@ var entityManager = {
             name: "clyde",
             color: "orange",
             mode: "home",
-            homeTime: 8, //seconds
+            homeTime: 3, //seconds
             sprite: g_sprites.ghosts.orange,
             column: 16,
             row: 17,
@@ -282,7 +282,7 @@ var entityManager = {
             name: "inky",
             color: "cyan",
             mode: "home",
-            homeTime: 12, //seconds
+            homeTime: 5, //seconds
             sprite: g_sprites.ghosts.cyan,
             column: 12,
             row: 17,
