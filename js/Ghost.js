@@ -99,7 +99,7 @@ Ghost.prototype.hitMe = function (aggressor) {
         //~ [But wheeere?]
         if (this.mode === "frightened") {
             this.kill();
-        } else if (this.mode === "dead") {
+        } else if (this.mode === "dead" || this.mode === "movingIn") {
             // Pass
             // don't do anything
         } else {
