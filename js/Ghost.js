@@ -62,17 +62,11 @@ Ghost.prototype.resetTarget = function() {
 };
 
 Ghost.prototype.changeMode = function(mode) {
+    this._isFrightened = (mode === "frightened");
+
     // can't change the mode from home with this method
     if (util.inArray(["home", "movingOut", "dead"], this.mode)) {
-        this._isFrightened = false;
         return;
-    }
-    
-    if (mode === "frightened") {
-        //~ console.log(this.name, "is frightened")
-        this._isFrightened = true;
-    } else {
-        this._isFrightened = false;
     }
 
     //Ghosts are forced to reverse direction by the system anytime the mode changes from: 
@@ -289,7 +283,7 @@ Ghost.prototype.render = function (ctx) {
     if (this.mode === "dead") {
         g_sprites.ghosts.dead[dir || "up"]
             .drawCentredAt(ctx, pos.xPos, pos.yPos);
-    } else if (this.mode === "frightened") {
+    } else if (this.mode === "frightened" || this._isFrightened) {
         var mf = entityManager.getFrightenedMode();
         var steps = 5;
         var ratioLeftTime = 1 - (mf.timer/(mf.duration*SECS_TO_NOMINALS));
