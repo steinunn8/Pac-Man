@@ -19,7 +19,11 @@ var g_isUpdateOdd = false;
 
 
 function update(dt) {
-    
+    // Always update audio because it turns
+    // sounds off at the correct time, so they
+    // don't go through the whole sound file
+    // when paused
+    audioManager.update(du);
     // Get out if skipping (e.g. due to pause-mode)
     //
     if (shouldSkipUpdate()) return;

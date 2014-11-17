@@ -65,7 +65,6 @@ function updateSimulation(du) {
     processDiagnostics();
 
     entityManager.update(du);
-    audioManager.update(du);
 }
 
 // GAME-SPECIFIC DIAGNOSTICS
