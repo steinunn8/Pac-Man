@@ -65,7 +65,7 @@ Ghost.prototype.changeMode = function(mode) {
     this._isFrightened = (mode === "frightened");
 
     // can't change the mode from home with this method
-    if (util.inArray(["home", "movingOut", "dead"], this.mode)) {
+    if (util.inArray(["home", "movingOut", "dead", "movingIn"], this.mode)) {
         return;
     }
 
@@ -124,10 +124,12 @@ Ghost.prototype.update = function (du) {
         var homeTarget = entityManager.getGhostExitPosition();
         if (this.row === homeTarget.row &&
             this.column === homeTarget.column) {
-            this.reset();
-            return;
+            this.mode = "movingIn";
+            this.direction = 0;
+            this.nextDirection = 0;
         }
     }
+
     spatialManager.unregister(this);
 
     // moves the ghost
@@ -136,7 +138,7 @@ Ghost.prototype.update = function (du) {
             this.speed;
     this._hasMoved = this.move(
         du, this.direction, this.nextDirection,
-        this.mode === "movingOut", speed
+        this.mode === "movingOut" || this.mode === "movingIn", speed
     );
 
     // If we're about to move, make decision
@@ -149,6 +151,23 @@ Ghost.prototype.update = function (du) {
             } else {
                 return;
             }
+        }
+
+        if (this.mode === "movingIn") {
+            var pos = entityManager.getGhostSpawnBoxPosition();
+            console.log(pos);
+            if (this.column == pos.column && this.row == pos.row) {
+                this.mode = "movingOut";
+                this._isFrightened = false;
+                this.column = pos.column;
+                this.row = pos.row;
+                return;
+            } else if (this.row > pos.row) {
+                this.nextDirection = "up";
+            } else {
+                this.nextDirection = "down";
+            }
+            return;
         }
 
         if (this.mode === "movingOut") {
@@ -271,7 +290,7 @@ Ghost.prototype.render = function (ctx) {
         // when we change from movingOut to other modes we
         // need to smooth the transition
         var smoothDuration = 0.7;
-        if (this.mode === "movingOut") {
+        if (this.mode === "movingOut" || this.mode === "movingIn") {
             pos.xPos -= 0.5*boxDim;
         } else if(-this.homeTime < smoothDuration) {
             pos.xPos -= 0.5*boxDim*(1+this.homeTime/smoothDuration);
@@ -281,7 +300,7 @@ Ghost.prototype.render = function (ctx) {
      // full animation circle frames per cell traverse
     var animFrame = Math.round(this.timeToNext);
 
-    if (this.mode === "dead") {
+    if (this.mode === "dead" || this.mode === "movingIn") {
         g_sprites.ghosts.dead[dir || "up"]
             .drawCentredAt(ctx, pos.xPos, pos.yPos);
     } else if (this.mode === "frightened" || this._isFrightened) {
