@@ -452,9 +452,11 @@ var entityManager = {
         this.updateScore(points);
         this._extras.push({
             render: function(ctx) {
-                g_sprites.extras
-                    .ghostPoints[self._modeFrightened.ghostsEaten-1]
-                    .drawCentredAt(ctx, pos.xPos, pos.yPos);
+                var sprite = g_sprites.extras
+                    .ghostPoints[self._modeFrightened.ghostsEaten-1];
+                if (sprite !== undefined) {
+                    sprite.drawCentredAt(ctx, pos.xPos, pos.yPos);
+                }
             },
             update: function() {}
         });
@@ -495,6 +497,7 @@ var entityManager = {
     update: function(du) {
         if (this._pacMans[0].lives == 0){
             this.killCategorie(this._ghosts);
+            return;
         }
 
         var TOGGLE_LEVEL_EDIT = keyCode('L');

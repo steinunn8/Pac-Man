@@ -59,7 +59,7 @@ var audioManager = {
         this.handleLoop(siren, 0.35, 0, 0.4, this.siren);
         this.siren = false;
 
-        this.handleLoop(frightened, 0.2, 0, 0.3, this.frightened);
+        this.handleLoop(frightened, 0.1, 0, 0.2, this.frightened);
         this.frightened = false;
     }
 }
