@@ -28,6 +28,7 @@ function Ghost(descr) {
     this._isDead = false; //only eyes
     this._isFrightened = false;
     this._hadMoved = false;
+    this._rotationTimer = (Math.random()*4 + 1) * SECS_TO_NOMINALS;
 };
 
 Ghost.prototype = new Entity();
@@ -38,6 +39,7 @@ Ghost.prototype.nextDirection = "left";
 Ghost.prototype.mode = "chase";
 Ghost.prototype._frightenedSpeed = 1;
 Ghost.prototype._deadSpeed = 4;
+Ghost.prototype._rotation = 0;
 
 Ghost.prototype.rememberResets = function () {
     // Remember my reset positions and home corner (starting target)
@@ -132,6 +134,17 @@ Ghost.prototype.getColors = function () {
 }
 
 Ghost.prototype.update = function (du) {
+    if (this._rotation > 0) {
+        this._rotation -= du * 0.25;
+    } else {
+        this._rotation = 0;
+        this._rotationTimer -= du;
+        if (this._rotationTimer <= 0) {
+            this._rotation = Math.PI * 2;
+            this._rotationTimer = (Math.random()*5 + 2) * SECS_TO_NOMINALS;
+        }
+    }
+
     if (this.mode === "dead") {
         var homeTarget = entityManager.getGhostExitPosition();
         if (this.row === homeTarget.row &&
@@ -296,6 +309,10 @@ Ghost.prototype.render = function (ctx) {
         pos.xPos -= 0.5*boxDim;
     }
 
+    if (!entityManager.isJuicy()) {
+        this._rotation = 0;
+    }
+
     // Ghosts at home just bounce up and down
     if (this.mode === "home" && shouldChange) {
         pos.yPos -= this.bounceProp*boxDim;
@@ -329,7 +346,7 @@ Ghost.prototype.render = function (ctx) {
 
     if (this.mode === "dead" || this.mode === "movingIn") {
         g_sprites.ghosts.dead[dir || "up"]
-            .drawCentredAt(ctx, pos.xPos, pos.yPos);
+            .drawCentredAt(ctx, pos.xPos, pos.yPos, this._rotation);
     } else if (this.mode === "frightened" || this._isFrightened) {
         var mf = entityManager.getFrightenedMode();
         var steps = 5;
@@ -339,13 +356,13 @@ Ghost.prototype.render = function (ctx) {
         
         if (ratioLeftStep<=10 && ratioLeftStep%2===0) {
             g_sprites.ghosts.frightened.white[animFrame]
-                .drawCentredAt(ctx, pos.xPos, pos.yPos);
+                .drawCentredAt(ctx, pos.xPos, pos.yPos, this._rotation);
         } else {
             g_sprites.ghosts.frightened.blue[animFrame]
-                .drawCentredAt(ctx, pos.xPos, pos.yPos);            
+                .drawCentredAt(ctx, pos.xPos, pos.yPos, this._rotation);            
         }
     } else {
         this.sprite[dir || "up"][animFrame]
-            .drawCentredAt(ctx, pos.xPos, pos.yPos);
+            .drawCentredAt(ctx, pos.xPos, pos.yPos, this._rotation);
     }
 };

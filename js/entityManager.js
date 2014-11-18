@@ -508,6 +508,10 @@ var entityManager = {
         return this._modeFrightened.isOn;
     },
 
+    isJuicy: function() {
+        return this.juicy;
+    },
+
     update: function(du) {
         if (this._pacMans[0].lives == 0){
             this.killCategorie(this._ghosts);
