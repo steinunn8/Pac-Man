@@ -15,8 +15,20 @@ var audioManager = {
     siren: false,
     frightened: false,
 
+    sounds: [
+        eatSound,
+        warpSound,
+        eatFruit,
+        eatGhost,
+        newLive,
+        intermission,
+        introSound,
+        siren,
+        frightened
+    ],
+
     toggleMute: function() {
-        this.muted = !this.muted
+        this.setMuted(!this.muted);
     },
 
     getMuted: function() {
@@ -25,6 +37,19 @@ var audioManager = {
 
     setMuted: function(muted) {
         this.muted = muted;
+
+        if (this.muted) {
+            this.setVolume(0);
+        } else {
+            this.setVolume(1);
+        }
+    },
+
+    setVolume: function(volume) {
+        for (var i=0; i<this.sounds.length; i++) {
+            var sound = this.sounds[i];
+            sound.volume = volume;
+        }
     },
 
     play: function(sound) {

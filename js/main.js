@@ -74,6 +74,7 @@ main._isGameOver = false;
 
 main.gameOver = function () {
     this._isGameOver = true;
+    audioManager.setMuted(true);
     console.log("gameOver: quitting...");
 };
 
