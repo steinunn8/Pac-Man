@@ -39,10 +39,12 @@ Fruit.prototype.kill = function () {
 
 Fruit.prototype.hitMe = function(aggressor) {
     if (aggressor.entityType === entityManager.entityTypes["PacMan"]) {
-        backgroundManager.burst(1, "#FFFFFF");
-        audioManager.play(eatFruit);
-        entityManager.updateScore(this.points);
-        this.turnIntoPoints();
+        if (!this.isMerePoints) {
+            backgroundManager.burst(1, "#FFFFFF");
+            audioManager.play(eatFruit);
+            entityManager.updateScore(this.points);
+            this.turnIntoPoints();
+        }
     }
 };
 
