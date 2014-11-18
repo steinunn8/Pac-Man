@@ -95,6 +95,7 @@ var entityManager = {
             console.log("Another round of levels starting.");
         }
 
+        this._modeFrightened.isOn = false;
         this.level = levelNumber;
         var gridNumber = (levelNumber - 1) % consts.LEVEL_ARRAY.length;
         var level = this.levels[gridNumber];
