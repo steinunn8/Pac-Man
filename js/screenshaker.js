@@ -19,11 +19,11 @@ var screenshaker = {
 		this.velX -= this.velX * this.drag * this.elasticity;
 		this.velY -= this.velY * this.drag * this.elasticity;
 
-		this.velX -= this.xOffset * this.elasticity * du;
-		this.velY -= this.yOffset * this.elasticity * du;
+		this.velX -= this.xOffset * this.elasticity;
+		this.velY -= this.yOffset * this.elasticity;
 
-		this.xOffset += this.velX * du;
-		this.yOffset += this.velY * du;
+		this.xOffset += this.velX;
+		this.yOffset += this.velY;
 	},
 
 	render: function(ctx) {
