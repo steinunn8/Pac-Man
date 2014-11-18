@@ -233,6 +233,31 @@ var util = {
         return this._freeze;
     },
 
+    fruitOrder: ["cherries", "strawberry", "peach", "apple",
+                 "grapes", "galaxian", "bell", "key"],
+
+    getFruitByLevel: function(level) {
+        return level < 2 ? "cherries" :
+            level < 3 ? "strawberry" :
+            level < 5 ? "peach" :
+            level < 7 ? "apple" :
+            level < 9 ? "grapes" :
+            level < 11 ? "galaxian" :
+            level < 13 ? "bell" :
+            "key"; 
+    },
+
+    getFruitPointsByLevel: function(level) {
+        return level < 2 ? 100 :
+            level < 3 ? 300 :
+            level < 5 ? 500 :
+            level < 7 ? 700 :
+            level < 9 ? 1000 :
+            level < 11 ? 2000 :
+            level < 13 ? 3000 :
+            5000;
+    },
+
     getCoordsFromBox: function(row, column) {
         var dimension = consts.BOX_DIMENSION;
         var xPos = column * dimension + dimension / 2;

@@ -103,14 +103,31 @@ var sprites = function() {
 
     var makeFruits = function(){
         var col = 8.5;
-        extras = { fruits:[], points:[], ghostPoints:[]};
-        for(var i = 8; i < 12; i++){
-            cutExtrasSprite("fruits", col, i, 2);
-        }
-        var col = 10.5;
-        for(var i = 8; i < 12; i++){
-            cutExtrasSprite("fruits", col, i, 2);
-        }
+        extras = { fruits:{}, points:[], ghostPoints:[]};
+        extras.fruits.cherries = new Sprite(
+            g_images, 8.5*20, 8*20, 20, 20, 16, 16, 2
+        );
+        extras.fruits.strawberry = new Sprite(
+            g_images, 8.5*20, 9*20, 20, 20, 16, 16, 2
+        );
+        extras.fruits.peach = new Sprite(
+            g_images, 8.5*20, 10*20, 20, 20, 16, 16, 2
+        );
+        extras.fruits.apple = new Sprite(
+            g_images, 8.5*20, 11*20, 20, 20, 16, 16, 2
+        );
+        extras.fruits.grapes = new Sprite(
+            g_images, 10.5*20, 8*20, 20, 20, 16, 16, 2
+        );
+        extras.fruits.galaxian = new Sprite(
+            g_images, 10.5*20, 9*20, 20, 20, 16, 16, 2
+        );
+        extras.fruits.bell = new Sprite(
+            g_images, 10.5*20, 10*20, 20, 20, 16, 16, 2
+        );
+        extras.fruits.key = new Sprite(
+            g_images, 10.5*20, 11*20, 20, 20, 16, 16, 2
+        );
     };
 
     var makeGhostPoints = function(){
@@ -125,7 +142,7 @@ var sprites = function() {
         var col = 8.25;
         for(var i = 0; i < 8; i++){
             extras.fruitPoints.push(
-                new Sprite(g_images, col*20, i*20, 30, 20, 20, 16, 1.5));
+                new Sprite(g_images, col*20, i*20, 30, 20, 20, 16, 2));
         }
     };
 

@@ -160,38 +160,25 @@ var entityManager = {
         return this._totalCapsulesCount - this._capsules.length;
     },
 
-    _generateFruit : function(type){
-        this._fruits.push(new Fruit({row : 20, column : 14, type : type}));
+    _generateFruit : function(level) {
+
+        this._fruits.push(new Fruit({
+            row : 20,
+            column : 14,
+            points: util.getFruitPointsByLevel(level),
+            type : util.getFruitByLevel(level)
+        }));
     },
 
     _generateFruits : function(grid){
-        if(this.level > 3)
-            this._fruits.push(new Fruit({
+        for (var i = 0; i < this.level; i++) {
+            this._fruits.push(new Fruit({                
                 row : 34.5,
-                column : 20.5,
-                type : 3,
+                column : 25 - i*1.5,
+                type : util.getFruitByLevel(i+1),
                 timer: Infinity
             }));
-        if(this.level > 2)
-            this._fruits.push(new Fruit({
-                row : 34.5,
-                column : 22,
-                type : 2,
-                timer: Infinity
-            }));
-        if(this.level > 1)
-            this._fruits.push(new Fruit({
-                row : 34.5,
-                column : 23.5,
-                type : 1,
-                timer: Infinity
-            }));
-        this._fruits.push(new Fruit({
-            row : 34.5,
-            column : 25,
-            type : 0,
-            timer: Infinity
-        }));
+        }
     },
 
     regenerateCapsules : function(grid) {
@@ -566,7 +553,13 @@ var entityManager = {
         //~ Berries or not?
         if (this._getEatenCapsulesCount() === 70 ||
             this._getEatenCapsulesCount() === 170) {
-                this._generateFruit(this.level-1);
+            if (!this._hasFruit) {
+                // Make sure we have only one fruit at a time
+                this._generateFruit(this.level);
+                this._hasFruit = true;
+            }
+        } else {
+            this._hasFruit = false;
         }
         
         this._modeTimer += du;

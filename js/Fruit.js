@@ -27,8 +27,8 @@ function Fruit(descr) {
 Fruit.prototype = new Entity();
 Fruit.prototype.row = 15;
 Fruit.prototype.column = 9;
-Fruit.prototype.points = 200;
-Fruit.prototype.type = 0;
+Fruit.prototype.points = 100;
+Fruit.prototype.type = "cherrie";
 Fruit.prototype.timer = 10;
 
 Fruit.prototype.kill = function () {
@@ -42,8 +42,14 @@ Fruit.prototype.hitMe = function(aggressor) {
         backgroundManager.burst(1, "#FFFFFF");
         audioManager.play(eatFruit);
         entityManager.updateScore(this.points);
-        this.kill();
+        this.turnIntoPoints();
     }
+};
+
+Fruit.prototype.turnIntoPoints = function() {
+    this.isMerePoints = true;
+    this.fruitPointIndex = util.fruitOrder.indexOf(this.type);
+    this.timer = 1;
 };
 
 Fruit.prototype.update = function(du) {
@@ -56,5 +62,8 @@ Fruit.prototype.update = function(du) {
 Fruit.prototype.render = function(ctx) {
     if (!this.isAlive) return;
     var pos = util.getCoordsFromBox(this.row, this.column);
-    g_sprites.extras.fruits[this.type].drawCentredAt(ctx, pos.xPos, pos.yPos);
+    var sprite = this.isMerePoints ?
+            g_sprites.extras.fruitPoints[this.fruitPointIndex] :
+            g_sprites.extras.fruits[this.type];
+    sprite.drawCentredAt(ctx, pos.xPos, pos.yPos);
 };
