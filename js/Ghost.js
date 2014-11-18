@@ -99,6 +99,7 @@ Ghost.prototype.hitMe = function (aggressor) {
         //~ [But wheeere?]
         if (this.mode === "frightened") {
             this.kill();
+            screenshaker.rotateScreen();
         } else if (this.mode === "dead" || this.mode === "movingIn") {
             // Pass
             // don't do anything
@@ -118,6 +119,17 @@ Ghost.prototype.kill = function () {
 
     spatialManager.unregister(this);
 };
+
+Ghost.prototype.getColors = function () {
+    if (this.mode === "dead" || this.mode === "movingIn") {
+        return ["white"];
+    } else if (this.mode === "frightened") {
+        // more blue than white
+        return ["blue", "blue", "white"];
+    } else {
+        return [this.color];
+    }
+}
 
 Ghost.prototype.update = function (du) {
     if (this.mode === "dead") {
@@ -140,6 +152,22 @@ Ghost.prototype.update = function (du) {
         du, this.direction, this.nextDirection,
         this.mode === "movingOut" || this.mode === "movingIn", speed
     );
+
+    if (this.direction !== 0) {
+        var pos = util.getCoordsFromBox(this.row, this.column);
+        var offset = this.getOffset(this.getOpposite(this.direction), Math.random()*1);
+        if (offset.row == 0) {
+            offset.row = Math.random()*1-0.5;
+        }
+        if (offset.column == 0) {
+            offset.column = Math.random()*1-0.5;
+        }
+        var colors = this.getColors();
+        particleManager.createParticles(pos.xPos + offset.column * consts.BOX_DIMENSION, 
+                        pos.yPos + offset.row * consts.BOX_DIMENSION/2, 
+                        offset.column, offset.row,
+                        colors);
+    }
 
     // If we're about to move, make decision
     if (this._hasMoved) {

@@ -44,6 +44,7 @@ var entityManager = {
     levels: [],
     shouldRenderGhosts: true,
     pacManFreezeException: false,
+    juicy: false,
     
     
     // PUBLIC DATA
@@ -502,6 +503,10 @@ var entityManager = {
         return !g_isUpdatePaused && !util.isFrozen();
     },
 
+    isFrightenedOn: function() {
+        return this._modeFrightened.isOn;
+    },
+
     update: function(du) {
         if (this._pacMans[0].lives == 0){
             this.killCategorie(this._ghosts);
@@ -510,6 +515,9 @@ var entityManager = {
 
         var TOGGLE_LEVEL_EDIT = keyCode('L');
         if (eatKey(TOGGLE_LEVEL_EDIT)) this.editingEnabled = !this.editingEnabled;
+
+        var TOGGLE_JUICY_MODE = keyCode('J');
+        if (eatKey(TOGGLE_JUICY_MODE)) this.juicy = !this.juicy;
 
         if (this.editingEnabled) {
             this._maze[0].update(du);
@@ -527,6 +535,9 @@ var entityManager = {
             this.setFrightenedMode();
         }
 
+        screenshaker.update(du);
+        screenshaker.update(du);
+
         util.updateFreezeTimer(du);
 
         // don't move anything when frozen
@@ -537,6 +548,9 @@ var entityManager = {
             }
             return;
         }
+
+        backgroundManager.update(du);
+        particleManager.update(du);
 
         if (!this._modeFrightened.isOn) {
             audioManager.play(siren);
@@ -594,6 +608,12 @@ var entityManager = {
 
         var debugX = 10, debugY = 100;
 
+        if (this.juicy) {
+            backgroundManager.render(ctx);
+            screenshaker.render(ctx);
+            particleManager.render(ctx);
+        }
+
         this.renderScore(ctx);
         if (this.startingLevel) {
             this.renderStartingLevel(ctx);
@@ -611,6 +631,10 @@ var entityManager = {
 
             }
             debugY += 10;
+        }
+
+        if (this.juicy) {
+            screenshaker.fixTranslate(ctx);
         }
     }
 

@@ -43,6 +43,8 @@ SpecialCapsule.prototype.hitMe = function(aggressor) {
         entityManager.setFrightenedMode();
 
         this.kill();
+
+        screenshaker.shake(10);
     }
 };
 

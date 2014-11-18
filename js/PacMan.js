@@ -82,6 +82,7 @@ PacMan.prototype.update = function (du) {
         this._dyingProp += this._dyingSpeed * (du/NOMINAL_UPDATE_INTERVAL);
         return;
     }
+
     
     if (keys[this.KEY_UP]) {
         this.nextDirection = "up";
@@ -102,6 +103,21 @@ PacMan.prototype.update = function (du) {
 
     // TODO: Unregister and check for death
     spatialManager.unregister(this);
+
+    if (this.direction !== 0) {
+        var pos = util.getCoordsFromBox(this.row, this.column);
+        var offset = this.getOffset(this.getOpposite(this.direction), Math.random()*1);
+        if (offset.row == 0) {
+            offset.row = Math.random()*1-0.5;
+        }
+        if (offset.column == 0) {
+            offset.column = Math.random()*1-0.5;
+        }
+        particleManager.createParticles(pos.xPos + offset.column * consts.BOX_DIMENSION, 
+                        pos.yPos + offset.row * consts.BOX_DIMENSION/2, 
+                        offset.column, offset.row,
+                        ['yellow', 'orange', 'pink', 'blue', 'green', 'red', 'white']);
+    }
     
     // mutates the direction of pacman
     this.move(du, this.direction, this.nextDirection);
@@ -122,6 +138,7 @@ PacMan.prototype.hitMe = function (aggressor) {
         //~ this.kill();
         if (aggressor.mode === "frightened") {
             aggressor.kill();
+            screenshaker.rotateScreen();
         } else if (aggressor.mode === "dead") {
             // pass
             // don't do anything

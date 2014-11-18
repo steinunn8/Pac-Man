@@ -32,7 +32,6 @@ Capsule.prototype.column = -1;
 Capsule.prototype.points = 10;
 
 Capsule.prototype.kill = function () {
-    audioManager.play(eatSound);
     this.isAlive = false;
     spatialManager.unregister(this);
 };
@@ -41,10 +40,12 @@ Capsule.prototype.hitMe = function(aggressor) {
     //~ console.log("Capsule under attack!");
     if (aggressor.entityType === entityManager.entityTypes["PacMan"]) {
         //~ console.log("Capsule eaten by PacMan");
+        audioManager.play(eatSound);
         
         //~ Implement "ghost-maniac-mode" with Boolean value?
         //~ [But wheeere?]
         //~ this._animProp = 0;
+        screenshaker.shake(1);
         this.kill();
     }
 };
