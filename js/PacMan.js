@@ -139,7 +139,7 @@ PacMan.prototype.hitMe = function (aggressor) {
         if (aggressor.mode === "frightened") {
             aggressor.kill();
             screenshaker.rotateScreen();
-        } else if (aggressor.mode === "dead") {
+        } else if (aggressor.mode === "dead" || this.mode === "movingIn") {
             // pass
             // don't do anything
         } else {
