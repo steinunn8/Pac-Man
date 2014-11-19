@@ -453,6 +453,7 @@ var entityManager = {
         var points = 200*this._modeFrightened.ghostsEaten;
         this.updateScore(points);
         this._extras.push({
+            updatesLeft: 1,
             render: function(ctx) {
                 var sprite = g_sprites.extras
                     .ghostPoints[self._modeFrightened.ghostsEaten-1];
@@ -460,14 +461,19 @@ var entityManager = {
                     sprite.drawCentredAt(ctx, pos.xPos, pos.yPos);
                 }
             },
-            update: function() {}
+            update: function(du) {
+
+                if (this.updatesLeft <= 0) {
+                    self._pacMans[0].shouldSkipRender = false;
+                    ghost.shouldSkipRender = false;
+                    return self.KILL_ME_NOW;
+                }
+                this.updatesLeft -= 1;
+
+                return true;
+            }
         });
-        util.setFreezeTimer(0.5, function() {
-            this._pacMans[0].shouldSkipRender = false;
-            ghost.shouldSkipRender = false;
-            this.renderingPoints = 0;
-            this._extras.splice(pointIndex, 1);
-        }.bind(this));
+        util.setFreezeTimer(0.5);
     },
     pacmanDead: function() {
         util.setFreezeTimer(0.8, function() {
