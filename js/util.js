@@ -181,12 +181,7 @@ var util = {
         var centerOffset = 0.5 * dimension;
         ctx.moveTo(offset, centerOffset);
         ctx.quadraticCurveTo(0, 0, centerOffset, offset);
-/*
-        if(doubleLine) {
-            ctx.moveTo(centerOffset, centerOffset+offset);
-            ctx.quadraticCurveTo(centerOffset, centerOffset, centerOffset+offset, centerOffset);
-        }
-*/
+
         this.finishLine(ctx, oldStyle);
     },
 
@@ -208,6 +203,56 @@ var util = {
 
     //EXTRAS WITH NO HOME
 
+    _freeze: false,
+    _freezeTimer: 0,
+    _freezeFns: [function() {}],
+    setFreezeTimer: function(duration, fn) {
+        fn = typeof fn === "function" ? fn : function() {};
+        this._freezeTimer = duration * SECS_TO_NOMINALS;
+        this._freezeFns.push(fn);
+    },
+    updateFreezeTimer: function(du) {
+        this._freezeTimer -= du;
+        if (this._freezeTimer <= 0) {
+            if (this._freeze) {
+                this._freezeFns.pop()();
+            }
+            if(this._freezeTimer <= 0) {
+                this._freeze = false;
+            }
+        } else {
+            this._freeze = true;
+        }
+    },
+    isFrozen: function() {
+        return this._freeze;
+    },
+
+    fruitOrder: ["cherries", "strawberry", "peach", "apple",
+                 "grapes", "galaxian", "bell", "key"],
+
+    getFruitByLevel: function(level) {
+        return level < 2 ? "cherries" :
+            level < 3 ? "strawberry" :
+            level < 5 ? "peach" :
+            level < 7 ? "apple" :
+            level < 9 ? "grapes" :
+            level < 11 ? "galaxian" :
+            level < 13 ? "bell" :
+            "key"; 
+    },
+
+    getFruitPointsByLevel: function(level) {
+        return level < 2 ? 100 :
+            level < 3 ? 300 :
+            level < 5 ? 500 :
+            level < 7 ? 700 :
+            level < 9 ? 1000 :
+            level < 11 ? 2000 :
+            level < 13 ? 3000 :
+            5000;
+    },
+
     getCoordsFromBox: function(row, column) {
         var dimension = consts.BOX_DIMENSION;
         var xPos = column * dimension + dimension / 2;
@@ -216,7 +261,6 @@ var util = {
     },
 
     getBoxFromCoord: function(x, y) {
-        var dimension = consts.BOX_DIMENSION;
         var dimension = consts.BOX_DIMENSION;
         var column = (x - dimension/2) / dimension;
         var row = (y - dimension/2) / dimension;
@@ -230,7 +274,9 @@ var util = {
 
     arrayRemove: function(arr, value) {
         var i = arr.indexOf(value);
-        arr.splice(i, 1);
+        if (i !== -1) {
+            arr.splice(i, 1);
+        }
     }
 
 };

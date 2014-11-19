@@ -15,8 +15,6 @@ function Maze(descr) {
     for (var property in descr) {
         this[property] = descr[property];
     }
-    //~ this.aGrid = this._getDefaultMazeArray();
-    //~ this.aGrid = consts.LEVEL_1_ARRAY.slice(0); //clonging array
     this.nRows = this.aGrid.length; //36
     this.nColumns = this.aGrid[0].length; //28
 
@@ -36,6 +34,12 @@ Maze.prototype.isCapsule = function(row, column){
 
 Maze.prototype.isSpecialCapsule = function(row, column){
     return this.aGrid[row][column] == this.gridValues.SPECIAL_CAPSULE;
+};
+
+// Maze is handled by entity manager and everything handled by it
+// should have a kill method
+Maze.prototype.kill = function() {
+    return;
 }
 
 Maze.prototype.getDirections = function(row, column) {
@@ -86,7 +90,8 @@ Maze.prototype.renderValues = {
     DOUBLE_LONG_BOTTOM_RIGHT_TOP: -19,
     DOUBLE_LONG_BOTTOM_LEFT_RIGHT: -20,
     DOUBLE_LONG_BOTTOM_LEFT_TOP: -21,
-    GHOST_WALL: -22
+    GHOST_WALL: -22,
+    GHOST_WALL_DOWN: -23
 };
 
 // Every value possible in the input grid and it's meaning
@@ -111,8 +116,10 @@ Maze.prototype.DOUBLE_LINE_OFFSET = -100;
 Maze.prototype._generateWall = function() {
     for (var row = 0; row < this.nRows; row++) {
         for (var column = 0; column < this.nColumns; column++) {
-            if (util.inArray([this.gridValues.PINKY, this.gridValues.INKY, this.gridValues.CLYDE], 
-                     this.aGrid[row][column])) {
+            if (util.inArray([this.gridValues.PINKY, 
+                              this.gridValues.INKY, 
+                              this.gridValues.CLYDE], 
+                              this.aGrid[row][column])) {
                 this.aGrid[row][column] = this.gridValues.GHOST_SPAWN;
             }
         }
@@ -142,6 +149,10 @@ Maze.prototype.update = function(du) {
     var KEY_WALL = keyCode('1');
     var KEY_EMPTY = keyCode('2');
     var KEY_CAPSULE = keyCode('3');
+    var KEY_SPECIAL_CAPSULE = keyCode('4');
+    var KEY_DOUBLE_WALL = keyCode('5');
+    var KEY_MIRROR = keyCode('0');
+
     if (eatKey(KEY_WALL)) {
         this.selectedBlock = this.gridValues.WALL;
     }
@@ -151,11 +162,26 @@ Maze.prototype.update = function(du) {
     if (eatKey(KEY_CAPSULE)) {
         this.selectedBlock = this.gridValues.CAPSULE;
     }
+    if (eatKey(KEY_SPECIAL_CAPSULE)) {
+        this.selectedBlock = this.gridValues.SPECIAL_CAPSULE;
+    }
+    if (eatKey(KEY_DOUBLE_WALL)) {
+        this.selectedBlock = this.gridValues.DOUBLE_WALL;
+    }
+
+    if (eatKey(KEY_MIRROR)) {
+        this.mirrorMaze();
+        this.image = -1;
+        this._generateWall();
+        entityManager.regenerateCapsules(this.aGrid);
+    }
     return;
 };
 
 Maze.prototype.editGrid = function(pos) {
-    if (this.selectedBlock === Infinity) {
+    if (this.selectedBlock === Infinity || pos.row < 0 ||
+        pos.column >= this.nColumns || pos.column < 0 ||
+        pos.row >= this.nRows) {
         return;
     }
     this.aGrid[pos.row][pos.column] = this.selectedBlock;
@@ -163,6 +189,15 @@ Maze.prototype.editGrid = function(pos) {
     this._generateWall();
 
     entityManager.regenerateCapsules(this.aGrid);
+};
+
+// mirrors the maze by y axis
+Maze.prototype.mirrorMaze = function() {
+    for (var i = 0; i < this.nRows; i++) {
+        for (var j = Math.floor(this.nColumns/2)+1; j < this.nColumns; j++) {
+            this.aGrid[i][j] = this.aGrid[i][this.nColumns - j - 1];
+        }
+    }
 }
 
 Maze.prototype.render = function(ctx) {
@@ -192,7 +227,11 @@ Maze.prototype.renderAll = function(ctx) {
 
 Maze.prototype._getRenderValue = function(row, column) {
     if (this.aGrid[row][column] == this.gridValues.GHOST_WALL) {
-        return this.renderValues.GHOST_WALL;
+        if(this.aGrid[row-1][column] == this.gridValues.GHOST_SPAWN) {
+            return this.renderValues.GHOST_WALL_DOWN;
+        } else {
+            return this.renderValues.GHOST_WALL;
+        }
     } else if (this.aGrid[row][column] < this.gridValues.EMPTY) {
         return this._adjecentCheck(row, column);
     }
@@ -282,7 +321,7 @@ Maze.prototype._drawPart = function(ctx, renderValue, x, y, isDouble) {
 
     rotation = this._getRotation(renderValue);
     
-    var style = "blue";
+    var style = this.color;
     if(util.inArray([this.renderValues.RIGHT, 
                      this.renderValues.LEFT, 
                      this.renderValues.UP, 
@@ -303,6 +342,10 @@ Maze.prototype._drawPart = function(ctx, renderValue, x, y, isDouble) {
     } else if(renderValue == this.renderValues.GHOST_WALL) {
         var halfDimension = consts.BOX_DIMENSION/2;
         util.fillBox(ctx, x-halfDimension, y+halfDimension/2.5,
+                     halfDimension*2, halfDimension/2, "#FBB382");
+    } else if(renderValue == this.renderValues.GHOST_WALL_DOWN) {
+        var halfDimension = consts.BOX_DIMENSION/2;
+        util.fillBox(ctx, x-halfDimension, y-halfDimension/1.3,
                      halfDimension*2, halfDimension/2, "#FBB382");
     }
 };
@@ -407,44 +450,3 @@ Maze.prototype._adjecentCheck = function(row, column) {
 
     return this.renderValues.ERROR;
 };
-
-//~ Maze.prototype._getDefaultMazeArray = function() {
-    //~ return [
-            //~ [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],
-            //~ [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],
-            //~ [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],
-            //~ [-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3],
-            //~ [-3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,-1,-1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,-3],
-            //~ [-3, 1,-1,-1,-1,-1, 1,-1,-1,-1,-1,-1, 1,-1,-1, 1,-1,-1,-1,-1,-1, 1,-1,-1,-1,-1, 1,-3],
-            //~ [-3, 2,-1,-1,-1,-1, 1,-1,-1,-1,-1,-1, 1,-1,-1, 1,-1,-1,-1,-1,-1, 1,-1,-1,-1,-1, 2,-3],
-            //~ [-3, 1,-1,-1,-1,-1, 1,-1,-1,-1,-1,-1, 1,-1,-1, 1,-1,-1,-1,-1,-1, 1,-1,-1,-1,-1, 1,-3],
-            //~ [-3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,-3],
-            //~ [-3, 1,-1,-1,-1,-1, 1,-1,-1, 1,-1,-1,-1,-1,-1,-1,-1,-1, 1,-1,-1, 1,-1,-1,-1,-1, 1,-3],
-            //~ [-3, 1,-1,-1,-1,-1, 1,-1,-1, 1,-1,-1,-1,-1,-1,-1,-1,-1, 1,-1,-1, 1,-1,-1,-1,-1, 1,-3],
-            //~ [-3, 1, 1, 1, 1, 1, 1,-1,-1, 1, 1, 1, 1,-1,-1, 1, 1, 1, 1,-1,-1, 1, 1, 1, 1, 1, 1,-3],
-            //~ [-3,-3,-3,-3,-3,-3, 1,-1,-1,-1,-1,-1, 0,-1,-1, 0,-1,-1,-1,-1,-1, 1,-3,-3,-3,-3,-3,-3],
-            //~ [-1,-1,-1,-1,-1,-3, 1,-1,-1,-1,-1,-1, 0,-1,-1, 0,-1,-1,-1,-1,-1, 1,-3,-1,-1,-1,-1,-1],
-            //~ [-1,-1,-1,-1,-1,-3, 1,-1,-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1,-1, 1,-3,-1,-1,-1,-1,-1],
-            //~ [-1,-1,-1,-1,-1,-3, 1,-1,-1, 0,-3,-3,-3,-2,-2,-3,-3,-3, 0,-1,-1, 1,-3,-1,-1,-1,-1,-1],
-            //~ [-3,-3,-3,-3,-3,-3, 1,-1,-1, 0,-3,-4,-4,-4,-4,-4,-4,-3, 0,-1,-1, 1,-3,-3,-3,-3,-3,-3],
-            //~ [ 0, 0, 0, 0, 0, 0, 1, 0, 0, 0,-3,-4,-4,-4,-4,-4,-4,-3, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
-            //~ [-3,-3,-3,-3,-3,-3, 1,-1,-1, 0,-3,-4,-4,-4,-4,-4,-4,-3, 0,-1,-1, 1,-3,-3,-3,-3,-3,-3],
-            //~ [-1,-1,-1,-1,-1,-3, 1,-1,-1, 0,-3,-3,-3,-3,-3,-3,-3,-3, 0,-1,-1, 1,-3,-1,-1,-1,-1,-1],
-            //~ [-1,-1,-1,-1,-1,-3, 1,-1,-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1,-1, 1,-3,-1,-1,-1,-1,-1],
-            //~ [-1,-1,-1,-1,-1,-3, 1,-1,-1, 0,-1,-1,-1,-1,-1,-1,-1,-1, 0,-1,-1, 1,-3,-1,-1,-1,-1,-1],
-            //~ [-3,-3,-3,-3,-3,-3, 1,-1,-1, 0,-1,-1,-1,-1,-1,-1,-1,-1, 0,-1,-1, 1,-3,-3,-3,-3,-3,-3],
-            //~ [-3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,-1,-1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,-3],
-            //~ [-3, 1,-1,-1,-1,-1, 1,-1,-1,-1,-1,-1, 1,-1,-1, 1,-1,-1,-1,-1,-1, 1,-1,-1,-1,-1, 1,-3],
-            //~ [-3, 1,-1,-1,-1,-1, 1,-1,-1,-1,-1,-1, 1,-1,-1, 1,-1,-1,-1,-1,-1, 1,-1,-1,-1,-1, 1,-3],
-            //~ [-3, 2, 1, 1,-1,-1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,-1,-1, 1, 1, 2,-3],
-            //~ [-3,-1,-1, 1,-1,-1, 1,-1,-1, 1,-1,-1,-1,-1,-1,-1,-1,-1, 1,-1,-1, 1,-1,-1, 1,-1,-1,-3],
-            //~ [-3,-1,-1, 1,-1,-1, 1,-1,-1, 1,-1,-1,-1,-1,-1,-1,-1,-1, 1,-1,-1, 1,-1,-1, 1,-1,-1,-3],
-            //~ [-3, 1, 1, 1, 1, 1, 1,-1,-1, 1, 1, 1, 1,-1,-1, 1, 1, 1, 1,-1,-1, 1, 1, 1, 1, 1, 1,-3],
-            //~ [-3, 1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1, 1,-1,-1, 1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1, 1,-3],
-            //~ [-3, 1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1, 1,-1,-1, 1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1, 1,-3],
-            //~ [-3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,-3],
-            //~ [-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3],
-            //~ [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1],
-            //~ [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]
-        //~ ];
-//~ };

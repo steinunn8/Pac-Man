@@ -26,26 +26,36 @@ function Ghost(descr) {
     // Set normal drawing scale, and warp state off
     this._scale = 1;
     this._isDead = false; //only eyes
-    this._isEatable = false;
+    this._isFrightened = false;
     this._hadMoved = false;
+    this._rotationTimer = (Math.random()*4 + 1) * SECS_TO_NOMINALS;
 };
 
 Ghost.prototype = new Entity();
 Ghost.prototype.direction = 0;
 Ghost.prototype.nextDirection = "left";
+
 // possible modes: chase, scatter, frightened, home, movingOut
 Ghost.prototype.mode = "chase";
+Ghost.prototype._frightenedSpeed = 1;
+Ghost.prototype._deadSpeed = 4;
+Ghost.prototype._rotation = 0;
 
 Ghost.prototype.rememberResets = function () {
     // Remember my reset positions and home corner (starting target)
     this.reset_row = this.row;
     this.reset_column = this.column;
     this.reset_mode = this.mode;
+    this.reset_speed = this.speed;
     this.startTarget = {
         row: this.target_.row,
         column: this.target_.column
     };
     this.reset_homeTime = this.homeTime;
+};
+
+Ghost.prototype.getStartPosition = function() {
+    return {row: this.reset_row, column: this.reset_column};
 };
 
 Ghost.prototype.resetTarget = function() {
@@ -54,15 +64,17 @@ Ghost.prototype.resetTarget = function() {
 };
 
 Ghost.prototype.changeMode = function(mode) {
+    this._isFrightened = (mode === "frightened");
+
     // can't change the mode from home with this method
-    if(this.mode === "home") {
+    if (util.inArray(["home", "movingOut", "dead", "movingIn"], this.mode)) {
         return;
     }
 
     //Ghosts are forced to reverse direction by the system anytime the mode changes from: 
     //chase-to-scatter, chase-to-frightened, scatter-to-chase, and scatter-to-frightened. 
     //Ghosts do not reverse direction when changing back from frightened to chase or scatter modes.
-    if(this.mode !== "frightened") {
+    if (this.mode !== "frightened") {
         this.nextDirection = this.getOpposite(this.direction);
     }
 
@@ -70,6 +82,8 @@ Ghost.prototype.changeMode = function(mode) {
 };
 
 Ghost.prototype.reset = function () {
+    this._isFrightened = false;
+    this.isAlive = true;
     this.setPos(this.reset_row, this.reset_column);
     this.mode = this.reset_mode;
     this.homeTime = this.reset_homeTime;
@@ -81,19 +95,91 @@ Ghost.prototype.drawCentredAt = function(ctx, cx, cy, rotation) {
 
 Ghost.prototype.hitMe = function (aggressor) {
     if (aggressor.entityType === entityManager.entityTypes["PacMan"]) {
-        console.log("PacMan hit Ghost");
-        
-        //~ Implement "ghost-maniac-mode" with Boolean value?
-        //~ [But wheeere?]
-        aggressor.kill();
+        if (this.mode === "frightened") {
+            this.kill();
+            screenshaker.rotateScreen();
+        } else if (this.mode === "dead" || this.mode === "movingIn") {
+            // Pass
+            // don't do anything
+        } else {
+            aggressor.kill();
+            entityManager.pacmanDead();
+        }
     } 
 };
 
+Ghost.prototype.kill = function (sideEffects) {
+    sideEffects = typeof sideEffects !== "undefined" ? sideEffects : true;
+    this.isAlive = false;
+    this.mode = "dead";
+
+    if (sideEffects) {
+        audioManager.play(eatGhost);
+        entityManager.ghostDies(this);
+    }
+
+    spatialManager.unregister(this);
+};
+
+Ghost.prototype.getColors = function () {
+    if (this.mode === "dead" || this.mode === "movingIn") {
+        return ["white"];
+    } else if (this.mode === "frightened") {
+        // more blue than white
+        return ["blue", "blue", "white"];
+    } else {
+        return [this.color];
+    }
+}
+
 Ghost.prototype.update = function (du) {
+    if (this._rotation > 0) {
+        this._rotation -= du * 0.25;
+    } else {
+        this._rotation = 0;
+        this._rotationTimer -= du;
+        if (this._rotationTimer <= 0) {
+            this._rotation = Math.PI * 2;
+            this._rotationTimer = (Math.random()*5 + 2) * SECS_TO_NOMINALS;
+        }
+    }
+
+    if (this.mode === "dead") {
+        var homeTarget = entityManager.getGhostExitPosition();
+        if (this.row === homeTarget.row &&
+            this.column === homeTarget.column) {
+            this.mode = "movingIn";
+            this.direction = 0;
+            this.nextDirection = 0;
+        }
+    }
+
     spatialManager.unregister(this);
 
     // moves the ghost
-    this._hasMoved = this.move(du, this.direction, this.nextDirection, this.mode === "movingOut");
+    var speed = this.mode === "frightened" ? this._frightenedSpeed :
+            this.mode === "dead" ? this._deadSpeed :
+            this.speed;
+    this._hasMoved = this.move(
+        du, this.direction, this.nextDirection,
+        this.mode === "movingOut" || this.mode === "movingIn", speed
+    );
+
+    if (this.direction !== 0) {
+        var pos = util.getCoordsFromBox(this.row, this.column);
+        var offset = this.getOffset(this.getOpposite(this.direction), Math.random()*1);
+        if (offset.row == 0) {
+            offset.row = Math.random()*1-0.5;
+        }
+        if (offset.column == 0) {
+            offset.column = Math.random()*1-0.5;
+        }
+        var colors = this.getColors();
+        particleManager.createParticles(pos.xPos + offset.column * consts.BOX_DIMENSION, 
+                        pos.yPos + offset.row * consts.BOX_DIMENSION/2, 
+                        offset.column, offset.row,
+                        colors);
+    }
 
     // If we're about to move, make decision
     if (this._hasMoved) {
@@ -107,18 +193,39 @@ Ghost.prototype.update = function (du) {
             }
         }
 
+        if (this.mode === "movingIn") {
+            var pos = entityManager.getGhostSpawnBoxPosition();
+            if (this.column == pos.column && this.row == pos.row) {
+                this.mode = "movingOut";
+                this._isFrightened = false;
+                this.column = pos.column;
+                this.row = pos.row;
+                return;
+            } else if (this.row > pos.row) {
+                this.nextDirection = "up";
+            } else {
+                this.nextDirection = "down";
+            }
+            return;
+        }
+
         if (this.mode === "movingOut") {
-            if (this.column == 14 && this.row == 14) {
-                this.mode = entityManager.getGhostMode();
+            var exitPos = entityManager.getGhostExitPosition();
+            if (this.column == exitPos.column && this.row == exitPos.row) {
+                this.mode = this._isFrightened ? "frightened" : entityManager.getGhostMode();
                 this.homeTime = 0;
-            } else if(this.column != 14) {
-                if(this.column > 14) {
+            } else if(this.column != exitPos.column) {
+                if(this.column > exitPos.column) {
                     this.nextDirection = "left";
                 } else {
-                    this.nextDirection = "right"
+                    this.nextDirection = "right";
                 }
             } else {
-                this.nextDirection = "up";
+                if(this.row > exitPos.row) {
+                    this.nextDirection = "up";
+                } else {
+                    this.nextDirection = "down"
+                }
             }
             return;
         }
@@ -136,6 +243,12 @@ Ghost.prototype.update = function (du) {
                 this.updateTarget();
             } else if(this.mode === "scatter") {
                 this.resetTarget();
+            } else if(this.mode === "dead") {
+                var homeTarget = entityManager.getGhostExitPosition();
+                this.target_ = {
+                    row: homeTarget.row,
+                    column: homeTarget.column
+                };
             }
             this.nextDirection = this.getNextDirection(directions);
         }
@@ -164,7 +277,7 @@ Ghost.prototype.getNextDirection = function(directions) {
     }
 
     // if frightened we should random
-    if(this.mode === "frightened") {
+    if (this.mode === "frightened") {
         var randomValue = parseInt(Math.random()*directions.length);
         direction = directions[randomValue];
     }
@@ -176,19 +289,37 @@ Ghost.prototype.bounceProp = 0;
 Ghost.prototype.bounceSpeed = 0.1;
 Ghost.prototype.bouncingUp = true;
 Ghost.prototype.render = function (ctx) {
+
+    if (!entityManager.shouldRenderGhosts ||
+        this.shouldSkipRender) {
+        return;
+    }
+    
     var pos = util.getCoordsFromBox(this.row, this.column);
     var boxDim = consts.BOX_DIMENSION;
+    var dir = this.direction;
 
     // Ghosts at home just bounce up and down
+    // only change if not paused/frozen
+    var shouldChange = entityManager.shouldChange();
+
+    // when home they are between 2 tiles
     if (this.mode === "home") {
         pos.xPos -= 0.5*boxDim;
+    }
+
+    if (!entityManager.isJuicy()) {
+        this._rotation = 0;
+    }
+
+    // Ghosts at home just bounce up and down
+    if (this.mode === "home" && shouldChange) {
         pos.yPos -= this.bounceProp*boxDim;
         this.bounceProp += (this.bouncingUp ? 1 : -1) * this.bounceSpeed;
         if (Math.abs(this.bounceProp) > 0.5) {
             this.bouncingUp = !this.bouncingUp;
         }
-    } else {
-        var dir = this.direction;
+    } else if (this.mode !== "home") {
         if (dir === "up") {
             pos.yPos += (this.timeToNext)*boxDim;
         } else if (dir === "down") {
@@ -202,7 +333,7 @@ Ghost.prototype.render = function (ctx) {
         // when we change from movingOut to other modes we
         // need to smooth the transition
         var smoothDuration = 0.7;
-        if (this.mode === "movingOut") {
+        if (this.mode === "movingOut" || this.mode === "movingIn") {
             pos.xPos -= 0.5*boxDim;
         } else if(-this.homeTime < smoothDuration) {
             pos.xPos -= 0.5*boxDim*(1+this.homeTime/smoothDuration);
@@ -211,6 +342,26 @@ Ghost.prototype.render = function (ctx) {
 
      // full animation circle frames per cell traverse
     var animFrame = Math.round(this.timeToNext);
-    var dir = this.direction;
-    this.sprite[dir || "up"][animFrame].drawCentredAt(ctx, pos.xPos, pos.yPos);
+
+    if (this.mode === "dead" || this.mode === "movingIn") {
+        g_sprites.ghosts.dead[dir || "up"]
+            .drawCentredAt(ctx, pos.xPos, pos.yPos, this._rotation);
+    } else if (this.mode === "frightened" || this._isFrightened) {
+        var mf = entityManager.getFrightenedMode();
+        var steps = 5;
+        var ratioLeftTime = 1 - (mf.timer/(mf.duration*SECS_TO_NOMINALS));
+        var ratioLeftStep = Math.floor(ratioLeftTime*mf.duration*steps);
+        //~ console.log("ratio left steps:", ratioLeftStep);
+        
+        if (ratioLeftStep<=10 && ratioLeftStep%2===0) {
+            g_sprites.ghosts.frightened.white[animFrame]
+                .drawCentredAt(ctx, pos.xPos, pos.yPos, this._rotation);
+        } else {
+            g_sprites.ghosts.frightened.blue[animFrame]
+                .drawCentredAt(ctx, pos.xPos, pos.yPos, this._rotation);            
+        }
+    } else {
+        this.sprite[dir || "up"][animFrame]
+            .drawCentredAt(ctx, pos.xPos, pos.yPos, this._rotation);
+    }
 };

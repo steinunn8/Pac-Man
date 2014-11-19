@@ -11,28 +11,96 @@
       Sorry, but your browser does not support the HTML5 canvas tag.
     </canvas>
 
-    <div id="output"></div>
+    <section class="controls">
+      <h2>Controls</h2>
+      <dl>
+        <dt><kbd>&#x2191;</kbd></dt>
+        <dd>Up</dd>
+
+        <dt><kbd>&#x2193;</kbd></dt>
+        <dd>Down</dd>
+
+        <dt><kbd>&#x2190;</kbd></dt>
+        <dd>Left</dd>
+
+        <dt><kbd>&#x2192;</kbd></dt>
+        <dd>Right</dd>
+
+        <dt><kbd>J</kbd></dt>
+        <dd>Toogles juicy mode on/off</dd>
+
+        <dt><kbd>M</kbd></dt>
+        <dd>Mute/unmute sound</dd>
+
+        <dt><kbd>Z</kbd></dt>
+        <dd class="debug-mode-dd">Toggle Cheat/Debug mode
+          <dl>
+            <dt><kbd>N</kbd></dt>
+            <dd>Loads next level</dd>
+
+            <dt><kbd>E</kbd></dt>
+            <dd>Frigten ghost</dd>
+
+            <dt><kbd>L</kbd></dt>
+            <dd class="level-edit">level editor
+              (<em>according to mouse placement</em>)
+              <dl>
+                <dt><kbd>1</kbd></dt><dd>wall</dd>
+                <dt><kbd>2</kbd></dt><dd>empty</dd>
+                <dt><kbd>3</kbd></dt><dd>capsule</dd>
+                <dt><kbd>4</kbd></dt><dd>special</dd>
+                <dt><kbd>5</kbd></dt><dd>double</dd>
+                <dt><kbd>0</kbd></dt><dd>duplicate</dd>
+                <dt><kbd>v</kbd></dt><dd>console logs level array</dd>
+              </dl>
+            </dd>
+
+            <dt><kbd>C</kbd></dt>
+            <dd>Toggles clearing of canvas ON/OFF</dd>
+
+            <dt><kbd>X</kbd></dt>
+            <dd>Toggle spatialManager debug mode ON/OFF</dd>
+
+          </dl>
+        </dd>
+
+        <dt><kbd>P</kbd></dt>
+        <dd>Pauses game</dd>
+
+        <dt><kbd>O</kbd></dt>
+        <dd>Updates game by one frame</dd>
+
+        <dt><kbd>Q</kbd></dt>
+        <dd>Quits the game</dd>
+      </dl>
+    </section>
 
     <script src="js/globals.js"></script>
     <script src="js/consts.js"></script>
     <script src="js/util.js"></script>
-    <script src="js/sprites.js"></script>
     <script src="js/keys.js"></script>
-    <script src="js/audio.js"></script>
+    <script src="js/audioManager.js"></script>
     <script src="js/handleMouse.js"></script>
 
     <script src="js/spatialManager.js"></script>
     <script src="js/entityManager.js"></script>
 
     <script src="js/Sprite.js"></script>
+    <script src="js/sprites.js"></script>
 
     <script src="js/Entity.js"></script>
     <script src="js/PacMan.js"></script>
     <script src="js/Ghost.js"></script>
     <script src="js/Capsule.js"></script>
     <script src="js/SpecialCapsule.js"></script>
+    <script src="js/Fruit.js"></script>
     <script src="js/Maze.js"></script>
-    
+
+    <script src="js/Particle.js"></script>
+    <script src="js/particleManager.js"></script>
+    <script src="js/screenshaker.js"></script>
+    <script src="js/backgroundManager.js"></script>
+
     <script src="js/update.js"></script>
     <script src="js/render.js"></script>
 

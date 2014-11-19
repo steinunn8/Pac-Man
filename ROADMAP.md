@@ -13,14 +13,17 @@ Week 2
 ------
 
 * ~~Impelment "Ghosts"~~
-* Sprites
+* ~~Sprites~~
 * ~~Collision detections for ghosts~~
 * ~~"Capsules" for pac-man to eat~~
 
 Week 3
 ------
 
-* "berries"
-* Connect "special capsules" for eating ghosts
-* Sound
-* Scoring system
+* Fruits
+* ~~Connect "special capsules" for eating ghosts~~
+* ~~Sound~~
+* ~~Scoring system~~
+* Points render for ghosts and fruits
+* Add right amount of points when ghost is eaten
+* Fix audio bug

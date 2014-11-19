@@ -9,7 +9,6 @@ game Entities.
 JavaScript's prototype-based inheritance system is unusual, and requires 
 some care in use. In particular, this "base" should only provide shared
 functions... shared data properties are potentially quite confusing.
-
 */
 
 "use strict";
@@ -22,15 +21,7 @@ functions... shared data properties are potentially quite confusing.
 */
 
 
-function Entity() {
-
-/*
-    // Diagnostics to check inheritance stuff
-    this._entityProperty = true;
-    console.dir(this);
-*/
-
-};
+function Entity() {};
 
 Entity.prototype.setup = function (descr) {
 
@@ -46,7 +37,7 @@ Entity.prototype.setup = function (descr) {
     this._spatialID = spatialManager.getNewSpatialID();
     
     // I am not dead yet!
-    this._isDeadNow = false;
+    this.isAlive = true;
     // Time to next is the remaining proportion of the distance traveled
     // to next cell
     this.timeToNext = 0;
@@ -72,11 +63,14 @@ Entity.prototype.getNextPos = function(direction) {
     return util.wrapPosition(row, column);
 };
 
-Entity.prototype.move = function(du, direction, nextDirection, force) {
+Entity.prototype.move = function(du, direction, nextDirection, force, speed) {
     if (force === undefined) {
         force = false;
     }
-    this.timeToNext -= this.speed * du / NOMINAL_UPDATE_INTERVAL;
+    if (speed === undefined) {
+        speed = this.speed;
+    }
+    this.timeToNext -= speed * du / NOMINAL_UPDATE_INTERVAL;
     // When our center is in a new cell, we let spatial manager know
     if (this.timeToNext < 0.5) {
         spatialManager.imGoingHere(this, this.row, this.column);
@@ -172,7 +166,7 @@ Entity.prototype.getSpatialID = function () {
 };
 
 Entity.prototype.kill = function () {
-    this._isDeadNow = true;
+    this.isAlive = false;
 };
 
 Entity.prototype.findHitEntity = function () {

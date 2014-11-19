@@ -2,103 +2,181 @@
 Stuff to load inn all the sprite images
 */
 
-var sprites = {
-    _pacMans  : [],
-    _ghosts   : [],
-    _extras   : [],
-    
+var sprites = function() {
+    var pacMans;
+    var ghosts;
+    var extras;
 
-
-    makeSpritesArray: function() {
-    this.makeGhosts();
-    this.makePacmans();
-    this.makeFruits();
-    },
-
-    makeGhosts: function(){
-        this._ghosts = {red:[], pink:[], cyan:[], orange:[]};
+    var makeGhosts = function(){
+        ghosts = {red:[], pink:[], cyan:[], orange:[]};
         var row = 4;
         var col = 0;
-        for(attr in this._ghosts){
-            this._ghosts[attr] = {up:[], down:[], left:[], right:[]};
+        for(var attr in ghosts){
+            ghosts[attr] = {up:[], down:[], left:[], right:[]};
             col = 0;
-            for (attrAttr in this._ghosts[attr]){
-                this.cutGhostSprite(attr, attrAttr, col, row, 2);
-                this.cutGhostSprite(attr, attrAttr, col + 1, row, 2);
+            for (var attrAttr in ghosts[attr]){
+                cutGhostSprite(attr, attrAttr, col, row, 2);
+                cutGhostSprite(attr, attrAttr, col + 1, row, 2);
                 col += 2;
             }
             row++;
         }
-        this.addEatable();
-        this.addDead();
-    },
+        addEatable();
+        addDead();
+    };
 
-    addEatable: function(){
-        this._ghosts["eatable"] = { blue:[], white:[] };
+    var addEatable = function(){
+        ghosts["frightened"] = { blue:[], white:[] };
         var color = "blue";
         var row = 8;
         for(var i = 0; i < 4; i++){
             if(i == 2){color = "white";}
-            this.cutGhostSprite("eatable", color, i, row, 2);
+            cutGhostSprite("frightened", color, i, row, 2);
         }
-    },
+    };
 
-    addDead: function(){
-        this._ghosts["dead"] = {eyes:[]};
+    var addDead = function(){
+        ghosts["dead"] = {};
         var row = 10;
-        for(var i = 0; i < 4; i++){
-            this.cutGhostSprite("dead", "eyes", i, row, 2);
-        }
-    },
+        ghosts.dead.up = new Sprite(
+            g_images, 0*20, row*20, 20, 20, 16, 16, 2
+        );
+        ghosts.dead.down = new Sprite(
+            g_images, 1*20, row*20, 20, 20, 16, 16, 2
+        );
+        ghosts.dead.left = new Sprite(
+            g_images, 2*20, row*20, 20, 20, 16, 16, 2
+        );
+        ghosts.dead.right = new Sprite(
+            g_images, 3*20, row*20, 20, 20, 16, 16, 2
+        );
+    };
 
-
-    cutGhostSprite: function(attr, attrAttr, x, y, scale){
+    var cutGhostSprite = function(attr, attrAttr, x, y, scale){
         var sprite;
         sprite = new Sprite(g_images, x * 20, y * 20, 20, 20, 16, 16, scale);
-        this._ghosts[attr][attrAttr].push(sprite);
-    },
+        ghosts[attr][attrAttr].push(sprite);
+    };
 
-    makePacmans: function(){
+    var makePacMan = function(){
         var row = 0;
         var col = 0;
-        this._pacMans = {left:[], right:[], up:[], down:[], dying:[]}
-        for(attr in this._pacMans){
-            if(attr == "dying"){ continue; }
-            this.cutPacManSprite(attr, col, row, 2);
-            this.cutPacManSprite(attr, col + 1, row, 2);
-            this.cutPacManSprite(attr, col + 2, row, 2);
+        pacMans = {left:[], right:[], up:[], down:[]};
+        for(var attr in pacMans){
+            cutPacManSprite(attr, col, row, 2);
+            cutPacManSprite(attr, col + 1, row, 2);
+            cutPacManSprite(attr, col + 2, row, 2);
             row++;
         }
-        this.addDying();
-    },
+        addDying();
+        addLives();
+    };
 
-    addDying: function(){
-        this._pacMans["dying"] = []
+    var addLives = function(){
+        pacMans["lives"] = [];
+        pacMans["lives"].push(pacMans.left[0]);
+    };
+
+    var addDying = function(){
+        pacMans["dying"] = [];
         var row = 12;
         for(var i = 0; i < 11; i++){
-            this.cutPacManSprite("dying", i, row, 2);
+            cutPacManSprite("dying", i, row, 2);
         }
-    },
+    };
 
-    cutPacManSprite: function(attr, x, y, scale){
+
+    var cutPacManSprite = function(attr, x, y, scale){
         var sprite;
         sprite = new Sprite(g_images, x * 20, y * 20, 20, 20, 16, 16, scale);
-        this._pacMans[attr].push(sprite);
-    },
+        pacMans[attr].push(sprite);
+    };
 
-    makeFruits: function(){
+    var makeExtras = function(){
+        makeFruits();
+        makePoints();
+        makeFruitPoints();
+        makeGhostPoints();
+        addText();
+        addLives();
+    };
+
+    var makeFruits = function(){
         var col = 8.5;
-        this._extras = { fruits:[]}
-        for(var i = 8; i < 12; i++){
-            this.cutExtraSprite("fruits", col, i, 2);
-        }
-    },
+        extras = { fruits:{}, points:[], ghostPoints:[]};
+        extras.fruits.cherries = new Sprite(
+            g_images, 8.5*20, 8*20, 20, 20, 16, 16, 2
+        );
+        extras.fruits.strawberry = new Sprite(
+            g_images, 8.5*20, 9*20, 20, 20, 16, 16, 2
+        );
+        extras.fruits.peach = new Sprite(
+            g_images, 8.5*20, 10*20, 20, 20, 16, 16, 2
+        );
+        extras.fruits.apple = new Sprite(
+            g_images, 8.5*20, 11*20, 20, 20, 16, 16, 2
+        );
+        extras.fruits.grapes = new Sprite(
+            g_images, 10.5*20, 8*20, 20, 20, 16, 16, 2
+        );
+        extras.fruits.galaxian = new Sprite(
+            g_images, 10.5*20, 9*20, 20, 20, 16, 16, 2
+        );
+        extras.fruits.bell = new Sprite(
+            g_images, 10.5*20, 10*20, 20, 20, 16, 16, 2
+        );
+        extras.fruits.key = new Sprite(
+            g_images, 10.5*20, 11*20, 20, 20, 16, 16, 2
+        );
+    };
 
-    cutExtraSprite: function(attr, x, y, scale){
+    var makeGhostPoints = function(){
+        var row = 11;
+        for(var i = 0; i < 4; i++){
+            cutExtrasSprite("ghostPoints", i, row, 2);
+        }
+    };
+
+    var makeFruitPoints = function(){
+        extras.fruitPoints = [];
+        var col = 8.25;
+        for(var i = 0; i < 8; i++){
+            extras.fruitPoints.push(
+                new Sprite(g_images, col*20, i*20, 30, 20, 20, 16, 2));
+        }
+    };
+
+    var addText = function(){
+        extras["highScore"] = new Sprite(g_images, 200, 26, 80, 8, 160, 14, 1);
+        extras["gameOver"] = new Sprite(g_images, 0.5*20, 9.5 * 20, 90, 10, 90, 10, 2);
+        extras["ready"] = new Sprite(g_images, 10*20, 0, 60, 10, 96, 16);
+        extras["1up"] = new Sprite(g_images, 10.5*20, 3.5*20, 30, 10, 30, 10, 1);
+        extras["2up"] = new Sprite(g_images, 10.5*20, 4*20, 30, 10, 30, 10, 1);
+        extras["extraLive"] = new Sprite(g_images, 4*20, 8*20, 20, 20, 16, 16, 2);
+    };
+
+    var makePoints = function() {
+        extras.points = [];
+        for(var i = 1; i < 11; i++) {
+            extras.points.push(
+                new Sprite(g_images, 2+10*i, 180, 10, 10, 16, 16)
+            );
+        }
+    };
+
+    var cutExtrasSprite = function(attr, x, y, scale){
         var sprite;
         sprite = new Sprite(g_images, x * 20, y * 20, 20, 20, 16, 16, scale);
-        this._extras[attr].push(sprite);
-    }
+        extras[attr].push(sprite);
+    };
 
+    makePacMan();
+    makeGhosts();
+    makeExtras();
 
-}
+    return {
+        ghosts  : ghosts,
+        pacMans : pacMans,
+        extras  : extras
+    };
+};

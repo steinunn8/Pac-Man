@@ -1,5 +1,49 @@
- canvas {
-   border: 1px solid black;
-   margin: 0 auto;
-   display: block;
- }
+canvas {
+  border: 1px solid black;
+  margin: 0 auto;
+  display: block;
+}
+canvas {
+  border: 1px solid black;
+  margin: 0 auto;
+  display: block;
+}
+
+html {
+  background: #000;
+}
+
+.controls {
+  color: white;
+}
+.controls h2 {
+  text-align: center;
+}
+
+dl { width: 100%; }
+dt, dd { display: inline-block; margin: 0; vertical-align: top }
+dt { text-align: right; width: 45%; line-height: 1.2em; }
+dd { text-align: left; width: 50%; padding-left: 1em; }
+dd > dl dt {
+  width: 10%;
+}
+dd > dl dd {
+  width: 85%;
+}
+
+kbd {
+  border: 1px outset #333;
+  border-radius: 3px;
+  background-color: #252525;
+  padding: 1px 4px;
+  font-size: 0.75em;
+  line-height: 1em;
+}
+
+.highlight {
+    color: yellow;
+}
+
+.highlight dl {
+    color: white;
+}

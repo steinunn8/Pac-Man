@@ -15,27 +15,6 @@ var g_ctx = g_canvas.getContext("2d");
 12345678901234567890123456789012345678901234567890123456789012345678901234567890
 */
 
-//~ function createPacMan() {
-    //~ entityManager._generatePacMan({
-    //~ });
-//~ }
-
-// function createGhosts() {
-//     entityManager._generateGhost({
-//         sprite: g_sprites.pacMan,
-//         column: 14,
-//         row: 14,
-//         speed: 2, // columns per second
-//         rotation: 0
-//     });
-// }
-
-//~ var g_maze;
-
-//~ function createMaze() {
-    //~ g_maze = new Maze({});
-//~ }
-
 // =============
 // GATHER INPUTS
 // =============
@@ -73,21 +52,33 @@ var g_allowMixedActions = true;
 var g_useAveVel = true;
 var g_renderSpatialDebug = false;
 
-var KEY_MIXED   = keyCode('M');
+var KEY_MUTE   = keyCode('M');
 var KEY_SPATIAL = keyCode('X');
 var KEY_LOG_MAZE = keyCode('V');
+var KEY_NEW_GAME = keyCode('9');
 
 function processDiagnostics() {
 
-    if (eatKey(KEY_MIXED))
-        g_allowMixedActions = !g_allowMixedActions;
+    if (eatKey(KEY_SPATIAL) && g_debugEnabled) g_renderSpatialDebug = !g_renderSpatialDebug;
 
-    if (eatKey(KEY_SPATIAL)) g_renderSpatialDebug = !g_renderSpatialDebug;
-
-    // prints level data to console
+    // prints pretty level data to console
     if (eatKey(KEY_LOG_MAZE)) {
-//        window.prompt("Level array: ", JSON.stringify(entityManager.getMazeGrid()));
-        console.log(JSON.stringify(entityManager.getMazeGrid()));
+        var levelArray = [];
+        var maze = entityManager.getMazeGrid();
+        for(var i = 0; i < maze.length; i++) {
+            levelArray.push(JSON.stringify(maze[i]).replace(/\-?\d+/g, function(x) {
+                return (" " + x).slice(-2);
+            }));
+        }
+        console.log(JSON.stringify(levelArray, undefined, 4).replace(/"/g, ""));
+    }
+
+    if (eatKey(KEY_MUTE)) {
+        audioManager.toggleMute();
+    }
+
+    if(eatKey(KEY_NEW_GAME)){
+        preloadDone();
     }
 }
 
@@ -108,7 +99,6 @@ function processDiagnostics() {
 
 function renderSimulation(ctx) {
 
-    //~ g_maze.render(ctx);
     entityManager.render(ctx);
 
     if (g_renderSpatialDebug) spatialManager.render(ctx);
@@ -120,18 +110,17 @@ function renderSimulation(ctx) {
 // =============
 
 var g_images;
-var g_sprites = [];
+var g_sprites = {};
 function requestPreloads() {
-
     g_images = new Image();
     g_images.onload = preloadDone;
     g_images.src = "sprite2.png";
 
-    sprites.makeSpritesArray(); 
+    g_sprites = sprites(); 
 }
 
 function preloadDone() {
-    entityManager.init(consts.LEVEL_1_ARRAY);
+    entityManager.init(consts.LEVEL_ARRAY);
     main.init();
     g_canvas.width = (consts.BOX_DIMENSION *
                       entityManager.getMazeColumns());
