@@ -518,10 +518,12 @@ var entityManager = {
         }
 
         var TOGGLE_LEVEL_EDIT = keyCode('L');
-        if (eatKey(TOGGLE_LEVEL_EDIT)) this.editingEnabled = !this.editingEnabled;
+        if (eatKey(TOGGLE_LEVEL_EDIT) && g_debugEnabled)
+            this.editingEnabled = !this.editingEnabled;
 
         var TOGGLE_JUICY_MODE = keyCode('J');
-        if (eatKey(TOGGLE_JUICY_MODE)) this.juicy = !this.juicy;
+        if (eatKey(TOGGLE_JUICY_MODE))
+            this.juicy = !this.juicy;
 
         if (this.editingEnabled) {
             this._maze[0].update(du);
@@ -529,13 +531,15 @@ var entityManager = {
         }
 
         var KEY_NEXT_LEVEL = keyCode('N');
-        if (this._capsules.length == 0 || eatKey(KEY_NEXT_LEVEL)) {
+        if (this._capsules.length == 0 ||
+            (eatKey(KEY_NEXT_LEVEL)) && g_debugEnabled) {
+            
             console.log("Next level");
             this.setLevel(this.level + 1);
         }
         
         var KEY_E = keyCode('E');
-        if (eatKey(KEY_E)) {
+        if (eatKey(KEY_E) && g_debugEnabled) {
             this.setFrightenedMode();
         }
 
