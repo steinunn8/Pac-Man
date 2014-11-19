@@ -108,12 +108,15 @@ Ghost.prototype.hitMe = function (aggressor) {
     } 
 };
 
-Ghost.prototype.kill = function () {
-    audioManager.play(eatGhost);
+Ghost.prototype.kill = function (sideEffects) {
+    sideEffects = typeof sideEffects !== "undefined" ? sideEffects : true;
     this.isAlive = false;
     this.mode = "dead";
 
-    entityManager.ghostDies(this);
+    if (sideEffects) {
+        audioManager.play(eatGhost);
+        entityManager.ghostDies(this);
+    }
 
     spatialManager.unregister(this);
 };

@@ -140,7 +140,7 @@ var entityManager = {
         while (aCategory.length > 0) {
             entity = aCategory.pop();
             if (entity.kill)
-                entity.kill();
+                entity.kill(false);
         }
     },
     
@@ -196,6 +196,7 @@ var entityManager = {
     
     _generateGhosts : function(grid) {
         var pos = this._maze[0].getEntityPos(this._maze[0].gridValues.BLINKY);
+        var ghostSpeed = Math.min(1.5  + (this.level-1) * 0.125, 2.1);
         this._ghosts.push(new Ghost({
             name: "blinky",
             color: "red",
@@ -203,7 +204,7 @@ var entityManager = {
             sprite: g_sprites.ghosts.red,
             column: pos.column,
             row: pos.row,
-            speed: 1.5, // columns per second
+            speed: ghostSpeed, // columns per second
             direction: "left",
             target_: {
                 row: 0,
@@ -226,7 +227,7 @@ var entityManager = {
             sprite: g_sprites.ghosts.pink,
             column: 14,
             row: 17,
-            speed: 1.5, // columns per second
+            speed: ghostSpeed, // columns per second
             direction: 0,
             target_: {
                 row: 0,
@@ -251,7 +252,7 @@ var entityManager = {
             sprite: g_sprites.ghosts.orange,
             column: 16,
             row: 17,
-            speed: 1.5, // columns per second
+            speed: ghostSpeed, // columns per second
             direction: 0,
             target_: {
                 row: this.getMazeRows(),
@@ -281,7 +282,7 @@ var entityManager = {
             sprite: g_sprites.ghosts.cyan,
             column: 12,
             row: 17,
-            speed: 1.5, // columns per second
+            speed: ghostSpeed, // columns per second
             direction: 0,
             target_: {
                 row: this.getMazeRows(),
@@ -543,7 +544,6 @@ var entityManager = {
             this.setFrightenedMode();
         }
 
-        screenshaker.update(du);
         screenshaker.update(du);
 
         util.updateFreezeTimer(du);

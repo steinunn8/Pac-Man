@@ -3,6 +3,25 @@ canvas {
   margin: 0 auto;
   display: block;
 }
+canvas {
+  border: 1px solid black;
+  margin: 0 auto;
+  display: block;
+}
+
+html {
+  background: #000;
+}
+
+div {
+  float: left;
+  color: white;
+  position:absolute;
+  top: 50px;
+  margin-left: 100px;
+  width: 350px;
+  font-family: Arial;
+}
 
 dl { width: 100%; }
 dt, dd { display: inline-block; margin: 0; }
