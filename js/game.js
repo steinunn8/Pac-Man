@@ -55,6 +55,7 @@ var g_renderSpatialDebug = false;
 var KEY_MUTE   = keyCode('M');
 var KEY_SPATIAL = keyCode('X');
 var KEY_LOG_MAZE = keyCode('V');
+var KEY_NEW_GAME = keyCode('9');
 
 function processDiagnostics() {
 
@@ -74,6 +75,10 @@ function processDiagnostics() {
 
     if (eatKey(KEY_MUTE)) {
         audioManager.toggleMute();
+    }
+
+    if(eatKey(KEY_NEW_GAME)){
+        preloadDone();
     }
 }
 
@@ -107,7 +112,6 @@ function renderSimulation(ctx) {
 var g_images;
 var g_sprites = {};
 function requestPreloads() {
-
     g_images = new Image();
     g_images.onload = preloadDone;
     g_images.src = "sprite2.png";

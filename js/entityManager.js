@@ -89,6 +89,7 @@ var entityManager = {
         this.levels = levels;
         this.setLevel(1);
         audioManager.play(introSound);
+        this.score = 0;
     },
 
     setLevel: function(levelNumber) {
