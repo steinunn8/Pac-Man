@@ -9,9 +9,6 @@ var g_doRender = true;
 var g_frameCounter = 1;
 
 var TOGGLE_CLEAR = 'C'.charCodeAt(0);
-var TOGGLE_BOX = 'B'.charCodeAt(0);
-var TOGGLE_UNDO_BOX = 'U'.charCodeAt(0);
-var TOGGLE_FLIPFLOP = 'F'.charCodeAt(0);
 var TOGGLE_RENDER = 'R'.charCodeAt(0);
 
 function render(ctx) {
@@ -19,10 +16,6 @@ function render(ctx) {
     // Process various option toggles
     //
     if (eatKey(TOGGLE_CLEAR)) g_doClear = !g_doClear;
-    if (eatKey(TOGGLE_BOX)) g_doBox = !g_doBox;
-    if (eatKey(TOGGLE_UNDO_BOX)) g_undoBox = !g_undoBox;
-    if (eatKey(TOGGLE_FLIPFLOP)) g_doFlipFlop = !g_doFlipFlop;
-    if (eatKey(TOGGLE_RENDER)) g_doRender = !g_doRender;
     
     // I've pulled the clear out of `renderSimulation()` and into
     // here, so that it becomes part of our "diagnostic" wrappers
