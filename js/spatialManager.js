@@ -45,7 +45,7 @@ var spatialManager = {
         var entities = [];
         for (var ID in this._entities) {
             var e = this._entities[ID];
-            if (!e || !e.isAlive) continue;
+            if (!e) continue;
             
             var pos = e.getPos();
             if (pos.row===row && pos.column===column)
