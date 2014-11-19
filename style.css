@@ -1,5 +1,19 @@
- canvas {
-   border: 1px solid black;
-   margin: 0 auto;
-   display: block;
- }
+canvas {
+  border: 1px solid black;
+  margin: 0 auto;
+  display: block;
+}
+
+dl { width: 100%; }
+dt, dd { display: inline-block; margin: 0; }
+dt { text-align: right; width: 45%; line-height: 1.2em; }
+dd { text-align: left; width: 50%; padding-left: 1em; }
+
+kbd {
+  border: 1px outset #CCC;
+  border-radius: 3px;
+  background-color: #E8E8E8;
+  padding: 1px 4px;
+  font-size: 0.75em;
+  line-height: 1em;
+}
