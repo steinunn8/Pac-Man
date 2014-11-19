@@ -40,10 +40,10 @@ PacMan.prototype.rememberResets = function () {
     this.reset_timeToNext = this.timeToNext;
 };
 
-PacMan.prototype.KEY_UP = 'W'.charCodeAt(0);
-PacMan.prototype.KEY_DOWN  = 'S'.charCodeAt(0);
-PacMan.prototype.KEY_LEFT   = 'A'.charCodeAt(0);
-PacMan.prototype.KEY_RIGHT  = 'D'.charCodeAt(0);
+PacMan.prototype.KEY_UP = 38; //'W'.charCodeAt(0);
+PacMan.prototype.KEY_DOWN = 40; //'S'.charCodeAt(0);
+PacMan.prototype.KEY_LEFT = 37; //'A'.charCodeAt(0);
+PacMan.prototype.KEY_RIGHT = 39; //'D'.charCodeAt(0);
 
 // Initial, inheritable, default values
 PacMan.prototype.timeToNext = 0.75;
