@@ -181,12 +181,7 @@ var util = {
         var centerOffset = 0.5 * dimension;
         ctx.moveTo(offset, centerOffset);
         ctx.quadraticCurveTo(0, 0, centerOffset, offset);
-/*
-        if(doubleLine) {
-            ctx.moveTo(centerOffset, centerOffset+offset);
-            ctx.quadraticCurveTo(centerOffset, centerOffset, centerOffset+offset, centerOffset);
-        }
-*/
+
         this.finishLine(ctx, oldStyle);
     },
 

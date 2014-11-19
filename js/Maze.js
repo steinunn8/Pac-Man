@@ -15,8 +15,6 @@ function Maze(descr) {
     for (var property in descr) {
         this[property] = descr[property];
     }
-    //~ this.aGrid = this._getDefaultMazeArray();
-    //~ this.aGrid = consts.LEVEL_1_ARRAY.slice(0); //clonging array
     this.nRows = this.aGrid.length; //36
     this.nColumns = this.aGrid[0].length; //28
 
@@ -118,8 +116,10 @@ Maze.prototype.DOUBLE_LINE_OFFSET = -100;
 Maze.prototype._generateWall = function() {
     for (var row = 0; row < this.nRows; row++) {
         for (var column = 0; column < this.nColumns; column++) {
-            if (util.inArray([this.gridValues.PINKY, this.gridValues.INKY, this.gridValues.CLYDE], 
-                     this.aGrid[row][column])) {
+            if (util.inArray([this.gridValues.PINKY, 
+                              this.gridValues.INKY, 
+                              this.gridValues.CLYDE], 
+                              this.aGrid[row][column])) {
                 this.aGrid[row][column] = this.gridValues.GHOST_SPAWN;
             }
         }

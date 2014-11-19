@@ -79,7 +79,6 @@ main.gameOver = function () {
 };
 
 // Simple voluntary quit mechanism
-//
 var KEY_QUIT = 'Q'.charCodeAt(0);
 function requestedQuit() {
     return keys[KEY_QUIT];
@@ -102,7 +101,6 @@ main._requestNextIteration = function () {
 };
 
 // Mainloop-level debug-rendering
-
 var TOGGLE_TIMER_SHOW = 'T'.charCodeAt(0);
 
 main._doTimerShow = false;

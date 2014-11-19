@@ -30,7 +30,7 @@ function PacMan(descr) {
 
 PacMan.prototype = new Entity();
 
-PacMan.prototype.timeToNext = 0.75;
+
 PacMan.prototype.rememberResets = function () {
     // Remember my reset positions
     this.reset_row = this.row;
@@ -46,8 +46,13 @@ PacMan.prototype.KEY_LEFT   = 'A'.charCodeAt(0);
 PacMan.prototype.KEY_RIGHT  = 'D'.charCodeAt(0);
 
 // Initial, inheritable, default values
+PacMan.prototype.timeToNext = 0.75;
 PacMan.prototype.lives = 3;
 PacMan.prototype.score = 0;
+PacMan.prototype._dyingProp = 0;
+PacMan.prototype._dyingSpeed = 0.2; // fps
+PacMan.prototype._animProp = 0;    //proportion of the animation cycle
+PacMan.prototype._animSpeed = 0.1; //frames per second
 
 PacMan.prototype.reset = function () {
     this.setPos(this.reset_row, this.reset_column);
@@ -70,8 +75,6 @@ PacMan.prototype._keyMove = function() {
            keys[this.KEY_LEFT] || keys[this.KEY_RIGHT];
 };
 
-PacMan.prototype._dyingProp = 0;
-PacMan.prototype._dyingSpeed = 0.2; // fps
 PacMan.prototype.update = function (du) {
     // Special logic for dying behaviour
     if (!this.isAlive) {
@@ -82,7 +85,6 @@ PacMan.prototype.update = function (du) {
         this._dyingProp += this._dyingSpeed * (du/NOMINAL_UPDATE_INTERVAL);
         return;
     }
-
     
     if (keys[this.KEY_UP]) {
         this.nextDirection = "up";
@@ -101,7 +103,6 @@ PacMan.prototype.update = function (du) {
         this.timeToNext = 0;
     }
 
-    // TODO: Unregister and check for death
     spatialManager.unregister(this);
 
     if (this.direction !== 0) {
@@ -125,23 +126,13 @@ PacMan.prototype.update = function (du) {
     spatialManager.register(this);
 };
 
-PacMan.prototype._animProp = 0;    //proportion of the animation cycle
-PacMan.prototype._animSpeed = 0.1; //frames per second
-
 PacMan.prototype.hitMe = function (aggressor) {
     if (aggressor.entityType === entityManager.entityTypes["Ghost"]) {
-        console.log("Ghost hit PacMan");
-        //TODO: Temp, will be something else
-        //~ entityManager.resetGhosts();
-        //~ Implement "ghost-maniac-mode" with Boolean value?
-        //~ [But wheeere?]
-        //~ this.kill();
         if (aggressor.mode === "frightened") {
             aggressor.kill();
             screenshaker.rotateScreen();
         } else if (aggressor.mode === "dead" || aggressor.mode === "movingIn") {
-            // pass
-            // don't do anything
+            // pass, don't do anything
         } else {
             this.kill();
             entityManager.pacmanDead();
@@ -165,11 +156,11 @@ PacMan.prototype.render = function (ctx) {
         this.sprite.lives[0].drawCentredAt(ctx, livePos.xPos + (i*30), livePos.yPos);
     }
 
-    //~ TODO: change logic when PacMan dies
     if (!this.isAlive) {
         animFrame = Math.round((this._dyingProp)*10); // 0-10 frames of dying
-        if (animFrame > 10) { animFrame=10; }
-        //~ console.log(animFrame);
+        if (animFrame > 10) { 
+            animFrame = 10; 
+        }
         this.sprite["dying"][animFrame].drawCentredAt(ctx, pos.xPos, pos.yPos);
         return;
     }

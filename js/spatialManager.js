@@ -24,10 +24,6 @@ var spatialManager = {
 
     _entities : [],
 
-    // "PRIVATE" METHODS
-    //
-    // <none yet>
-
 
     // PUBLIC METHODS
     
@@ -59,9 +55,6 @@ var spatialManager = {
     }, 
     
     imGoingHere: function(aggressor, row, column) {
-        //~ console.log("spatialManager reckons that " + myEntityType +
-        //~ " is going to (row,column)=(" + row + "," + column + ").");
-        
         var entities = this._findEntitiesAt(row, column);
         for (var i=0; i<entities.length; i++) {
             var entity = entities[i];
@@ -75,7 +68,11 @@ var spatialManager = {
             if (!e) continue;
             var boxPos = e.getPos();
             var pos = util.getCoordsFromBox(boxPos.row, boxPos.column);
-            util.fillBox(ctx, pos.xPos - consts.BOX_DIMENSION/2, pos.yPos - consts.BOX_DIMENSION/2, consts.BOX_DIMENSION, consts.BOX_DIMENSION, "red");
+            util.fillBox(ctx, pos.xPos - consts.BOX_DIMENSION/2, 
+                         pos.yPos - consts.BOX_DIMENSION/2, 
+                         consts.BOX_DIMENSION, 
+                         consts.BOX_DIMENSION, 
+                         "red");
         }
     }
 };
