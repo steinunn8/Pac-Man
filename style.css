@@ -39,3 +39,11 @@ kbd {
   font-size: 0.75em;
   line-height: 1em;
 }
+
+.highlight {
+    color: yellow;
+}
+
+.highlight dl {
+    color: white;
+}
