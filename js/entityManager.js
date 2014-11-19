@@ -140,7 +140,7 @@ var entityManager = {
         while (aCategory.length > 0) {
             entity = aCategory.pop();
             if (entity.kill)
-                entity.kill();
+                entity.kill(false);
         }
     },
     
@@ -540,7 +540,6 @@ var entityManager = {
             this.setFrightenedMode();
         }
 
-        screenshaker.update(du);
         screenshaker.update(du);
 
         util.updateFreezeTimer(du);
