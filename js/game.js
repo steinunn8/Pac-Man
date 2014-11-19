@@ -59,7 +59,7 @@ var KEY_NEW_GAME = keyCode('9');
 
 function processDiagnostics() {
 
-    if (eatKey(KEY_SPATIAL)) g_renderSpatialDebug = !g_renderSpatialDebug;
+    if (eatKey(KEY_SPATIAL) && g_debugEnabled) g_renderSpatialDebug = !g_renderSpatialDebug;
 
     // prints pretty level data to console
     if (eatKey(KEY_LOG_MAZE)) {
