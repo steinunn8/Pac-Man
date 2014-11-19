@@ -3,3 +3,17 @@
    margin: 0 auto;
    display: block;
  }
+
+ html {
+ 	background: #000;
+ }
+
+ div {
+ 	float: left;
+ 	color: white;
+ 	position:absolute;
+ 	top: 50px;
+ 	margin-left: 100px;
+ 	width: 350px;
+ 	font-family: Arial;
+ }
