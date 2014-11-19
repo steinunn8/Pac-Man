@@ -6,7 +6,10 @@ var keys = [];
 
 function handleKeydown(evt) {
     keys[evt.keyCode] = true;
-    evt.preventDefault();
+    // Prevents scrolling using arrow keys
+    if (util.inArray([37, 38, 39, 40], evt.keyCode)) {
+        evt.preventDefault();
+    }
 }
 
 function handleKeyup(evt) {
