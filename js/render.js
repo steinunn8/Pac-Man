@@ -17,7 +17,15 @@ function render(ctx) {
     
     // Process various option toggles
     //
-    if (eatKey(TOGGLE_DEBUG_KEY)) g_debugEnabled = !g_debugEnabled;
+    if (eatKey(TOGGLE_DEBUG_KEY)) {
+        var dd = document.querySelector(".debug-mode-dd");
+        if (g_debugEnabled) {
+            dd.classList.add("highlight");            
+        } else {
+            dd.classList.remove("highlight");
+        }
+        g_debugEnabled = !g_debugEnabled;
+    }
     if (eatKey(TOGGLE_CLEAR) && g_debugEnabled) g_doClear = !g_doClear;
     if (eatKey(TOGGLE_RENDER) && g_debugEnabled) g_doRender = !g_doRender;
     if (eatKey(TOGGLE_CLEAR)) g_doClear = !g_doClear;
