@@ -64,9 +64,12 @@ PacMan.prototype.reset = function () {
 };
 
 // When PacMan dies we warp him to his original place
-PacMan.prototype.kill = function (ctx) {
+PacMan.prototype.kill = function (sideEffects) {
+    sideEffects = typeof sideEffects !== "undefined" ? sideEffects : true;
     this.isAlive = false;
-    this.lives -= 1;
+    if (sideEffects) {
+        this.lives -= 1;
+    }
     spatialManager.unregister(this);
 };
 

@@ -16,7 +16,7 @@ function render(ctx) {
     // Process various option toggles
     //
     if (eatKey(TOGGLE_CLEAR)) g_doClear = !g_doClear;
-    
+
     // I've pulled the clear out of `renderSimulation()` and into
     // here, so that it becomes part of our "diagnostic" wrappers
     //
