@@ -13,14 +13,11 @@ html {
   background: #000;
 }
 
-div {
-  float: left;
+.controls {
   color: white;
-  position:absolute;
-  top: 50px;
-  margin-left: 100px;
-  width: 350px;
-  font-family: Arial;
+}
+.controls h2 {
+  text-align: center;
 }
 
 dl { width: 100%; }
