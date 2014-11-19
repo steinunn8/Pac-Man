@@ -95,7 +95,6 @@ Ghost.prototype.drawCentredAt = function(ctx, cx, cy, rotation) {
 
 Ghost.prototype.hitMe = function (aggressor) {
     if (aggressor.entityType === entityManager.entityTypes["PacMan"]) {
-        console.log("Pacman hits ghost " + this.name);
         if (this.mode === "frightened") {
             this.kill();
             screenshaker.rotateScreen();

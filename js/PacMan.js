@@ -128,7 +128,6 @@ PacMan.prototype.update = function (du) {
 
 PacMan.prototype.hitMe = function (aggressor) {
     if (aggressor.entityType === entityManager.entityTypes["Ghost"]) {
-        console.log("Ghost " + aggressor.name + " hits Pacman");
         if (aggressor.mode === "frightened") {
             aggressor.kill();
             screenshaker.rotateScreen();
