@@ -29,7 +29,6 @@ SpecialCapsule.prototype = new Entity();
 
 SpecialCapsule.prototype.row = -1;
 SpecialCapsule.prototype.column = -1;
-
 SpecialCapsule.prototype.points = 50;
 
 SpecialCapsule.prototype.kill = function () {

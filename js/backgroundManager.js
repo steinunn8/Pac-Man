@@ -12,7 +12,8 @@ var backgroundManager = {
 	update: function(du) {
 		this.timer += du;
 		this.burstDuration -= du;
-		this.duration = entityManager.isFrightenedOn() ? this.fastDuration : this.resetDuration;
+		this.duration = entityManager.isFrightenedOn() ? 
+						this.fastDuration : this.resetDuration;
 		var index = (this.timer / (NOMINAL_UPDATE_INTERVAL * this.duration)) % this.colors.length;
 		this.currentColor = this.mixColors(this.colors[Math.floor(index)], 
 										   this.colors[Math.ceil(index) % this.colors.length],
@@ -44,7 +45,9 @@ var backgroundManager = {
 			b: Math.floor((1 - ratio)*rgb1.b + ratio*rgb2.b)
 		};
 
-		return "#" + this.getHexString(newRgb.r) + this.getHexString(newRgb.g) + this.getHexString(newRgb.b);
+		return "#" + this.getHexString(newRgb.r) 
+				   + this.getHexString(newRgb.g) 
+				   + this.getHexString(newRgb.b);
 	},
 
 	getRGBValues: function(string) {

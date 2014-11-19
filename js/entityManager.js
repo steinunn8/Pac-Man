@@ -77,7 +77,12 @@ var entityManager = {
     // i.e. thing which need `this` to be defined.
     //
     deferredSetup : function () {
-        this._categories = [this._maze, this._capsules, this._ghosts, this._pacMans, this._fruits, this._extras];
+        this._categories = [this._maze, 
+                            this._capsules, 
+                            this._ghosts, 
+                            this._pacMans, 
+                            this._fruits, 
+                            this._extras];
     },
 
     init: function(levels) {
@@ -603,9 +608,6 @@ var entityManager = {
     },
 
     render: function(ctx) {
-
-        var debugX = 10, debugY = 100;
-
         if (this.juicy) {
             backgroundManager.render(ctx);
             screenshaker.render(ctx);
@@ -625,10 +627,8 @@ var entityManager = {
             for (var i = 0; i < aCategory.length; ++i) {
 
                 aCategory[i].render(ctx);
-                //debug.text(".", debugX + i * 10, debugY);
 
             }
-            debugY += 10;
         }
 
         if (this.juicy) {

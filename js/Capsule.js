@@ -28,7 +28,6 @@ Capsule.prototype = new Entity();
 
 Capsule.prototype.row = -1;
 Capsule.prototype.column = -1;
-
 Capsule.prototype.points = 10;
 
 Capsule.prototype.kill = function () {
@@ -37,14 +36,8 @@ Capsule.prototype.kill = function () {
 };
 
 Capsule.prototype.hitMe = function(aggressor) {
-    //~ console.log("Capsule under attack!");
     if (aggressor.entityType === entityManager.entityTypes["PacMan"]) {
-        //~ console.log("Capsule eaten by PacMan");
         audioManager.play(eatSound);
-        
-        //~ Implement "ghost-maniac-mode" with Boolean value?
-        //~ [But wheeere?]
-        //~ this._animProp = 0;
         screenshaker.shake(1);
         this.kill();
     }
@@ -58,15 +51,12 @@ Capsule.prototype.update = function(du) {
 };
 
 Capsule.prototype.render = function(ctx) {
-    //~ console.log("Capsule rendering!");
-    
     if (!this.isAlive) return;
     
     var oldStyle = ctx.fillStyle;
     ctx.fillStyle = "#FBB382";
     
     var pos = util.getCoordsFromBox(this.row, this.column);
-    //~ console.log("capsule pos", pos);
     util.fillCircle(ctx, pos.xPos, pos.yPos, consts.BOX_DIMENSION/8);
 
     ctx.fillStyle = oldStyle; 

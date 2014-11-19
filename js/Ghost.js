@@ -95,10 +95,6 @@ Ghost.prototype.drawCentredAt = function(ctx, cx, cy, rotation) {
 
 Ghost.prototype.hitMe = function (aggressor) {
     if (aggressor.entityType === entityManager.entityTypes["PacMan"]) {
-        console.log("PacMan hit Ghost");
-        
-        //~ Implement "ghost-maniac-mode" with Boolean value?
-        //~ [But wheeere?]
         if (this.mode === "frightened") {
             this.kill();
             screenshaker.rotateScreen();

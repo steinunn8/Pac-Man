@@ -15,27 +15,6 @@ var g_ctx = g_canvas.getContext("2d");
 12345678901234567890123456789012345678901234567890123456789012345678901234567890
 */
 
-//~ function createPacMan() {
-    //~ entityManager._generatePacMan({
-    //~ });
-//~ }
-
-// function createGhosts() {
-//     entityManager._generateGhost({
-//         sprite: g_sprites.pacMan,
-//         column: 14,
-//         row: 14,
-//         speed: 2, // columns per second
-//         rotation: 0
-//     });
-// }
-
-//~ var g_maze;
-
-//~ function createMaze() {
-    //~ g_maze = new Maze({});
-//~ }
-
 // =============
 // GATHER INPUTS
 // =============
@@ -73,15 +52,11 @@ var g_allowMixedActions = true;
 var g_useAveVel = true;
 var g_renderSpatialDebug = false;
 
-// var KEY_MIXED   = keyCode('M');
 var KEY_MUTE   = keyCode('M');
 var KEY_SPATIAL = keyCode('X');
 var KEY_LOG_MAZE = keyCode('V');
 
 function processDiagnostics() {
-
-//    if (eatKey(KEY_MIXED))
-//        g_allowMixedActions = !g_allowMixedActions;
 
     if (eatKey(KEY_SPATIAL)) g_renderSpatialDebug = !g_renderSpatialDebug;
 
@@ -119,7 +94,6 @@ function processDiagnostics() {
 
 function renderSimulation(ctx) {
 
-    //~ g_maze.render(ctx);
     entityManager.render(ctx);
 
     if (g_renderSpatialDebug) spatialManager.render(ctx);
