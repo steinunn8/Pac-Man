@@ -196,7 +196,6 @@ var entityManager = {
     _generateGhosts : function(grid) {
         var pos = this._maze[0].getEntityPos(this._maze[0].gridValues.BLINKY);
         var ghostSpeed = Math.min(1.5  + (this.level-1) * 0.125, 2.1);
-        console.log(ghostSpeed);
         this._ghosts.push(new Ghost({
             name: "blinky",
             color: "red",
